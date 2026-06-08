@@ -1,6 +1,6 @@
 # Mangaba
 
-Desktop app em Tauri 2 + React + TypeScript para consultar a API do MangaDex, acompanhar lançamentos em portugues brasileiro e ler capitulos sem scraping HTML.
+Desktop app em Tauri 2 + React + TypeScript para consultar a API do MangaDex, acompanhar lançamentos em portugues brasileiro e ler capitulos.
 
 ## Stack
 
