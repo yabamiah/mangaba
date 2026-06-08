@@ -1,0 +1,27 @@
+[package]
+name = "mangaba"
+version = "0.1.0"
+description = "MangaDex desktop reader for Brazilian Portuguese releases"
+authors = ["Mangaba"]
+edition = "2021"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+anyhow = "1"
+chrono = { version = "0.4", features = ["serde"] }
+governor = "0.8"
+nonzero_ext = "0.3"
+regex = "1"
+reqwest = { version = "0.12", features = ["json", "rustls-tls"] }
+rusqlite = { version = "0.32", features = ["bundled"] }
+rusqlite_migration = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sled = "0.34"
+tauri = { version = "2", features = [] }
+tauri-plugin-notification = "2"
+tokio = { version = "1", features = ["sync", "time"] }
+ts-rs = { version = "10", features = ["chrono-impl"] }
+uuid = { version = "1", features = ["v4"] }

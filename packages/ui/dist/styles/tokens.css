@@ -1,0 +1,282 @@
+/* ═══════════════════════════════════════════════════════════════
+   @pequiplan/ui - Design Tokens
+   MeriHari Design System - Hobonichi Paper Aesthetic
+   ═══════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Arapey:ital@0;1&family=M+PLUS+Rounded+1c&family=Schoolbell&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Merriweather:wght@300;400;700&display=swap');
+
+:root {
+    /* 🌸 Cozy Planner Theme - Light Mode
+     * Inspired by: Paperlike, Cytronics, Pluto.jl
+     * Warm cream bg + terracotta/rust accents + iOS blur
+     */
+    --background: oklch(0.975 0.012 75);
+    --foreground: oklch(0.25 0.035 45);
+
+    --card: oklch(0.995 0.005 80);
+    --card-foreground: oklch(0.25 0.035 45);
+
+    --popover: oklch(0.995 0.005 80);
+    --popover-foreground: oklch(0.25 0.035 45);
+
+    --primary: oklch(0.68 0.14 35);
+    --primary-foreground: oklch(0.98 0.01 35);
+
+    --secondary: oklch(0.94 0.02 80);
+    --secondary-foreground: oklch(0.35 0.03 45);
+
+    --muted: oklch(0.92 0.015 80);
+    --muted-foreground: oklch(0.50 0.025 45);
+
+    --accent: oklch(0.82 0.08 175);
+    --accent-foreground: oklch(0.22 0.04 175);
+
+    --destructive: oklch(0.65 0.18 25);
+    --destructive-foreground: oklch(0.98 0.01 25);
+
+    --border: oklch(0.90 0.015 75);
+    --input: oklch(0.96 0.01 80);
+    --ring: oklch(0.68 0.14 35);
+
+    /* Chart Colors - Warm & Earthy */
+    --chart-1: oklch(0.68 0.14 35);
+    --chart-2: oklch(0.78 0.10 175);
+    --chart-3: oklch(0.82 0.12 85);
+    --chart-4: oklch(0.72 0.10 280);
+    --chart-5: oklch(0.75 0.08 210);
+
+    --radius: 1rem;
+
+    /* Weekend Colors */
+    --weekend-bg: oklch(0.72 0.12 35 / 0.08);
+    --weekend-border: oklch(0.68 0.14 35 / 0.25);
+
+    /* === PAPER - Background colors === */
+    --paper-lightest: hsl(40, 25%, 98%);
+    --paper-light: hsl(40, 22%, 96%);
+    --paper-base: hsl(40, 20%, 97%);
+    --paper-dark: hsl(40, 18%, 94%);
+
+    /* === INK - Text colors like pen === */
+    --ink-primary: hsl(30, 40%, 20%);
+    --ink-secondary: hsl(30, 25%, 45%);
+    --ink-muted: hsl(30, 20%, 55%);
+    --ink-faint: hsl(30, 15%, 75%);
+
+    /* === BORDERS - Grid and lines === */
+    --border-faint: rgba(139, 115, 85, 0.30);
+    --border-light: rgba(139, 115, 85, 0.15);
+    --border-medium: rgba(139, 115, 85, 0.25);
+    --border-strong: rgba(139, 115, 85, 0.35);
+
+    /* === WASHI TAPE - Decorative (kawaii theme) === */
+    --washi-opacity: 0.9;
+    --washi-pink: oklch(0.85 0.10 350);
+    --washi-mint: oklch(0.82 0.10 175);
+    --washi-yellow: oklch(0.88 0.08 85);
+    --washi-lavender: oklch(0.85 0.08 280);
+    --washi-peach: oklch(0.88 0.10 45);
+    --washi-sky: oklch(0.88 0.06 220);
+
+    /* === ACCENTS - Highlights === */
+    --accent-primary: oklch(0.68 0.14 35);
+    --accent-success: oklch(0.70 0.10 175);
+    --accent-warning: oklch(0.75 0.12 85);
+    --accent-info: oklch(0.70 0.10 220);
+    --accent-love: oklch(0.80 0.15 0);
+
+    /* === FEEDBACK STATES === */
+    --success: oklch(0.70 0.14 155);
+    --success-foreground: oklch(0.98 0.01 155);
+    --warning: oklch(0.78 0.14 85);
+    --warning-foreground: oklch(0.25 0.04 85);
+    --info: oklch(0.68 0.10 240);
+    --info-foreground: oklch(0.98 0.01 240);
+
+    /* === SKELETON === */
+    --skeleton-from: oklch(0.94 0.01 80);
+    --skeleton-to: oklch(0.90 0.015 80);
+
+    /* === SHADOWS - Paper depth === */
+    --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 4px rgba(0, 0, 0, 0.02);
+    --shadow-lifted: 0 2px 4px rgba(0, 0, 0, 0.06), 0 4px 8px rgba(0, 0, 0, 0.04);
+    --shadow-floating: 0 4px 8px rgba(0, 0, 0, 0.08), 0 8px 16px rgba(0, 0, 0, 0.06);
+    --shadow-inset: inset 0 1px 2px rgba(255, 255, 255, 0.5), inset 0 1px 3px rgba(0, 0, 0, 0.05);
+
+    /* === TYPOGRAPHY - Font families === */
+    --font-handwritten: 'Schoolbell', cursive;
+    --font-rounded: 'Kosugi Maru', 'M PLUS Rounded 1c', sans-serif;
+    --font-serif: 'Arapey', serif;
+    --font-sans: 'Plus Jakarta Sans', 'Inter', sans-serif;
+
+    /* === TEXT SCALE - Modular 1.25 (Major Third) === */
+    --text-2xs: 0.64rem;
+    --text-xs: 0.8rem;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-lg: 1.125rem;
+    --text-xl: 1.25rem;
+    --text-2xl: 1.563rem;
+    --text-3xl: 1.953rem;
+    --text-4xl: 2.441rem;
+
+    /* === LINE HEIGHT === */
+    --leading-tight: 1.25;
+    --leading-snug: 1.375;
+    --leading-normal: 1.5;
+    --leading-relaxed: 1.625;
+    --leading-loose: 1.75;
+
+    /* === SPACING SCALE === */
+    --space-0: 0;
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.25rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-10: 2.5rem;
+    --space-12: 3rem;
+    --space-16: 4rem;
+    --space-20: 5rem;
+    --space-24: 6rem;
+
+    /* === MERIHARI CONTRAST === */
+    --space-dense: 0.5rem;
+    --space-normal: 1rem;
+    --space-comfortable: 1.5rem;
+    --space-generous: 2rem;
+    --space-expansive: 3rem;
+
+    /* === GRID === */
+    --grid-unit: 14px;
+    --grid-opacity: 0.05;
+
+    /* === ANIMATION === */
+    --duration-instant: 100ms;
+    --duration-fast: 150ms;
+    --duration-normal: 200ms;
+    --duration-slow: 300ms;
+    --ease-smooth: cubic-bezier(0.4, 0.0, 0.2, 1);
+    --ease-gentle: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DARK MODE - Black Paper Theme
+   ═══════════════════════════════════════════════════════════════ */
+
+.dark {
+    --background: oklch(0.18 0.005 240);
+    --foreground: oklch(0.92 0.01 240);
+
+    --card: oklch(0.22 0.005 240);
+    --card-foreground: oklch(0.92 0.01 240);
+
+    --popover: oklch(0.20 0.005 240);
+    --popover-foreground: oklch(0.92 0.01 240);
+
+    --primary: oklch(0.72 0.16 35);
+    --primary-foreground: oklch(0.98 0.01 35);
+
+    --secondary: oklch(0.28 0.005 240);
+    --secondary-foreground: oklch(0.85 0.01 240);
+
+    --muted: oklch(0.25 0.005 240);
+    --muted-foreground: oklch(0.65 0.01 240);
+
+    --accent: oklch(0.60 0.12 175);
+    --accent-foreground: oklch(0.95 0.02 175);
+
+    --destructive: oklch(0.60 0.20 25);
+    --destructive-foreground: oklch(0.98 0.01 25);
+
+    --border: oklch(0.32 0.005 240);
+    --input: oklch(0.25 0.005 240);
+    --ring: oklch(0.72 0.16 35);
+
+    --chart-1: oklch(0.72 0.16 35);
+    --chart-2: oklch(0.65 0.14 175);
+    --chart-3: oklch(0.70 0.14 85);
+    --chart-4: oklch(0.68 0.12 280);
+    --chart-5: oklch(0.70 0.12 220);
+
+    --weekend-bg: oklch(0.72 0.16 35 / 0.15);
+    --weekend-border: oklch(0.72 0.16 35 / 0.30);
+
+    /* === PAPER - Black levels === */
+    --paper-darkest: oklch(0.15 0.005 240);
+    --paper-dark-base: oklch(0.18 0.005 240);
+    --paper-dark-mid: oklch(0.22 0.005 240);
+    --paper-dark-light: oklch(0.26 0.005 240);
+
+    /* === INK - Light text === */
+    --ink-dark-primary: oklch(0.92 0.01 240);
+    --ink-dark-secondary: oklch(0.75 0.01 240);
+    --ink-dark-muted: oklch(0.58 0.01 240);
+    --ink-dark-faint: oklch(0.42 0.005 240);
+
+    /* === BORDERS === */
+    --border-faint: oklch(0.42 0.005 240 / 0.4);
+    --border-light: oklch(0.32 0.005 240 / 0.5);
+    --border-medium: oklch(0.38 0.005 240 / 0.7);
+    --border-strong: oklch(0.45 0.005 240 / 0.9);
+
+    /* === WASHI TAPE - Vibrant for contrast === */
+    --washi-opacity: 0.7;
+    --washi-primary: oklch(0.72 0.16 35);
+    --washi-pink: oklch(0.68 0.14 350);
+    --washi-mint: oklch(0.65 0.14 175);
+    --washi-yellow: oklch(0.75 0.14 85);
+    --washi-lavender: oklch(0.68 0.12 280);
+    --washi-peach: oklch(0.70 0.14 45);
+    --washi-sky: oklch(0.68 0.12 220);
+
+    /* === ACCENTS === */
+    --accent-primary: oklch(0.72 0.16 35);
+    --accent-highlight: oklch(0.68 0.14 350);
+    --accent-success: oklch(0.65 0.14 175);
+    --accent-warning: oklch(0.75 0.14 85);
+    --accent-info: oklch(0.68 0.12 220);
+    --accent-love: oklch(0.70 0.16 0);
+
+    /* === FEEDBACK STATES === */
+    --success: oklch(0.60 0.14 155);
+    --success-foreground: oklch(0.98 0.01 155);
+    --warning: oklch(0.72 0.14 85);
+    --warning-foreground: oklch(0.18 0.04 85);
+    --info: oklch(0.62 0.12 240);
+    --info-foreground: oklch(0.98 0.01 240);
+
+    /* === SKELETON === */
+    --skeleton-from: oklch(0.25 0.005 240);
+    --skeleton-to: oklch(0.30 0.005 240);
+
+    /* === SHADOWS === */
+    --shadow-soft:
+        0 1px 2px oklch(0.10 0.005 240 / 0.30),
+        0 1px 4px oklch(0.10 0.005 240 / 0.20);
+
+    --shadow-lifted:
+        0 2px 4px oklch(0.10 0.005 240 / 0.35),
+        0 4px 8px oklch(0.10 0.005 240 / 0.25);
+
+    --shadow-floating:
+        0 4px 8px oklch(0.10 0.005 240 / 0.40),
+        0 8px 16px oklch(0.10 0.005 240 / 0.30);
+
+    --shadow-inset:
+        inset 0 1px 2px oklch(0.98 0.01 240 / 0.02),
+        inset 0 1px 3px oklch(0.10 0.005 240 / 0.20);
+}
+
+/* === BASE LAYER === */
+* {
+    border-color: var(--border);
+}
+
+body {
+    background-color: var(--background);
+    color: var(--foreground);
+}

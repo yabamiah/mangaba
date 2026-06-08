@@ -1,0 +1,354 @@
+/* Badge Wrapper */
+.dateBadgeWrapper {
+    position: relative;
+    display: inline-block;
+}
+
+/* Date Badge - Estilo Hobonichi */
+.dateBadge {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 44px;
+    padding: 12px 16px;
+    background: var(--paper-lightest);
+    border: 1.5px solid var(--border-light);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.04),
+        inset 0 1px 1px rgba(255, 255, 255, 0.5);
+}
+
+.dateBadge:hover {
+    border-style: dashed;
+    border-color: var(--accent-primary);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-lifted);
+}
+
+.dateBadge.open {
+    border-color: var(--accent-primary);
+    border-style: solid;
+    background: var(--paper-base);
+    box-shadow: var(--shadow-lifted);
+}
+
+:global(.dark) .dateBadge {
+    background: var(--paper-dark-mid);
+    border: 1.5px solid var(--border-light);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+:global(.dark) .dateBadge:hover {
+    background: var(--paper-dark-light);
+    border-color: var(--accent-primary);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+}
+
+:global(.dark) .dateBadge.open {
+    background: var(--paper-dark-light);
+    border-color: var(--accent-primary);
+    border-style: solid;
+}
+
+/* Day Number - Grande e manuscrito */
+.dayNumber {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--accent-primary);
+    font-family: "Schoolbell", cursive;
+    line-height: 1;
+    min-width: 48px;
+    text-align: center;
+}
+
+/* Date Info */
+.dateInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.dateText {
+    font-family: "Schoolbell", cursive;
+    font-size: 1.125rem;
+    color: var(--ink-primary);
+    line-height: 1.2;
+}
+
+.dayName {
+    font-size: 0.875rem;
+    color: var(--ink-secondary);
+    text-transform: capitalize;
+}
+
+/* Icons Row */
+.iconsRow {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.iconItem {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+    color: var(--ink-secondary);
+}
+
+.label {
+    font-family: "M PLUS Rounded 1c", sans-serif;
+    font-size: 0.6875rem;
+}
+
+.moonIcon {
+    font-size: 1rem;
+    line-height: 1;
+}
+
+/* Dark mode text colors for DateBadge */
+:global(.dark) .dateText {
+    color: var(--ink-dark-primary);
+}
+
+:global(.dark) .dayName {
+    color: var(--ink-dark-secondary);
+}
+
+:global(.dark) .iconItem {
+    color: var(--ink-dark-secondary);
+}
+
+:global(.dark) .label {
+    color: var(--ink-dark-muted);
+}
+
+/* Calendar Popup */
+.calendarPopup {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    z-index: 50;
+    width: 368px;
+    max-width: calc(100vw - 32px);
+    background: var(--paper-lightest);
+    border: 2px solid var(--border-medium);
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.12),
+        0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+:global(.dark) .calendarPopup {
+    background: var(--paper-dark-mid);
+    border-color: oklch(0.45 0.01 240);
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.5),
+        0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Calendar Header */
+.calendarHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-faint);
+}
+
+.calendarTitle {
+    font-family: "M PLUS Rounded 1c", sans-serif;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--ink-primary);
+    text-transform: capitalize;
+}
+
+.navBtn {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--paper-base);
+    border: 1px solid var(--border-light);
+    border-radius: 4px;
+    color: var(--ink-secondary);
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.navBtn:hover {
+    background: var(--paper-dark);
+    color: var(--ink-primary);
+    border-color: var(--border-medium);
+}
+
+/* Weekday Labels */
+.weekdayLabels {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-bottom: 4px;
+}
+
+.weekdayLabel {
+    text-align: center;
+    font-size: 0.625rem;
+    font-weight: 600;
+    color: var(--ink-muted);
+    padding: 4px 0;
+    font-family: "M PLUS Rounded 1c", sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Calendar Grid */
+.calendarGrid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+.calendarDay {
+    aspect-ratio: 1;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8125rem;
+    font-family: "M PLUS Rounded 1c", sans-serif;
+    color: var(--ink-muted);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    opacity: 0.4;
+}
+
+.calendarDay.currentMonth {
+    opacity: 1;
+    color: var(--ink-primary);
+}
+
+.calendarDay:hover {
+    background: var(--paper-base);
+    border-color: var(--border-light);
+}
+
+.calendarDay.today {
+    background: var(--accent-primary);
+    color: white;
+    font-weight: 600;
+    border-color: var(--accent-primary);
+}
+
+.calendarDay.selected {
+    background: var(--paper-dark);
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+    font-weight: 600;
+}
+
+/* Calendar Footer */
+.calendarFooter {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border-faint);
+    display: flex;
+    justify-content: center;
+}
+
+.quickAction {
+    min-height: 44px;
+    padding: 8px 16px;
+    background: var(--paper-base);
+    border: 1px solid var(--border-light);
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-family: "M PLUS Rounded 1c", sans-serif;
+    font-weight: 500;
+    color: var(--ink-primary);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.quickAction:hover {
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+    color: white;
+}
+
+/* === Dark Mode for Mini Calendar === */
+
+:global(.dark) .calendarHeader {
+    border-bottom-color: oklch(0.4 0.01 240);
+}
+
+:global(.dark) .calendarTitle {
+    color: var(--ink-dark-primary);
+}
+
+:global(.dark) .navBtn {
+    background: var(--paper-dark-light);
+    border-color: oklch(0.45 0.01 240);
+    color: var(--ink-dark-secondary);
+}
+
+:global(.dark) .navBtn:hover {
+    background: oklch(0.35 0.01 240);
+    border-color: var(--accent-primary);
+    color: var(--ink-dark-primary);
+}
+
+:global(.dark) .weekdayLabel {
+    color: var(--ink-dark-muted);
+}
+
+:global(.dark) .calendarDay {
+    color: var(--ink-dark-muted);
+}
+
+:global(.dark) .calendarDay.currentMonth {
+    color: var(--ink-dark-primary);
+}
+
+:global(.dark) .calendarDay:hover {
+    background: oklch(0.35 0.01 240);
+    border-color: oklch(0.45 0.01 240);
+}
+
+:global(.dark) .calendarDay.today {
+    background: var(--accent-primary);
+    color: white;
+    border-color: var(--accent-primary);
+}
+
+:global(.dark) .calendarDay.selected {
+    background: oklch(0.3 0.02 240);
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+}
+
+:global(.dark) .calendarFooter {
+    border-top-color: oklch(0.4 0.01 240);
+}
+
+:global(.dark) .quickAction {
+    background: var(--paper-dark-light);
+    border-color: oklch(0.45 0.01 240);
+    color: var(--ink-dark-primary);
+}
+
+:global(.dark) .quickAction:hover {
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+    color: white;
+}

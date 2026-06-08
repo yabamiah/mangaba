@@ -1,0 +1,14 @@
+{
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Preferences saved in app_settings and used by Tauri commands.",
+    "default_language": "Default language",
+    "interval_label": "Interval in minutes",
+    "user_agent": "User-Agent",
+    "include_adult": "Include adult ratings",
+    "save": "Save",
+    "clear_cache": "Clear cache",
+    "save_adjustments": "Save adjustments",
+    "clear_old_cache": "Clear old cache"
+  }
+}

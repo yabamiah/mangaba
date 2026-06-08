@@ -1,0 +1,14 @@
+{
+  "settings": {
+    "title": "设置",
+    "subtitle": "首选项保存在 app_settings 中，并由 Tauri 命令使用。",
+    "default_language": "默认语言",
+    "interval_label": "间隔（分钟）",
+    "user_agent": "User-Agent",
+    "include_adult": "包括成人评级",
+    "save": "保存",
+    "clear_cache": "清除缓存",
+    "save_adjustments": "保存设置",
+    "clear_old_cache": "清除旧缓存"
+  }
+}

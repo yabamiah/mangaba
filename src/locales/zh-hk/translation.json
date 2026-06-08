@@ -1,0 +1,14 @@
+{
+  "settings": {
+    "title": "設定",
+    "subtitle": "偏好儲存在 app_settings，並由 Tauri 指令使用。",
+    "default_language": "預設語言",
+    "interval_label": "間隔（分鐘）",
+    "user_agent": "User-Agent",
+    "include_adult": "包含成人分級",
+    "save": "儲存",
+    "clear_cache": "清除快取",
+    "save_adjustments": "儲存設定",
+    "clear_old_cache": "清除舊快取"
+  }
+}

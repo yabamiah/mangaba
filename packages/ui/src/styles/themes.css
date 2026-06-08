@@ -1,0 +1,71 @@
+/* ═══════════════════════════════════════════════════════════════
+   @pequiplan/ui - Theme Styles
+   Kawaii (colorful/craft) and Classic (minimal/plain) themes
+   ═══════════════════════════════════════════════════════════════ */
+
+/* === THEME KAWAII - Colorful washi/pastel elements === */
+.theme-kawaii .washi-divider {
+    height: 8px;
+    background: repeating-linear-gradient(45deg,
+            var(--washi-pink),
+            var(--washi-pink) 10px,
+            oklch(0.88 0.08 355) 10px,
+            oklch(0.88 0.08 355) 20px);
+    opacity: 0.4;
+    border-radius: 2px;
+}
+
+.theme-kawaii .accent-badge {
+    background: linear-gradient(135deg, var(--washi-pink), var(--accent-primary));
+    color: white;
+}
+
+.dark.theme-kawaii .washi-divider {
+    background: repeating-linear-gradient(
+        45deg,
+        var(--washi-pink),
+        var(--washi-pink) 10px,
+        oklch(0.70 0.16 355) 10px,
+        oklch(0.70 0.16 355) 20px
+    );
+    opacity: 0.5;
+}
+
+.dark.theme-kawaii .accent-badge {
+    background: linear-gradient(
+        135deg,
+        var(--washi-pink),
+        var(--accent-primary)
+    );
+    color: oklch(0.98 0.01 350);
+    box-shadow: 0 2px 8px oklch(0.68 0.14 350 / 0.4);
+}
+
+/* === THEME CLASSIC - Minimal, hanko, dashed === */
+.theme-classic .washi-divider {
+    height: 1px;
+    background: transparent;
+    border-bottom: 1px dashed var(--ink-muted);
+    opacity: 0.5;
+}
+
+.theme-classic .accent-badge {
+    background: var(--paper-dark);
+    color: var(--ink-secondary);
+    border: 1px dashed var(--ink-muted);
+}
+
+.theme-classic .btn-stamp:hover {
+    border-style: dashed;
+}
+
+.dark.theme-classic .washi-divider {
+    border-bottom: 1px dashed var(--ink-dark-muted);
+    opacity: 0.4;
+}
+
+.dark.theme-classic .accent-badge {
+    background: var(--paper-dark-light);
+    color: var(--ink-dark-primary);
+    border: 1px dashed var(--border-medium);
+}
