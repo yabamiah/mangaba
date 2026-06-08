@@ -188,24 +188,28 @@ var StatsCard = ({
   value,
   highlighted = false,
   subtext = "",
+  badge,
   className
 }) => /* @__PURE__ */ jsxs2(
   "div",
   {
     className: cn(
-      "relative p-5 rounded-2xl border transition-all duration-300 min-w-fit",
+      "relative p-5 rounded-2xl border transition-all duration-300 min-w-fit min-h-[100px] flex flex-col justify-between",
       highlighted ? "bg-card border-primary/40 shadow-sm dark:bg-card dark:border-primary/50" : "bg-card border-border/40 shadow-sm hover:bg-secondary/50 dark:bg-card dark:border-border/20 dark:hover:bg-secondary/50",
       className
     ),
     children: [
-      /* @__PURE__ */ jsx6("h3", { className: "text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-2 font-mono leading-relaxed", children: title }),
-      /* @__PURE__ */ jsxs2("div", { className: "flex items-baseline gap-1.5 whitespace-nowrap overflow-hidden", children: [
+      badge ? /* @__PURE__ */ jsxs2("div", { className: "flex items-center gap-1.5 mb-1.5", children: [
+        /* @__PURE__ */ jsx6("span", { className: "text-[9px] font-semibold px-1.5 py-[1px] rounded-full bg-[#2E51A220] text-[#2E51A2] dark:bg-[#2E51A240] dark:text-[#a0c0ff]", children: badge }),
+        /* @__PURE__ */ jsx6("h3", { className: "text-[11px] font-medium uppercase tracking-wide text-muted-foreground", children: title })
+      ] }) : /* @__PURE__ */ jsx6("h3", { className: "text-[11px] font-medium uppercase tracking-wide text-muted-foreground mb-1.5", children: title }),
+      /* @__PURE__ */ jsxs2("div", { className: "flex items-baseline gap-1.5 mt-auto whitespace-nowrap overflow-hidden", children: [
         /* @__PURE__ */ jsx6(
           "span",
           {
             className: cn(
-              "text-2xl font-serif font-bold tracking-tight",
-              highlighted ? "text-primary" : "text-stone-800 dark:text-stone-200"
+              "text-2xl font-serif font-semibold tracking-tight transition-colors",
+              value === 0 ? "text-foreground/25" : highlighted ? "text-primary" : "text-foreground"
             ),
             children: value
           }
@@ -1090,6 +1094,11 @@ var BellIcon = ({ className }) => /* @__PURE__ */ jsxs9("svg", { className, view
   /* @__PURE__ */ jsx15("path", { d: "M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" }),
   /* @__PURE__ */ jsx15("path", { d: "M10.3 21a1.94 1.94 0 0 0 3.4 0" })
 ] });
+var RefreshIcon = ({ className }) => /* @__PURE__ */ jsxs9("svg", { className, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", children: [
+  /* @__PURE__ */ jsx15("polyline", { points: "23 4 23 10 17 10" }),
+  /* @__PURE__ */ jsx15("polyline", { points: "1 20 1 14 7 14" }),
+  /* @__PURE__ */ jsx15("path", { d: "M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" })
+] });
 function formatSyncTime(date, labels) {
   if (!date) return labels.neverSynced;
   const diffMs = Date.now() - date.getTime();
@@ -1099,21 +1108,6 @@ function formatSyncTime(date, labels) {
   const diffH = Math.floor(diffMin / 60);
   if (diffH < 24) return labels.hoursAgo(diffH);
   return labels.daysAgo(Math.floor(diffH / 24));
-}
-var MANGA_QUOTES = [
-  { text: "Mesmo na escurid\xE3o mais profunda, uma fa\xEDsca de vontade pode iluminar o caminho.", author: "Berserk" },
-  { text: "A for\xE7a n\xE3o vem de vencer. Vem de superar as dificuldades.", author: "Naruto" },
-  { text: "Pessoas que n\xE3o podem jogar fora algo valioso nunca conseguem mudar nada.", author: "Fullmetal Alchemist" },
-  { text: "O mundo n\xE3o \xE9 perfeito, mas est\xE1 aqui para n\xF3s \u2014 tente descobrir o que \xE9 bom.", author: "Fullmetal Alchemist" },
-  { text: "Independente de qu\xE3o sombrio o mundo possa ser, o sol ainda nasce amanh\xE3.", author: "Vinland Saga" },
-  { text: "Ningu\xE9m nasce com for\xE7a. Voc\xEA cresce ao superar a dor.", author: "One Piece" },
-  { text: "A \xFAnica batalha que voc\xEA perde \xE9 aquela que abandona.", author: "Vagabond" }
-];
-function getDailyQuote() {
-  const dayOfYear = Math.floor(
-    (Date.now() - new Date((/* @__PURE__ */ new Date()).getFullYear(), 0, 0).getTime()) / 864e5
-  );
-  return MANGA_QUOTES[dayOfYear % MANGA_QUOTES.length];
 }
 var Dashboard = ({
   stats = { chaptersRead: 0, chaptersTotal: 0, mangasFollowing: 0, streak: 0 },
@@ -1157,29 +1151,19 @@ var Dashboard = ({
     noWeeklyActivity: "Nenhuma atividade registrada nos \xFAltimos 7 dias.",
     unreadCount: (count) => `${count} n\xE3o lidos`,
     allCaughtUp: "Tudo em dia. Nenhum cap\xEDtulo novo no momento.",
+    stat_mal_volumes: "Volumes lidos",
+    stat_mal_plan_to_read: "Na fila",
+    volumes: "volumes",
     ...labels
   };
-  const quote = useMemo4(() => {
-    if (lastRead) {
-      return {
-        text: lastRead.mangaTitle,
-        author: l.chapterContinue(lastRead.chapterNumber)
-      };
-    }
-    if (l.fallbackQuote) return l.fallbackQuote;
-    return getDailyQuote();
-  }, [lastRead, l]);
   const streakHighlighted = stats.streak >= 7;
   const syncLabel = useMemo4(() => {
     if (syncState.status === "syncing") return l.syncing;
     if (syncState.status === "error") return l.syncError;
     return formatSyncTime(syncState.lastSyncedAt, l);
   }, [syncState, l]);
-  const bannerStyle = lastRead?.coverUrl ? {
-    backgroundImage: `url(${lastRead.coverUrl})`,
-    backgroundSize: "cover",
-    backgroundPosition: "center top"
-  } : {};
+  const bannerStyle = lastRead?.coverUrl ? { backgroundImage: `url(${lastRead.coverUrl})` } : {};
+  const hasCover = !!lastRead?.coverUrl;
   return /* @__PURE__ */ jsx15(
     "div",
     {
@@ -1188,32 +1172,49 @@ var Dashboard = ({
         "transition-all duration-500 ease-out py-4 px-2 overflow-y-auto",
         className
       ),
-      children: /* @__PURE__ */ jsx15("div", { className: "animate-in fade-in slide-in-from-bottom-4 duration-700 w-full", children: /* @__PURE__ */ jsxs9("div", { className: "relative shadow-paper-float rounded-[2rem] overflow-hidden bg-transparent border-none", children: [
-        lastRead?.coverUrl && /* @__PURE__ */ jsx15("div", { className: "absolute top-0 left-0 right-0 h-48 opacity-40 mix-blend-overlay dark:opacity-20 pointer-events-none", style: bannerStyle }),
-        malUser && /* @__PURE__ */ jsx15("div", { className: "absolute top-6 right-6 md:top-8 md:right-8 z-30", children: /* @__PURE__ */ jsxs9(
-          "a",
-          {
-            href: `https://myanimelist.net/profile/${malUser.name}`,
-            target: "_blank",
-            rel: "noreferrer",
-            className: "flex items-center gap-2 px-3 py-1.5 rounded-full backdrop-blur-md bg-stone-100/80 dark:bg-stone-900/80 border border-stone-200/50 dark:border-stone-800/50 text-stone-800 dark:text-stone-200 text-xs font-semibold hover:bg-stone-200/80 dark:hover:bg-stone-800/80 transition-all cursor-pointer shadow-sm",
-            children: [
-              /* @__PURE__ */ jsx15("img", { src: malUser.avatarUrl, alt: malUser.name, className: "w-5 h-5 rounded-full object-cover" }),
-              malUser.name
-            ]
-          }
-        ) }),
-        /* @__PURE__ */ jsx15("div", { className: "bg-card/90 backdrop-blur-xl graph-paper relative z-20 px-6 py-8 md:px-12 md:py-12 rounded-[2rem] mt-16 md:mt-20", children: /* @__PURE__ */ jsxs9("div", { className: "grid grid-cols-1 lg:grid-cols-12 gap-12", children: [
+      children: /* @__PURE__ */ jsxs9("div", { className: "animate-in fade-in slide-in-from-bottom-4 duration-700 w-full", children: [
+        /* @__PURE__ */ jsxs9("div", { className: "relative shadow-paper-float rounded-[2rem] overflow-hidden border border-border/50 bg-secondary/30 h-36 md:h-44 flex flex-col justify-between p-4 pb-10 md:p-6 md:pb-12 transition-all group", children: [
+          /* @__PURE__ */ jsx15(
+            "div",
+            {
+              className: cn(
+                "absolute inset-0 pointer-events-none transition-transform duration-1000 group-hover:scale-105",
+                lastRead?.coverUrl ? "bg-cover bg-center" : "bg-gradient-to-br from-orange-100 via-stone-200 to-blue-50 dark:from-orange-900/30 dark:via-stone-800 dark:to-blue-900/20 opacity-90"
+              ),
+              style: lastRead?.coverUrl ? { backgroundImage: `url(${lastRead.coverUrl})` } : void 0
+            }
+          ),
+          lastRead?.coverUrl && /* @__PURE__ */ jsx15("div", { className: "absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none" }),
+          /* @__PURE__ */ jsxs9(
+            "button",
+            {
+              onClick: onSync,
+              className: "absolute top-4 right-4 z-20 flex items-center gap-1.5 rounded-full border border-white/25 bg-black/65 px-3 py-1.5 text-xs font-semibold text-white shadow-lg backdrop-blur-md transition-all hover:bg-black/75",
+              children: [
+                /* @__PURE__ */ jsx15(RefreshIcon, { className: cn("w-3.5 h-3.5", syncState.status === "syncing" && "animate-spin") }),
+                /* @__PURE__ */ jsx15("span", { className: "drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)]", children: syncLabel })
+              ]
+            }
+          ),
+          malUser && /* @__PURE__ */ jsxs9("div", { className: "absolute bottom-4 left-4 md:bottom-6 md:left-6 z-20 flex items-center gap-2 rounded-full border border-white/25 bg-black/65 px-2.5 py-2 shadow-lg backdrop-blur-md", children: [
+            /* @__PURE__ */ jsx15("img", { src: malUser.avatarUrl, alt: malUser.name, className: "w-8 h-8 rounded-full border border-white/50 object-cover bg-black/50" }),
+            /* @__PURE__ */ jsxs9("div", { children: [
+              /* @__PURE__ */ jsx15("p", { className: "text-sm font-semibold text-white leading-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)]", children: malUser.name }),
+              /* @__PURE__ */ jsx15("p", { className: "text-[10px] text-white/85 mt-0.5 drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)]", children: "MAL conectado" })
+            ] })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsx15("div", { className: "relative mt-3 bg-card/95 backdrop-blur-xl border border-border/60 shadow-paper-float rounded-3xl p-6 md:p-8 z-20", children: /* @__PURE__ */ jsxs9("div", { className: "grid grid-cols-1 lg:grid-cols-12 gap-12", children: [
           /* @__PURE__ */ jsxs9("div", { className: "lg:col-span-8 flex flex-col gap-10", children: [
             /* @__PURE__ */ jsxs9("div", { children: [
-              /* @__PURE__ */ jsxs9("div", { className: "flex justify-between items-end mb-5 pb-2 border-b border-border/40", children: [
-                /* @__PURE__ */ jsxs9("h2", { className: "text-[11px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2", children: [
+              /* @__PURE__ */ jsxs9("div", { className: "flex items-center justify-between gap-4 mb-5 pb-2 border-b border-border/40", children: [
+                /* @__PURE__ */ jsxs9("h2", { className: "text-xs font-medium uppercase tracking-wider text-muted-foreground/70 flex items-center gap-2", children: [
                   /* @__PURE__ */ jsx15(BookOpenIcon, { className: "w-4 h-4" }),
                   l.overviewTitle
                 ] }),
                 syncState.status === "error" && /* @__PURE__ */ jsx15("span", { className: "text-xs font-mono text-destructive bg-destructive/10 px-2 py-1 rounded", children: l.syncFailure })
               ] }),
-              /* @__PURE__ */ jsxs9("div", { className: cn("grid gap-6 mb-10", malStats ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6" : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"), children: [
+              /* @__PURE__ */ jsxs9("div", { className: cn("grid gap-4 mb-8", malStats ? "grid-cols-2 md:grid-cols-3 xl:grid-cols-6" : "grid-cols-2 md:grid-cols-3 xl:grid-cols-4"), children: [
                 /* @__PURE__ */ jsx15(
                   StatsCard,
                   {
@@ -1227,6 +1228,7 @@ var Dashboard = ({
                   {
                     title: l.statRead,
                     value: stats.chaptersRead,
+                    subtext: l.chaptersUnit,
                     highlighted: stats.chaptersRead > 0
                   }
                 ),
@@ -1251,69 +1253,59 @@ var Dashboard = ({
                   /* @__PURE__ */ jsx15(
                     StatsCard,
                     {
-                      title: "Volumes MAL",
+                      title: l.stat_mal_volumes,
                       value: malStats.volumesRead,
-                      subtext: "lidos"
+                      subtext: l.volumes,
+                      badge: "MAL"
                     }
                   ),
                   /* @__PURE__ */ jsx15(
                     StatsCard,
                     {
-                      title: "Fila MAL",
+                      title: l.stat_mal_plan_to_read,
                       value: malStats.planToRead,
-                      subtext: "mang\xE1s"
+                      subtext: l.mangasUnit,
+                      badge: "MAL"
                     }
                   )
                 ] })
               ] })
             ] }),
             /* @__PURE__ */ jsxs9("div", { children: [
-              /* @__PURE__ */ jsxs9("h2", { className: "text-sm font-bold uppercase tracking-widest text-muted-foreground mb-4 flex items-center gap-2", children: [
-                /* @__PURE__ */ jsx15(FlameIcon, { className: "w-5 h-5" }),
+              /* @__PURE__ */ jsxs9("h2", { className: "text-[11px] font-medium uppercase tracking-widest text-muted-foreground mb-4 flex items-center gap-2", children: [
+                /* @__PURE__ */ jsx15(FlameIcon, { className: "w-[18px] h-[18px]" }),
                 l.trackerTitle
               ] }),
               weeklyActivity.length > 0 ? /* @__PURE__ */ jsx15(HandDrawnTracker, { habits: weeklyActivity }) : /* @__PURE__ */ jsx15("p", { className: "text-sm text-muted-foreground font-serif italic py-4", children: l.noWeeklyActivity })
             ] }),
             /* @__PURE__ */ jsxs9("div", { children: [
-              /* @__PURE__ */ jsxs9("h2", { className: "text-sm font-bold uppercase tracking-widest text-muted-foreground mb-4 flex items-center gap-2", children: [
-                /* @__PURE__ */ jsx15(BellIcon, { className: "w-5 h-5" }),
-                l.newChaptersTitle,
-                unreadMangas.length > 0 && /* @__PURE__ */ jsx15("span", { className: "ml-auto text-xs font-mono font-normal normal-case tracking-normal bg-destructive/10 text-destructive px-2 py-0.5 rounded-full", children: l.unreadCount(unreadMangas.reduce((acc, m) => acc + m.unreadCount, 0)) })
+              /* @__PURE__ */ jsxs9("h2", { className: "text-[11px] font-medium uppercase tracking-widest text-muted-foreground mb-4 flex items-center gap-2", children: [
+                /* @__PURE__ */ jsx15(BellIcon, { className: "w-[18px] h-[18px]" }),
+                l.newChaptersTitle
               ] }),
-              unreadMangas.length === 0 ? /* @__PURE__ */ jsx15("p", { className: "text-sm text-muted-foreground font-serif italic py-2", children: l.allCaughtUp }) : /* @__PURE__ */ jsx15("div", { className: "space-y-2", children: unreadMangas.map((manga) => /* @__PURE__ */ jsxs9(
+              unreadMangas.length === 0 ? /* @__PURE__ */ jsx15("p", { className: "text-sm text-muted-foreground font-serif italic py-2", children: l.allCaughtUp }) : /* @__PURE__ */ jsx15("div", { className: "grid gap-2", children: unreadMangas.map((manga) => /* @__PURE__ */ jsxs9(
                 "button",
                 {
+                  className: "w-full flex items-center gap-3 p-2.5 rounded-xl border border-border/40 bg-card hover:bg-secondary/40 transition-colors text-left group",
                   onClick: () => onMangaClick?.(manga),
-                  className: "w-full flex items-center gap-3 p-2 rounded-lg border-b border-border/30 hover:bg-secondary/30 transition-colors text-left group",
                   children: [
-                    manga.coverUrl ? /* @__PURE__ */ jsx15(
-                      "img",
-                      {
-                        src: manga.coverUrl,
-                        alt: manga.title,
-                        className: "w-8 h-12 object-cover rounded object-top flex-shrink-0"
-                      }
-                    ) : /* @__PURE__ */ jsx15(
-                      "div",
-                      {
-                        className: cn(
-                          "w-2 h-2 rounded-full flex-shrink-0",
-                          manga.accentColor
-                        )
-                      }
-                    ),
-                    /* @__PURE__ */ jsx15("span", { className: "flex-1 text-sm text-muted-foreground font-serif italic group-hover:text-foreground transition-colors truncate", children: manga.title }),
-                    /* @__PURE__ */ jsxs9("div", { className: "flex items-center gap-2 flex-shrink-0", children: [
-                      manga.malStatus === "on_hold" && /* @__PURE__ */ jsx15("span", { className: "text-[10px] px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 font-mono tracking-tighter", children: "Pausa" }),
-                      manga.malStatus === "dropped" && /* @__PURE__ */ jsx15("span", { className: "text-[10px] px-1.5 py-0.5 rounded bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 font-mono tracking-tighter", children: "Drop" }),
-                      manga.malScore && /* @__PURE__ */ jsxs9("span", { className: "text-[10px] font-mono text-yellow-600 dark:text-yellow-400", children: [
-                        "\u2605 ",
-                        manga.malScore.toFixed(1)
+                    /* @__PURE__ */ jsx15("div", { className: "w-8 h-12 rounded-md bg-secondary flex-shrink-0 overflow-hidden border border-border/50", children: manga.coverUrl && /* @__PURE__ */ jsx15("img", { src: manga.coverUrl, className: "w-full h-full object-cover" }) }),
+                    /* @__PURE__ */ jsxs9("div", { className: "flex-1 min-w-0", children: [
+                      /* @__PURE__ */ jsxs9("div", { className: "flex items-center gap-2", children: [
+                        /* @__PURE__ */ jsx15("span", { className: "text-sm font-medium text-foreground truncate", children: manga.title }),
+                        manga.malScore && /* @__PURE__ */ jsxs9("span", { className: "text-[10px] text-stone-500 flex-shrink-0", children: [
+                          "\u2605 ",
+                          manga.malScore.toFixed(1)
+                        ] })
                       ] }),
-                      /* @__PURE__ */ jsxs9("span", { className: "text-xs font-mono bg-destructive/10 text-destructive px-2 py-0.5 rounded-full", children: [
-                        "+",
-                        manga.unreadCount
-                      ] })
+                      manga.chapterNumbers ? /* @__PURE__ */ jsxs9("p", { className: "text-[10px] text-stone-500 mt-0.5 truncate", children: [
+                        "Cap. ",
+                        manga.chapterNumbers
+                      ] }) : /* @__PURE__ */ jsx15("p", { className: "text-[10px] text-stone-500 mt-0.5", children: l.unreadCount(manga.unreadCount) })
+                    ] }),
+                    /* @__PURE__ */ jsxs9("div", { className: "flex-shrink-0 flex items-center justify-center px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-[10px] font-bold", children: [
+                      "+",
+                      manga.unreadCount
                     ] })
                   ]
                 },
@@ -1369,7 +1361,7 @@ var Dashboard = ({
             ] })
           ] })
         ] }) })
-      ] }) })
+      ] })
     }
   );
 };

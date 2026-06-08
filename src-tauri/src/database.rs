@@ -99,7 +99,8 @@ impl Database {
             "SELECT m.id, m.title, m.description, m.author, m.cover_art_id, m.cover_filename, m.cover_url,
              m.status, m.original_language, m.created_at, m.updated_at,
              m.mal_id, m.mal_score, m.mal_status, 1, f.preferred_language, f.last_checked_at, f.notify_enabled,
-             (SELECT COUNT(*) FROM chapters c WHERE c.manga_id = m.id AND c.read = 0)
+             (SELECT COUNT(*) FROM chapters c WHERE c.manga_id = m.id AND c.read = 0),
+             (SELECT GROUP_CONCAT(chapter, ', ') FROM (SELECT chapter FROM chapters WHERE manga_id = m.id AND read = 0 ORDER BY CAST(chapter AS REAL) DESC LIMIT 3))
              FROM followed_manga f JOIN manga m ON m.id = f.manga_id WHERE m.id = ?1",
             [manga_id],
             |row| {
@@ -109,6 +110,7 @@ impl Database {
                     last_checked_at: row.get(16)?,
                     notify_enabled: row.get::<_, i64>(17)? == 1,
                     unread_count: row.get(18)?,
+                    unread_chapters: row.get(19)?,
                 })
             },
         )
@@ -122,7 +124,8 @@ impl Database {
             "SELECT m.id, m.title, m.description, m.author, m.cover_art_id, m.cover_filename, m.cover_url,
              m.status, m.original_language, m.created_at, m.updated_at,
              m.mal_id, m.mal_score, m.mal_status, 1, f.preferred_language, f.last_checked_at, f.notify_enabled,
-             (SELECT COUNT(*) FROM chapters c WHERE c.manga_id = m.id AND c.read = 0)
+             (SELECT COUNT(*) FROM chapters c WHERE c.manga_id = m.id AND c.read = 0),
+             (SELECT GROUP_CONCAT(chapter, ', ') FROM (SELECT chapter FROM chapters WHERE manga_id = m.id AND read = 0 ORDER BY CAST(chapter AS REAL) DESC LIMIT 3))
              FROM followed_manga f JOIN manga m ON m.id = f.manga_id ORDER BY m.title ASC",
         )?;
         let rows = stmt.query_map([], |row| {
@@ -132,6 +135,7 @@ impl Database {
                 last_checked_at: row.get(16)?,
                 notify_enabled: row.get::<_, i64>(17)? == 1,
                 unread_count: row.get(18)?,
+                unread_chapters: row.get(19)?,
             })
         })?;
         rows.collect::<rusqlite::Result<Vec<_>>>()

@@ -54,6 +54,7 @@ interface StatsCardProps {
     value: string | number;
     highlighted?: boolean;
     subtext?: string;
+    badge?: string;
     className?: string;
 }
 declare const StatsCard: React__default.FC<StatsCardProps>;
@@ -186,6 +187,7 @@ interface UnreadManga {
     myScore?: number;
     /** Status do mangá na lista do MAL do usuário */
     malStatus?: "reading" | "completed" | "on_hold" | "dropped" | "plan_to_read" | string;
+    chapterNumbers?: string;
 }
 /** Informações sobre o último mangá/capítulo lido */
 interface LastRead {
@@ -222,6 +224,9 @@ interface DashboardLabels {
     hoursAgo?: (count: number) => string;
     daysAgo?: (count: number) => string;
     syncFailure?: string;
+    stat_mal_volumes?: string;
+    stat_mal_plan_to_read?: string;
+    volumes?: string;
     chapterContinue?: (chapter: string | number) => string;
     noWeeklyActivity?: string;
     unreadCount?: (count: number) => string;

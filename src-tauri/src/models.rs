@@ -53,6 +53,7 @@ pub struct FollowedManga {
     pub unread_count: i64,
     pub last_checked_at: Option<String>,
     pub notify_enabled: bool,
+    pub unread_chapters: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, TS)]

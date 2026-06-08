@@ -236,6 +236,7 @@ function buildUnreadMangas(followed: FollowedManga[]): UnreadManga[] {
       coverUrl: item.manga.cover_url ?? undefined,
       malScore: item.manga.mal_score ?? undefined,
       malStatus: item.manga.mal_status ?? undefined,
+      chapterNumbers: item.unread_chapters ?? undefined,
     }));
 }
 
@@ -357,6 +358,9 @@ export function DashboardPage({ onOpenManga, onSearch, onOpenHistory }: Dashboar
             syncing: t("dashboard.syncing"),
             trackerTitle: t("dashboard.tracker_title"),
             unreadCount: (count) => t("dashboard.unread_count", { count }),
+            stat_mal_volumes: t("dashboard.stat_mal_volumes"),
+            stat_mal_plan_to_read: t("dashboard.stat_mal_plan_to_read"),
+            volumes: t("dashboard.volumes"),
           }}
           stats={data?.stats}
           syncState={syncState}

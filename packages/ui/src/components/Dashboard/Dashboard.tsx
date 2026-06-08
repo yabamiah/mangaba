@@ -84,6 +84,7 @@ export interface UnreadManga {
   myScore?: number;
   /** Status do mangá na lista do MAL do usuário */
   malStatus?: "reading" | "completed" | "on_hold" | "dropped" | "plan_to_read" | string;
+  chapterNumbers?: string;
 }
 
 /** Informações sobre o último mangá/capítulo lido */
@@ -123,6 +124,9 @@ export interface DashboardLabels {
   hoursAgo?: (count: number) => string;
   daysAgo?: (count: number) => string;
   syncFailure?: string;
+  stat_mal_volumes?: string;
+  stat_mal_plan_to_read?: string;
+  volumes?: string;
   chapterContinue?: (chapter: string | number) => string;
   noWeeklyActivity?: string;
   unreadCount?: (count: number) => string;
@@ -254,20 +258,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
     noWeeklyActivity: "Nenhuma atividade registrada nos últimos 7 dias.",
     unreadCount: (count: number) => `${count} não lidos`,
     allCaughtUp: "Tudo em dia. Nenhum capítulo novo no momento.",
+    stat_mal_volumes: "Volumes lidos",
+    stat_mal_plan_to_read: "Na fila",
+    volumes: "volumes",
     ...labels,
   } satisfies ResolvedDashboardLabels;
-
-  // Frase do dia ou contexto do último mangá lido
-  const quote = useMemo(() => {
-    if (lastRead) {
-      return {
-        text: lastRead.mangaTitle,
-        author: l.chapterContinue(lastRead.chapterNumber),
-      };
-    }
-    if (l.fallbackQuote) return l.fallbackQuote;
-    return getDailyQuote();
-  }, [lastRead, l]);
 
   // Streak destacado se ≥ 7 dias
   const streakHighlighted = stats.streak >= 7;
@@ -281,12 +276,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
   // URL do banner: capa do último mangá ou gradiente fallback
   const bannerStyle: React.CSSProperties = lastRead?.coverUrl
-    ? {
-        backgroundImage: `url(${lastRead.coverUrl})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center top",
-      }
+    ? { backgroundImage: `url(${lastRead.coverUrl})` }
     : {};
+
+  const hasCover = !!lastRead?.coverUrl;
 
   return (
     <div
@@ -297,28 +290,44 @@ export const Dashboard: React.FC<DashboardProps> = ({
       )}
     >
       <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 w-full">
-        <div className="relative shadow-paper-float rounded-[2rem] overflow-hidden bg-transparent border-none">
+        <div className="relative shadow-paper-float rounded-[2rem] overflow-hidden border border-border/50 bg-secondary/30 h-36 md:h-44 flex flex-col justify-between p-4 pb-10 md:p-6 md:pb-12 transition-all group">
           {/* Banner */}
+          <div 
+            className={cn(
+              "absolute inset-0 pointer-events-none transition-transform duration-1000 group-hover:scale-105",
+              lastRead?.coverUrl 
+                ? "bg-cover bg-center" 
+                : "bg-gradient-to-br from-orange-100 via-stone-200 to-blue-50 dark:from-orange-900/30 dark:via-stone-800 dark:to-blue-900/20 opacity-90"
+            )}
+            style={lastRead?.coverUrl ? { backgroundImage: `url(${lastRead.coverUrl})` } : undefined}
+          />
           {lastRead?.coverUrl && (
-            <div className="absolute top-0 left-0 right-0 h-48 opacity-40 mix-blend-overlay dark:opacity-20 pointer-events-none" style={bannerStyle} />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none" />
           )}
 
+          {/* Sync Badge no canto superior direito do banner */}
+          <button
+            onClick={onSync}
+            className="absolute top-4 right-4 z-20 flex items-center gap-1.5 rounded-full border border-white/25 bg-black/65 px-3 py-1.5 text-xs font-semibold text-white shadow-lg backdrop-blur-md transition-all hover:bg-black/75"
+          >
+            <RefreshIcon className={cn("w-3.5 h-3.5", syncState.status === "syncing" && "animate-spin")} />
+            <span className="drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)]">{syncLabel}</span>
+          </button>
+
+          {/* Perfil do MAL no canto inferior esquerdo */}
           {malUser && (
-            <div className="absolute top-6 right-6 md:top-8 md:right-8 z-30">
-              <a
-                href={`https://myanimelist.net/profile/${malUser.name}`}
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center gap-2 px-3 py-1.5 rounded-full backdrop-blur-md bg-stone-100/80 dark:bg-stone-900/80 border border-stone-200/50 dark:border-stone-800/50 text-stone-800 dark:text-stone-200 text-xs font-semibold hover:bg-stone-200/80 dark:hover:bg-stone-800/80 transition-all cursor-pointer shadow-sm"
-              >
-                <img src={malUser.avatarUrl} alt={malUser.name} className="w-5 h-5 rounded-full object-cover" />
-                {malUser.name}
-              </a>
+            <div className="absolute bottom-4 left-4 md:bottom-6 md:left-6 z-20 flex items-center gap-2 rounded-full border border-white/25 bg-black/65 px-2.5 py-2 shadow-lg backdrop-blur-md">
+              <img src={malUser.avatarUrl} alt={malUser.name} className="w-8 h-8 rounded-full border border-white/50 object-cover bg-black/50" />
+              <div>
+                <p className="text-sm font-semibold text-white leading-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)]">{malUser.name}</p>
+                <p className="text-[10px] text-white/85 mt-0.5 drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)]">MAL conectado</p>
+              </div>
             </div>
           )}
+        </div>
 
-          {/* ── Conteúdo principal ── */}
-          <div className="bg-card/90 backdrop-blur-xl graph-paper relative z-20 px-6 py-8 md:px-12 md:py-12 rounded-[2rem] mt-16 md:mt-20">
+        {/* ── Conteúdo principal ── */}
+        <div className="relative mt-3 bg-card/95 backdrop-blur-xl border border-border/60 shadow-paper-float rounded-3xl p-6 md:p-8 z-20">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
 
               {/* ── Coluna esquerda ── */}
@@ -326,8 +335,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
                 {/* Stats */}
                 <div>
-                  <div className="flex justify-between items-end mb-5 pb-2 border-b border-border/40">
-                    <h2 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                  <div className="flex items-center justify-between gap-4 mb-5 pb-2 border-b border-border/40">
+                    <h2 className="text-xs font-medium uppercase tracking-wider text-muted-foreground/70 flex items-center gap-2">
                       <BookOpenIcon className="w-4 h-4" />
                       {l.overviewTitle}
                     </h2>
@@ -339,8 +348,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     )}
                   </div>
 
-                  <div className={cn("grid gap-6 mb-10", malStats ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6" : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4")}>
-                    {/* 4 cards com dados de leitura */}
+                  <div className={cn("grid gap-4 mb-8", malStats ? "grid-cols-2 md:grid-cols-3 xl:grid-cols-6" : "grid-cols-2 md:grid-cols-3 xl:grid-cols-4")}>
                     <StatsCard
                       title={l.statChapters}
                       value={stats.chaptersTotal}
@@ -349,6 +357,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     <StatsCard
                       title={l.statRead}
                       value={stats.chaptersRead}
+                      subtext={l.chaptersUnit}
                       highlighted={stats.chaptersRead > 0}
                     />
                     <StatsCard
@@ -365,14 +374,16 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     {malStats && (
                       <>
                         <StatsCard
-                          title="Volumes MAL"
+                          title={l.stat_mal_volumes}
                           value={malStats.volumesRead}
-                          subtext="lidos"
+                          subtext={l.volumes}
+                          badge="MAL"
                         />
                         <StatsCard
-                          title="Fila MAL"
+                          title={l.stat_mal_plan_to_read}
                           value={malStats.planToRead}
-                          subtext="mangás"
+                          subtext={l.mangasUnit}
+                          badge="MAL"
                         />
                       </>
                     )}
@@ -381,8 +392,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
                 {/* Tracker de atividade semanal */}
                 <div>
-                  <h2 className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-4 flex items-center gap-2">
-                    <FlameIcon className="w-5 h-5" />
+                  <h2 className="text-[11px] font-medium uppercase tracking-widest text-muted-foreground mb-4 flex items-center gap-2">
+                    <FlameIcon className="w-[18px] h-[18px]" />
                     {l.trackerTitle}
                   </h2>
                   {weeklyActivity.length > 0 ? (
@@ -394,16 +405,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   )}
                 </div>
 
-                {/* Novos capítulos (antes: templates/atalhos) */}
+                {/* Novos capítulos */}
                 <div>
-                  <h2 className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-4 flex items-center gap-2">
-                    <BellIcon className="w-5 h-5" />
+                  <h2 className="text-[11px] font-medium uppercase tracking-widest text-muted-foreground mb-4 flex items-center gap-2">
+                    <BellIcon className="w-[18px] h-[18px]" />
                     {l.newChaptersTitle}
-                    {unreadMangas.length > 0 && (
-                      <span className="ml-auto text-xs font-mono font-normal normal-case tracking-normal bg-destructive/10 text-destructive px-2 py-0.5 rounded-full">
-                        {l.unreadCount(unreadMangas.reduce((acc, m) => acc + m.unreadCount, 0))}
-                      </span>
-                    )}
                   </h2>
 
                   {unreadMangas.length === 0 ? (
@@ -411,53 +417,35 @@ export const Dashboard: React.FC<DashboardProps> = ({
                       {l.allCaughtUp}
                     </p>
                   ) : (
-                    <div className="space-y-2">
+                    <div className="grid gap-2">
                       {unreadMangas.map((manga) => (
                         <button
                           key={manga.id}
+                          className="w-full flex items-center gap-3 p-2.5 rounded-xl border border-border/40 bg-card hover:bg-secondary/40 transition-colors text-left group"
                           onClick={() => onMangaClick?.(manga)}
-                          className="w-full flex items-center gap-3 p-2 rounded-lg border-b border-border/30 hover:bg-secondary/30 transition-colors text-left group"
                         >
-                          {/* Miniatura da capa ou dot de cor */}
-                          {manga.coverUrl ? (
-                            <img
-                              src={manga.coverUrl}
-                              alt={manga.title}
-                              className="w-8 h-12 object-cover rounded object-top flex-shrink-0"
-                            />
-                          ) : (
-                            <div
-                              className={cn(
-                                "w-2 h-2 rounded-full flex-shrink-0",
-                                manga.accentColor
+                          <div className="w-8 h-12 rounded-md bg-secondary flex-shrink-0 overflow-hidden border border-border/50">
+                            {manga.coverUrl && <img src={manga.coverUrl} className="w-full h-full object-cover" />}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm font-medium text-foreground truncate">{manga.title}</span>
+                              {manga.malScore && (
+                                <span className="text-[10px] text-stone-500 flex-shrink-0">★ {manga.malScore.toFixed(1)}</span>
                               )}
-                            />
-                          )}
-
-                          <span className="flex-1 text-sm text-muted-foreground font-serif italic group-hover:text-foreground transition-colors truncate">
-                            {manga.title}
-                          </span>
-
-                          <div className="flex items-center gap-2 flex-shrink-0">
-                            {manga.malStatus === 'on_hold' && (
-                              <span className="text-[10px] px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 font-mono tracking-tighter">
-                                Pausa
-                              </span>
+                            </div>
+                            {manga.chapterNumbers ? (
+                              <p className="text-[10px] text-stone-500 mt-0.5 truncate">
+                                Cap. {manga.chapterNumbers}
+                              </p>
+                            ) : (
+                              <p className="text-[10px] text-stone-500 mt-0.5">
+                                {l.unreadCount(manga.unreadCount)}
+                              </p>
                             )}
-                            {manga.malStatus === 'dropped' && (
-                              <span className="text-[10px] px-1.5 py-0.5 rounded bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 font-mono tracking-tighter">
-                                Drop
-                              </span>
-                            )}
-                            {manga.malScore && (
-                              <span className="text-[10px] font-mono text-yellow-600 dark:text-yellow-400">
-                                ★ {manga.malScore.toFixed(1)}
-                              </span>
-                            )}
-                            {/* Badge com contagem de capítulos não lidos */}
-                            <span className="text-xs font-mono bg-destructive/10 text-destructive px-2 py-0.5 rounded-full">
-                              +{manga.unreadCount}
-                            </span>
+                          </div>
+                          <div className="flex-shrink-0 flex items-center justify-center px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-[10px] font-bold">
+                            +{manga.unreadCount}
                           </div>
                         </button>
                       ))}
@@ -542,7 +530,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   </span>
                 </div>
               </div>
-            </div>
           </div>
         </div>
       </div>

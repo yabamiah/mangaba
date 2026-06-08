@@ -37,6 +37,7 @@ export interface FollowedManga {
   unread_count: number;
   last_checked_at?: string;
   notify_enabled: boolean;
+  unread_chapters?: string | null;
 }
 
 export interface Chapter {

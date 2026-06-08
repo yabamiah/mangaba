@@ -62,7 +62,10 @@
     "chapter_continue": "Capítulo {{chapter}} · continuar leitura",
     "no_weekly_activity": "Nenhuma atividade registrada nos últimos 7 dias.",
     "unread_count": "{{count}} não lidos",
-    "all_caught_up": "Tudo em dia. Nenhum capítulo novo no momento."
+    "all_caught_up": "Tudo em dia. Nenhum capítulo novo no momento.",
+    "stat_mal_volumes": "Volumes lidos",
+    "stat_mal_plan_to_read": "Na fila",
+    "volumes": "volumes"
   },
   "library": {
     "title": "Minha biblioteca",
