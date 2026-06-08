@@ -193,24 +193,24 @@ var StatsCard = ({
   "div",
   {
     className: cn(
-      "relative p-4 rounded-xl border transition-all duration-300",
-      highlighted ? "bg-card border-primary/30 shadow-sm dark:bg-card dark:border-primary/40" : "bg-card border-border/60 shadow-sm hover:bg-secondary dark:bg-card dark:border-border/40 dark:hover:bg-secondary",
+      "relative p-5 rounded-2xl border transition-all duration-300 min-w-fit",
+      highlighted ? "bg-card border-primary/40 shadow-sm dark:bg-card dark:border-primary/50" : "bg-card border-border/40 shadow-sm hover:bg-secondary/50 dark:bg-card dark:border-border/20 dark:hover:bg-secondary/50",
       className
     ),
     children: [
-      /* @__PURE__ */ jsx6("h3", { className: "text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1 font-mono", children: title }),
-      /* @__PURE__ */ jsxs2("div", { className: "flex items-baseline gap-2", children: [
+      /* @__PURE__ */ jsx6("h3", { className: "text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-2 font-mono leading-relaxed", children: title }),
+      /* @__PURE__ */ jsxs2("div", { className: "flex items-baseline gap-1.5 whitespace-nowrap overflow-hidden", children: [
         /* @__PURE__ */ jsx6(
           "span",
           {
             className: cn(
-              "text-2xl font-serif font-bold",
-              highlighted ? "text-primary" : "text-foreground"
+              "text-2xl font-serif font-bold tracking-tight",
+              highlighted ? "text-primary" : "text-stone-800 dark:text-stone-200"
             ),
             children: value
           }
         ),
-        subtext && /* @__PURE__ */ jsx6("span", { className: "text-xs text-muted-foreground", children: subtext })
+        subtext && /* @__PURE__ */ jsx6("span", { className: "text-xs text-stone-500 dark:text-stone-400 font-medium truncate", children: subtext })
       ] })
     ]
   }
@@ -261,9 +261,12 @@ var HandDrawnTracker = ({
   /* @__PURE__ */ jsx8("div", { className: "space-y-1", children: habits.map((habit, habitIdx) => /* @__PURE__ */ jsxs3("div", { className: "group relative", children: [
     /* @__PURE__ */ jsx8("div", { className: "absolute bottom-1 left-0 right-0 border-b border-border/50 pointer-events-none" }),
     /* @__PURE__ */ jsxs3("div", { className: "grid grid-cols-[1fr_repeat(7,24px)] gap-2 items-center relative z-10 py-1", children: [
-      /* @__PURE__ */ jsxs3("div", { className: "flex items-center gap-2 truncate pr-2", children: [
-        habit.important && /* @__PURE__ */ jsx8("span", { className: "text-primary font-bold text-lg leading-none mt-1", children: "*" }),
-        /* @__PURE__ */ jsx8("span", { className: cn("truncate text-foreground/80 font-serif", habit.important && "font-semibold"), children: habit.name })
+      /* @__PURE__ */ jsxs3("div", { className: "flex flex-col truncate pr-2 justify-center", children: [
+        /* @__PURE__ */ jsxs3("div", { className: "flex items-center gap-1 truncate", children: [
+          habit.important && /* @__PURE__ */ jsx8("span", { className: "text-primary font-bold text-lg leading-none mt-1", children: "*" }),
+          /* @__PURE__ */ jsx8("span", { className: cn("truncate text-foreground/80 font-serif", habit.important && "font-semibold"), children: habit.name })
+        ] }),
+        habit.subtitle && /* @__PURE__ */ jsx8("span", { className: "text-[10px] text-muted-foreground/70 truncate ml-1", children: habit.subtitle })
       ] }),
       habit.history.map((completed, i) => /* @__PURE__ */ jsx8("div", { className: "h-6 flex items-center justify-center", children: completed ? /* @__PURE__ */ jsx8("svg", { viewBox: "0 0 24 24", className: "w-4 h-4 text-primary dark:text-primary mx-auto", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", children: /* @__PURE__ */ jsx8("path", { d: "M18 6L6 18M6 6l12 12", className: "opacity-80" }) }) : /* @__PURE__ */ jsx8("div", { className: "w-1 h-1 rounded-full bg-muted-foreground/30 group-hover:bg-muted-foreground/50 transition-colors" }) }, i))
     ] })
@@ -1067,7 +1070,7 @@ var AppTopbar = ({
 
 // src/components/Dashboard/Dashboard.tsx
 import { useMemo as useMemo4 } from "react";
-import { jsx as jsx15, jsxs as jsxs9 } from "react/jsx-runtime";
+import { Fragment as Fragment3, jsx as jsx15, jsxs as jsxs9 } from "react/jsx-runtime";
 var BookOpenIcon = ({ className }) => /* @__PURE__ */ jsxs9("svg", { className, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", children: [
   /* @__PURE__ */ jsx15("path", { d: "M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" }),
   /* @__PURE__ */ jsx15("path", { d: "M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" })
@@ -1119,6 +1122,9 @@ var Dashboard = ({
   unreadMangas = [],
   lastRead,
   syncState = { status: "idle" },
+  malUser,
+  suggestions,
+  malStats,
   labels = {},
   onSearch,
   onMangaClick,
@@ -1182,132 +1188,188 @@ var Dashboard = ({
         "transition-all duration-500 ease-out py-4 px-2 overflow-y-auto",
         className
       ),
-      children: /* @__PURE__ */ jsx15("div", { className: "animate-in fade-in slide-in-from-bottom-4 duration-700 w-full", children: /* @__PURE__ */ jsx15("div", { className: "relative shadow-paper-float rounded-[2rem] overflow-hidden bg-transparent border-none", children: /* @__PURE__ */ jsx15("div", { className: "bg-card graph-paper relative z-20 px-8 py-10 md:px-12 md:py-12 rounded-[2rem]", children: /* @__PURE__ */ jsxs9("div", { className: "grid grid-cols-1 lg:grid-cols-12 gap-12", children: [
-        /* @__PURE__ */ jsxs9("div", { className: "lg:col-span-8 flex flex-col gap-10", children: [
-          /* @__PURE__ */ jsxs9("div", { children: [
-            /* @__PURE__ */ jsxs9("div", { className: "flex justify-between items-end mb-6", children: [
-              /* @__PURE__ */ jsxs9("h2", { className: "text-sm font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2", children: [
-                /* @__PURE__ */ jsx15(BookOpenIcon, { className: "w-5 h-5" }),
-                l.overviewTitle
+      children: /* @__PURE__ */ jsx15("div", { className: "animate-in fade-in slide-in-from-bottom-4 duration-700 w-full", children: /* @__PURE__ */ jsxs9("div", { className: "relative shadow-paper-float rounded-[2rem] overflow-hidden bg-transparent border-none", children: [
+        lastRead?.coverUrl && /* @__PURE__ */ jsx15("div", { className: "absolute top-0 left-0 right-0 h-48 opacity-40 mix-blend-overlay dark:opacity-20 pointer-events-none", style: bannerStyle }),
+        malUser && /* @__PURE__ */ jsx15("div", { className: "absolute top-6 right-6 md:top-8 md:right-8 z-30", children: /* @__PURE__ */ jsxs9(
+          "a",
+          {
+            href: `https://myanimelist.net/profile/${malUser.name}`,
+            target: "_blank",
+            rel: "noreferrer",
+            className: "flex items-center gap-2 px-3 py-1.5 rounded-full backdrop-blur-md bg-stone-100/80 dark:bg-stone-900/80 border border-stone-200/50 dark:border-stone-800/50 text-stone-800 dark:text-stone-200 text-xs font-semibold hover:bg-stone-200/80 dark:hover:bg-stone-800/80 transition-all cursor-pointer shadow-sm",
+            children: [
+              /* @__PURE__ */ jsx15("img", { src: malUser.avatarUrl, alt: malUser.name, className: "w-5 h-5 rounded-full object-cover" }),
+              malUser.name
+            ]
+          }
+        ) }),
+        /* @__PURE__ */ jsx15("div", { className: "bg-card/90 backdrop-blur-xl graph-paper relative z-20 px-6 py-8 md:px-12 md:py-12 rounded-[2rem] mt-16 md:mt-20", children: /* @__PURE__ */ jsxs9("div", { className: "grid grid-cols-1 lg:grid-cols-12 gap-12", children: [
+          /* @__PURE__ */ jsxs9("div", { className: "lg:col-span-8 flex flex-col gap-10", children: [
+            /* @__PURE__ */ jsxs9("div", { children: [
+              /* @__PURE__ */ jsxs9("div", { className: "flex justify-between items-end mb-5 pb-2 border-b border-border/40", children: [
+                /* @__PURE__ */ jsxs9("h2", { className: "text-[11px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2", children: [
+                  /* @__PURE__ */ jsx15(BookOpenIcon, { className: "w-4 h-4" }),
+                  l.overviewTitle
+                ] }),
+                syncState.status === "error" && /* @__PURE__ */ jsx15("span", { className: "text-xs font-mono text-destructive bg-destructive/10 px-2 py-1 rounded", children: l.syncFailure })
               ] }),
-              syncState.status === "error" && /* @__PURE__ */ jsx15("span", { className: "text-xs font-mono text-destructive bg-destructive/10 px-2 py-1 rounded", children: l.syncFailure })
-            ] }),
-            /* @__PURE__ */ jsxs9("div", { className: "grid grid-cols-2 md:grid-cols-4 gap-4 mb-8", children: [
-              /* @__PURE__ */ jsx15(
-                StatsCard,
-                {
-                  title: l.statChapters,
-                  value: stats.chaptersTotal,
-                  subtext: l.chaptersUnit
-                }
-              ),
-              /* @__PURE__ */ jsx15(
-                StatsCard,
-                {
-                  title: l.statRead,
-                  value: stats.chaptersRead,
-                  highlighted: stats.chaptersRead > 0
-                }
-              ),
-              /* @__PURE__ */ jsx15(
-                StatsCard,
-                {
-                  title: l.statFollowing,
-                  value: stats.mangasFollowing,
-                  subtext: l.mangasUnit
-                }
-              ),
-              /* @__PURE__ */ jsx15(
-                StatsCard,
-                {
-                  title: l.statStreak,
-                  value: stats.streak,
-                  subtext: streakHighlighted ? `${l.statDays} \u{1F525}` : l.statDays,
-                  highlighted: streakHighlighted
-                }
-              )
-            ] })
-          ] }),
-          /* @__PURE__ */ jsxs9("div", { children: [
-            /* @__PURE__ */ jsxs9("h2", { className: "text-sm font-bold uppercase tracking-widest text-muted-foreground mb-4 flex items-center gap-2", children: [
-              /* @__PURE__ */ jsx15(FlameIcon, { className: "w-5 h-5" }),
-              l.trackerTitle
-            ] }),
-            weeklyActivity.length > 0 ? /* @__PURE__ */ jsx15(HandDrawnTracker, { habits: weeklyActivity }) : /* @__PURE__ */ jsx15("p", { className: "text-sm text-muted-foreground font-serif italic py-4", children: l.noWeeklyActivity })
-          ] }),
-          /* @__PURE__ */ jsxs9("div", { children: [
-            /* @__PURE__ */ jsxs9("h2", { className: "text-sm font-bold uppercase tracking-widest text-muted-foreground mb-4 flex items-center gap-2", children: [
-              /* @__PURE__ */ jsx15(BellIcon, { className: "w-5 h-5" }),
-              l.newChaptersTitle,
-              unreadMangas.length > 0 && /* @__PURE__ */ jsx15("span", { className: "ml-auto text-xs font-mono font-normal normal-case tracking-normal bg-destructive/10 text-destructive px-2 py-0.5 rounded-full", children: l.unreadCount(unreadMangas.reduce((acc, m) => acc + m.unreadCount, 0)) })
-            ] }),
-            unreadMangas.length === 0 ? /* @__PURE__ */ jsx15("p", { className: "text-sm text-muted-foreground font-serif italic py-2", children: l.allCaughtUp }) : /* @__PURE__ */ jsx15("div", { className: "space-y-2", children: unreadMangas.map((manga) => /* @__PURE__ */ jsxs9(
-              "button",
-              {
-                onClick: () => onMangaClick?.(manga),
-                className: "w-full flex items-center gap-3 p-2 rounded-lg border-b border-border/30 hover:bg-secondary/30 transition-colors text-left group",
-                children: [
-                  manga.coverUrl ? /* @__PURE__ */ jsx15(
-                    "img",
+              /* @__PURE__ */ jsxs9("div", { className: cn("grid gap-6 mb-10", malStats ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6" : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"), children: [
+                /* @__PURE__ */ jsx15(
+                  StatsCard,
+                  {
+                    title: l.statChapters,
+                    value: stats.chaptersTotal,
+                    subtext: l.chaptersUnit
+                  }
+                ),
+                /* @__PURE__ */ jsx15(
+                  StatsCard,
+                  {
+                    title: l.statRead,
+                    value: stats.chaptersRead,
+                    highlighted: stats.chaptersRead > 0
+                  }
+                ),
+                /* @__PURE__ */ jsx15(
+                  StatsCard,
+                  {
+                    title: l.statFollowing,
+                    value: stats.mangasFollowing,
+                    subtext: l.mangasUnit
+                  }
+                ),
+                /* @__PURE__ */ jsx15(
+                  StatsCard,
+                  {
+                    title: l.statStreak,
+                    value: stats.streak,
+                    subtext: streakHighlighted ? `${l.statDays} \u{1F525}` : l.statDays,
+                    highlighted: streakHighlighted
+                  }
+                ),
+                malStats && /* @__PURE__ */ jsxs9(Fragment3, { children: [
+                  /* @__PURE__ */ jsx15(
+                    StatsCard,
                     {
-                      src: manga.coverUrl,
-                      alt: manga.title,
-                      className: "w-8 h-12 object-cover rounded object-top flex-shrink-0"
-                    }
-                  ) : /* @__PURE__ */ jsx15(
-                    "div",
-                    {
-                      className: cn(
-                        "w-2 h-2 rounded-full flex-shrink-0",
-                        manga.accentColor
-                      )
+                      title: "Volumes MAL",
+                      value: malStats.volumesRead,
+                      subtext: "lidos"
                     }
                   ),
-                  /* @__PURE__ */ jsx15("span", { className: "flex-1 text-sm text-muted-foreground font-serif italic group-hover:text-foreground transition-colors truncate", children: manga.title }),
-                  /* @__PURE__ */ jsxs9("span", { className: "flex-shrink-0 text-xs font-mono bg-destructive/10 text-destructive px-2 py-0.5 rounded-full", children: [
-                    "+",
-                    manga.unreadCount
-                  ] })
-                ]
-              },
-              manga.id
-            )) })
-          ] })
-        ] }),
-        /* @__PURE__ */ jsxs9("div", { className: "lg:col-span-4 relative", children: [
-          /* @__PURE__ */ jsx15("div", { className: "hidden lg:block absolute left-[-24px] top-0 bottom-0 w-px border-l border-dashed border-border" }),
-          /* @__PURE__ */ jsxs9("div", { className: "bg-secondary/30 dark:bg-secondary/20 p-6 rounded-2xl border border-border/50", children: [
-            /* @__PURE__ */ jsxs9("div", { className: "flex items-center gap-2 mb-6 text-primary", children: [
-              /* @__PURE__ */ jsx15(CalendarIcon, { className: "w-5 h-5" }),
-              /* @__PURE__ */ jsx15("span", { className: "text-xs font-bold uppercase tracking-widest", children: l.calendarTitle })
+                  /* @__PURE__ */ jsx15(
+                    StatsCard,
+                    {
+                      title: "Fila MAL",
+                      value: malStats.planToRead,
+                      subtext: "mang\xE1s"
+                    }
+                  )
+                ] })
+              ] })
             ] }),
-            /* @__PURE__ */ jsx15(MiniCalendar, { days: calendarDays, onDayClick: (day) => day.date && onDateClick?.(day.date) })
+            /* @__PURE__ */ jsxs9("div", { children: [
+              /* @__PURE__ */ jsxs9("h2", { className: "text-sm font-bold uppercase tracking-widest text-muted-foreground mb-4 flex items-center gap-2", children: [
+                /* @__PURE__ */ jsx15(FlameIcon, { className: "w-5 h-5" }),
+                l.trackerTitle
+              ] }),
+              weeklyActivity.length > 0 ? /* @__PURE__ */ jsx15(HandDrawnTracker, { habits: weeklyActivity }) : /* @__PURE__ */ jsx15("p", { className: "text-sm text-muted-foreground font-serif italic py-4", children: l.noWeeklyActivity })
+            ] }),
+            /* @__PURE__ */ jsxs9("div", { children: [
+              /* @__PURE__ */ jsxs9("h2", { className: "text-sm font-bold uppercase tracking-widest text-muted-foreground mb-4 flex items-center gap-2", children: [
+                /* @__PURE__ */ jsx15(BellIcon, { className: "w-5 h-5" }),
+                l.newChaptersTitle,
+                unreadMangas.length > 0 && /* @__PURE__ */ jsx15("span", { className: "ml-auto text-xs font-mono font-normal normal-case tracking-normal bg-destructive/10 text-destructive px-2 py-0.5 rounded-full", children: l.unreadCount(unreadMangas.reduce((acc, m) => acc + m.unreadCount, 0)) })
+              ] }),
+              unreadMangas.length === 0 ? /* @__PURE__ */ jsx15("p", { className: "text-sm text-muted-foreground font-serif italic py-2", children: l.allCaughtUp }) : /* @__PURE__ */ jsx15("div", { className: "space-y-2", children: unreadMangas.map((manga) => /* @__PURE__ */ jsxs9(
+                "button",
+                {
+                  onClick: () => onMangaClick?.(manga),
+                  className: "w-full flex items-center gap-3 p-2 rounded-lg border-b border-border/30 hover:bg-secondary/30 transition-colors text-left group",
+                  children: [
+                    manga.coverUrl ? /* @__PURE__ */ jsx15(
+                      "img",
+                      {
+                        src: manga.coverUrl,
+                        alt: manga.title,
+                        className: "w-8 h-12 object-cover rounded object-top flex-shrink-0"
+                      }
+                    ) : /* @__PURE__ */ jsx15(
+                      "div",
+                      {
+                        className: cn(
+                          "w-2 h-2 rounded-full flex-shrink-0",
+                          manga.accentColor
+                        )
+                      }
+                    ),
+                    /* @__PURE__ */ jsx15("span", { className: "flex-1 text-sm text-muted-foreground font-serif italic group-hover:text-foreground transition-colors truncate", children: manga.title }),
+                    /* @__PURE__ */ jsxs9("div", { className: "flex items-center gap-2 flex-shrink-0", children: [
+                      manga.malStatus === "on_hold" && /* @__PURE__ */ jsx15("span", { className: "text-[10px] px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 font-mono tracking-tighter", children: "Pausa" }),
+                      manga.malStatus === "dropped" && /* @__PURE__ */ jsx15("span", { className: "text-[10px] px-1.5 py-0.5 rounded bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 font-mono tracking-tighter", children: "Drop" }),
+                      manga.malScore && /* @__PURE__ */ jsxs9("span", { className: "text-[10px] font-mono text-yellow-600 dark:text-yellow-400", children: [
+                        "\u2605 ",
+                        manga.malScore.toFixed(1)
+                      ] }),
+                      /* @__PURE__ */ jsxs9("span", { className: "text-xs font-mono bg-destructive/10 text-destructive px-2 py-0.5 rounded-full", children: [
+                        "+",
+                        manga.unreadCount
+                      ] })
+                    ] })
+                  ]
+                },
+                manga.id
+              )) })
+            ] }),
+            suggestions && suggestions.length > 0 && /* @__PURE__ */ jsxs9("div", { children: [
+              /* @__PURE__ */ jsx15("h2", { className: "text-sm font-bold uppercase tracking-widest text-muted-foreground mb-4", children: "Para ler a seguir (MyAnimeList)" }),
+              /* @__PURE__ */ jsx15("div", { className: "flex gap-3 overflow-x-auto pb-4 snap-x", children: suggestions.map((s) => /* @__PURE__ */ jsxs9("div", { onClick: () => onSearch?.(s.title), className: "flex-shrink-0 w-32 snap-start group cursor-pointer transition-transform hover:scale-105", children: [
+                /* @__PURE__ */ jsxs9("div", { className: "w-32 h-44 rounded-xl overflow-hidden shadow-sm border border-border/50 relative bg-secondary/20", children: [
+                  s.coverUrl ? /* @__PURE__ */ jsx15("img", { src: s.coverUrl, className: "w-full h-full object-cover" }) : /* @__PURE__ */ jsx15("div", { className: "w-full h-full bg-secondary/50 flex items-center justify-center text-muted-foreground", children: /* @__PURE__ */ jsx15(BookOpenIcon, { className: "w-6 h-6 opacity-30" }) }),
+                  s.score && /* @__PURE__ */ jsxs9("div", { className: "absolute top-1 right-1 backdrop-blur-md bg-black/50 text-yellow-400 text-[10px] font-mono px-1.5 py-0.5 rounded-full shadow", children: [
+                    "\u2605 ",
+                    s.score.toFixed(1)
+                  ] })
+                ] }),
+                /* @__PURE__ */ jsx15("p", { className: "text-xs font-semibold mt-2 truncate group-hover:text-primary transition-colors text-foreground", children: s.title }),
+                s.genres && s.genres.length > 0 && /* @__PURE__ */ jsx15("p", { className: "text-[10px] text-muted-foreground truncate", children: s.genres.join(", ") })
+              ] }, s.id)) })
+            ] })
           ] }),
-          /* @__PURE__ */ jsxs9(
-            "button",
-            {
-              onClick: onSearch,
-              className: "w-full mt-6 py-3 rounded-xl bg-primary text-primary-foreground text-sm font-medium shadow-lg hover:opacity-90 hover:shadow-xl transition-all active:scale-95 flex items-center justify-center gap-2",
-              children: [
-                /* @__PURE__ */ jsx15("span", { children: l.btnSearch }),
-                /* @__PURE__ */ jsx15("div", { className: "w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-[10px]", children: "+" })
-              ]
-            }
-          ),
-          /* @__PURE__ */ jsxs9("div", { className: "mt-4 flex items-center justify-center gap-1.5", children: [
-            /* @__PURE__ */ jsx15(
-              CheckCircleIcon,
+          /* @__PURE__ */ jsxs9("div", { className: "lg:col-span-4 relative", children: [
+            /* @__PURE__ */ jsx15("div", { className: "hidden lg:block absolute left-[-24px] top-0 bottom-0 w-px border-l border-dashed border-border" }),
+            /* @__PURE__ */ jsxs9("div", { className: "bg-secondary/30 dark:bg-secondary/20 p-6 rounded-2xl border border-border/50", children: [
+              /* @__PURE__ */ jsxs9("div", { className: "flex items-center gap-2 mb-6 text-primary", children: [
+                /* @__PURE__ */ jsx15(CalendarIcon, { className: "w-5 h-5" }),
+                /* @__PURE__ */ jsx15("span", { className: "text-xs font-bold uppercase tracking-widest", children: l.calendarTitle })
+              ] }),
+              /* @__PURE__ */ jsx15(MiniCalendar, { days: calendarDays, onDayClick: (day) => day.date && onDateClick?.(day.date) })
+            ] }),
+            /* @__PURE__ */ jsxs9(
+              "button",
               {
-                className: cn(
-                  "w-3.5 h-3.5",
-                  syncState.status === "error" ? "text-destructive" : "text-muted-foreground"
-                )
+                onClick: () => onSearch?.(),
+                className: "w-full mt-6 py-3 rounded-xl bg-primary text-primary-foreground text-sm font-medium shadow-lg hover:opacity-90 hover:shadow-xl transition-all active:scale-95 flex items-center justify-center gap-2",
+                children: [
+                  /* @__PURE__ */ jsx15("span", { children: l.btnSearch }),
+                  /* @__PURE__ */ jsx15("div", { className: "w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-[10px]", children: "+" })
+                ]
               }
             ),
-            /* @__PURE__ */ jsx15("span", { className: "text-xs text-muted-foreground font-mono", children: syncLabel })
+            /* @__PURE__ */ jsxs9("div", { className: "mt-4 flex items-center justify-center gap-1.5", children: [
+              /* @__PURE__ */ jsx15(
+                CheckCircleIcon,
+                {
+                  className: cn(
+                    "w-3.5 h-3.5",
+                    syncState.status === "error" ? "text-destructive" : "text-muted-foreground"
+                  )
+                }
+              ),
+              /* @__PURE__ */ jsx15("span", { className: "text-xs text-muted-foreground font-mono", children: syncLabel })
+            ] })
           ] })
-        ] })
-      ] }) }) }) })
+        ] }) })
+      ] }) })
     }
   );
 };

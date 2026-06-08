@@ -29,5 +29,5 @@ jobs:
           override: true
       - name: Run Rust checks
         run: |
-          cargo fmt --all -- --check
-          cargo clippy --all-targets --all-features -- -D warnings
+          cargo fmt --manifest-path src-tauri/Cargo.toml --all -- --check
+          cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets --all-features -- -D warnings

@@ -14,6 +14,7 @@ import { useToast } from "../components/Toast";
 
 interface SearchPageProps {
   onOpenManga: (mangaId: string) => void;
+  initialQuery?: string;
 }
 
 const defaultFilters: MangaFilters = {
@@ -22,8 +23,8 @@ const defaultFilters: MangaFilters = {
   content_ratings: ["safe", "suggestive"],
 };
 
-export function SearchPage({ onOpenManga }: SearchPageProps) {
-  const [query, setQuery] = useState("");
+export function SearchPage({ onOpenManga, initialQuery }: SearchPageProps) {
+  const [query, setQuery] = useState(initialQuery || "");
   const [filters, setFilters] = useState(defaultFilters);
   const [results, setResults] = useState<MangaResult[]>([]);
   const [loading, setLoading] = useState(false);
@@ -36,6 +37,12 @@ export function SearchPage({ onOpenManga }: SearchPageProps) {
   useEffect(() => {
     void api.getSettings().then((settings) => setPreferredLanguage(settings.default_language)).catch(() => {});
   }, []);
+
+  useEffect(() => {
+    if (initialQuery) {
+      void runSearch(initialQuery);
+    }
+  }, [initialQuery]);
 
   const originalLanguageOptions = [
     { value: "", label: t("search.language.all") },
@@ -65,17 +72,18 @@ export function SearchPage({ onOpenManga }: SearchPageProps) {
     { value: "cancelled", label: t("search.status.cancelled") },
   ] satisfies Array<{ value: NonNullable<MangaFilters["status"]>; label: string }>;
 
-  async function runSearch() {
+  async function runSearch(overrideQuery?: string) {
+    const activeQuery = typeof overrideQuery === "string" ? overrideQuery : query;
     setLoading(true);
     setError(null);
     setHasSearched(true);
     try {
-      const directId = extractMangaDexId(query);
+      const directId = extractMangaDexId(activeQuery);
       if (directId) {
-        const manga = query.includes("mangadex.org") ? await api.getMangaByUrl(query) : await api.getManga(directId);
+        const manga = activeQuery.includes("mangadex.org") ? await api.getMangaByUrl(activeQuery) : await api.getManga(directId);
         setResults([manga]);
       } else {
-        setResults(await api.searchManga(query, { ...filters, available_translated_language: preferredLanguage }, 0, 20));
+        setResults(await api.searchManga(activeQuery, { ...filters, available_translated_language: preferredLanguage }, 0, 20));
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
@@ -109,7 +117,7 @@ export function SearchPage({ onOpenManga }: SearchPageProps) {
             value={query}
           />
         </div>
-        <Button disabled={loading} onClick={runSearch} size="sm">
+        <Button disabled={loading} onClick={() => runSearch()} size="sm">
           {extractMangaDexId(query) ? <Link2 className="h-4 w-4" /> : <SearchIcon className="h-4 w-4" />}
           {loading ? t("search.searching") : t("search.search")}
         </Button>
@@ -122,7 +130,7 @@ export function SearchPage({ onOpenManga }: SearchPageProps) {
           onChange={(event) => {
             const lang = event.target.value;
             setPreferredLanguage(lang);
-            void api.updateSettings({ default_language: lang as any });
+            void api.updateSettings({ default_language: lang });
           }}
           value={preferredLanguage}
         >

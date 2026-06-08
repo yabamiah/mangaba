@@ -97,15 +97,15 @@ export function App() {
   return (
     <AppShell mangaTitle={mangaTitle} onNavigate={navigate} route={route}>
       <div className="soft-enter pb-24 md:pb-0" key={pageKey}>
-        {route.page === "search" && <SearchPage onOpenManga={(id) => setRoute({ page: "manga", mangaId: id })} />}
+        {route.page === "search" && <SearchPage initialQuery={route.searchQuery} onOpenManga={openManga} />}
         {route.page === "home" && (
           <DashboardPage
-            onOpenManga={(id) => setRoute({ page: "manga", mangaId: id })}
-            onSearch={() => setRoute({ page: "search" })}
+            onOpenManga={openManga}
+            onSearch={(query) => setRoute({ page: "search", searchQuery: query })}
             onOpenHistory={(date) => setRoute({ page: "history", historyDate: date })}
           />
         )}
-        {route.page === "library" && <LibraryPage onOpenManga={(id) => setRoute({ page: "manga", mangaId: id })} onSearch={() => setRoute({ page: "search" })} />}
+        {route.page === "library" && <LibraryPage onOpenManga={openManga} onSearch={() => setRoute({ page: "search" })} />}
         {route.page === "manga" && route.mangaId && (
           <MangaPage
             mangaId={route.mangaId}

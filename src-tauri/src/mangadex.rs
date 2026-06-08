@@ -286,6 +286,9 @@ fn parse_manga(item: &Value) -> Option<Manga> {
         followed: false,
         created_at,
         updated_at,
+        mal_id: None,
+        mal_score: None,
+        mal_status: None,
     })
 }
 

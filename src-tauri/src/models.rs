@@ -40,6 +40,9 @@ pub struct Manga {
     pub followed: bool,
     pub created_at: String,
     pub updated_at: String,
+    pub mal_id: Option<i64>,
+    pub mal_score: Option<f64>,
+    pub mal_status: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, TS)]
@@ -89,6 +92,11 @@ pub struct AppSettings {
     pub theme: String,
     pub reader_mode: String,
     pub api_token: Option<String>,
+    pub mal_client_id: Option<String>,
+    pub mal_sync_on_read: bool,
+    pub mal_sync_on_complete: bool,
+    pub mal_ask_before_sync: bool,
+    pub mal_sync_score: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, TS)]
@@ -97,4 +105,90 @@ pub struct SyncStatus {
     pub is_syncing: bool,
     pub last_sync: Option<String>,
     pub errors: Vec<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[ts(export, export_to = "../../src/lib/bindings/")]
+pub struct MalAuthStatus {
+    pub client_id: Option<String>,
+    pub connected: bool,
+    pub expires_at: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[ts(export, export_to = "../../src/lib/bindings/")]
+pub struct MalOAuthResult {
+    pub connected: bool,
+    pub expires_at: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[ts(export, export_to = "../../src/lib/bindings/")]
+pub struct MalUser {
+    pub name: String,
+    pub picture: String,
+    pub joined_at: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[ts(export, export_to = "../../src/lib/bindings/")]
+pub struct MalListStatus {
+    pub status: String,
+    pub score: i32,
+    pub num_volumes_read: i32,
+    pub num_chapters_read: i32,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[ts(export, export_to = "../../src/lib/bindings/")]
+pub struct MalPicture {
+    pub medium: String,
+    pub large: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[ts(export, export_to = "../../src/lib/bindings/")]
+pub struct MalNode {
+    pub id: i64,
+    pub title: String,
+    pub main_picture: Option<MalPicture>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[ts(export, export_to = "../../src/lib/bindings/")]
+pub struct MalListItem {
+    pub node: MalNode,
+    pub list_status: MalListStatus,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct MalListResponse {
+    pub data: Vec<MalListItem>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[ts(export, export_to = "../../src/lib/bindings/")]
+pub struct MalGenre {
+    pub id: i32,
+    pub name: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[ts(export, export_to = "../../src/lib/bindings/")]
+pub struct MalRankingManga {
+    pub id: i64,
+    pub title: String,
+    pub main_picture: Option<MalPicture>,
+    pub mean: Option<f64>,
+    pub genres: Option<Vec<MalGenre>>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct MalRankingItem {
+    pub node: MalRankingManga,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct MalRankingResponse {
+    pub data: Vec<MalRankingItem>,
 }

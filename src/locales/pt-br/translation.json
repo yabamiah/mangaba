@@ -223,6 +223,22 @@
     "save_success": "Configurações salvas",
     "save_error": "Erro ao salvar configurações",
     "cache_success": "Cache antigo removido",
-    "cache_error": "Erro ao limpar cache"
+    "cache_error": "Erro ao limpar cache",
+    "mal_title": "MyAnimeList",
+    "mal_description": "Conecte sua conta para futuras sincronizações de lista e progresso.",
+    "mal_connected": "Conectado ao MyAnimeList",
+    "mal_disconnected": "Não conectado",
+    "mal_expires_at": "Token válido até {{date}}",
+    "mal_no_token": "Nenhum token salvo ainda.",
+    "mal_client_id": "Client ID do MyAnimeList",
+    "mal_client_id_placeholder": "Cole seu MAL_CLIENT_ID...",
+    "mal_client_id_required": "Informe o Client ID do MyAnimeList antes de conectar.",
+    "mal_connect": "Conectar conta",
+    "mal_waiting": "Aguardando autorização...",
+    "mal_refresh": "Renovar token",
+    "mal_disconnect": "Desconectar",
+    "mal_connect_success": "MyAnimeList conectado com sucesso",
+    "mal_refresh_success": "Token do MyAnimeList renovado",
+    "mal_disconnect_success": "MyAnimeList desconectado"
   }
 }

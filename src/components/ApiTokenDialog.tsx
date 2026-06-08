@@ -15,7 +15,7 @@ export function ApiTokenDialog({ onSaved }: { onSaved: () => void }) {
     if (!token.trim()) return;
     setSaving(true);
     try {
-      await api.updateSettings({ api_token: token.trim() } as any);
+      await api.updateSettings({ api_token: token.trim() });
       toast(t("common.saved"), "success");
       onSaved();
     } catch (err) {

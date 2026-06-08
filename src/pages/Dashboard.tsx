@@ -19,7 +19,7 @@ import type { Chapter, FollowedManga, Manga, SyncStatus } from "../lib/bindings"
 
 interface DashboardPageProps {
   onOpenManga: (mangaId: string) => void;
-  onSearch: () => void;
+  onSearch: (prefill?: string) => void;
   onOpenHistory: (date: string) => void;
 }
 
@@ -35,6 +35,9 @@ interface DashboardData {
   syncStatus?: SyncStatus;
   unreadMangas: UnreadManga[];
   weeklyActivity: Habit[];
+  malUser?: { name: string; avatarUrl: string };
+  suggestions?: Array<{ id: number | string; title: string; score?: number; coverUrl?: string; genres?: string[] }>;
+  malStats?: { volumesRead: number; planToRead: number };
 }
 
 const DAY_MS = 86_400_000;
@@ -134,10 +137,47 @@ function buildWeeklyActivity(items: ChapterWithManga[], today = new Date()): Hab
 }
 
 async function loadDashboardData(): Promise<DashboardData> {
-  const [followed, syncStatus] = await Promise.all([
+  const [followed, syncStatus, malAuth] = await Promise.all([
     api.listFollowedManga(),
     api.getSyncStatus().catch(() => undefined),
+    api.getMalAuthStatus().catch(() => ({ connected: false })),
   ]);
+
+  let malUser;
+  let suggestions;
+  let malStats;
+
+  if (malAuth?.connected) {
+    const [userRes, rankRes, listRes] = await Promise.all([
+      api.getMalUser().catch(() => undefined),
+      api.getMalRanking().catch(() => undefined),
+      api.getMalUserMangalist().catch(() => undefined)
+    ]);
+
+    if (userRes) {
+      malUser = {
+        name: userRes.name,
+        avatarUrl: userRes.picture,
+      };
+    }
+
+    if (rankRes) {
+      suggestions = rankRes.map(m => ({
+        id: m.id,
+        title: m.title,
+        score: m.mean ?? undefined,
+        coverUrl: m.main_picture?.large || m.main_picture?.medium,
+        genres: m.genres?.map(g => g.name)
+      }));
+    }
+
+    if (listRes) {
+      malStats = {
+        volumesRead: listRes.reduce((acc, curr) => acc + (curr.list_status.num_volumes_read || 0), 0),
+        planToRead: listRes.filter(curr => curr.list_status.status === 'plan_to_read').length,
+      };
+    }
+  }
 
   const chapterGroups = await Promise.all(
     followed.map(async (item) => {
@@ -178,6 +218,9 @@ async function loadDashboardData(): Promise<DashboardData> {
     syncStatus,
     unreadMangas: buildUnreadMangas(followed),
     weeklyActivity: buildWeeklyActivity(readChapters),
+    malUser,
+    suggestions,
+    malStats,
   };
 }
 
@@ -190,7 +233,9 @@ function buildUnreadMangas(followed: FollowedManga[]): UnreadManga[] {
       title: item.manga.title,
       unreadCount: item.unread_count,
       accentColor: FALLBACK_ACCENTS[index % FALLBACK_ACCENTS.length],
-      coverUrl: item.manga.cover_url,
+      coverUrl: item.manga.cover_url ?? undefined,
+      malScore: item.manga.mal_score ?? undefined,
+      malStatus: item.manga.mal_status ?? undefined,
     }));
 }
 
@@ -274,47 +319,54 @@ export function DashboardPage({ onOpenManga, onSearch, onOpenHistory }: Dashboar
   }
 
   return (
-    <Dashboard
-      calendarDays={data?.calendarDays}
-      lastRead={data?.lastRead}
-      onMangaClick={(manga) => onOpenManga(String(manga.id))}
-      onSearch={onSearch}
-      onDateClick={onOpenHistory}
-      onSync={syncLibrary}
-      labels={{
-        allCaughtUp: t("dashboard.all_caught_up"),
-        btnSearch: t("dashboard.search_button"),
-        calendarTitle: t("dashboard.calendar_title"),
-        chapterContinue: (chapter) => t("dashboard.chapter_continue", { chapter }),
-        chaptersUnit: t("dashboard.chapters"),
-        daysAgo: (count) => t("dashboard.days_ago", { count }),
-        fallbackQuote: {
-          text: t("dashboard.subtitle"),
-          author: t("common.app_name"),
-        },
-        hoursAgo: (count) => t("dashboard.hours_ago", { count }),
-        justNow: t("dashboard.just_now"),
-        mangasUnit: t("dashboard.mangas"),
-        minutesAgo: (count) => t("dashboard.minutes_ago", { count }),
-        neverSynced: t("dashboard.never_synced"),
-        newChaptersTitle: t("dashboard.new_chapters_title"),
-        noWeeklyActivity: t("dashboard.no_weekly_activity"),
-        overviewTitle: t("dashboard.overview_title"),
-        statChapters: t("dashboard.stat_chapters"),
-        statDays: t("dashboard.stat_days"),
-        statFollowing: t("dashboard.stat_following"),
-        statRead: t("dashboard.stat_read"),
-        statStreak: t("dashboard.stat_streak"),
-        syncError: t("dashboard.sync_error_short"),
-        syncFailure: t("dashboard.sync_failure"),
-        syncing: t("dashboard.syncing"),
-        trackerTitle: t("dashboard.tracker_title"),
-        unreadCount: (count) => t("dashboard.unread_count", { count }),
-      }}
-      stats={data?.stats}
-      syncState={syncState}
-      unreadMangas={data?.unreadMangas}
-      weeklyActivity={data?.weeklyActivity}
-    />
+    <section className="mangaba-screen">
+      <div className="mangaba-scroll-area !p-0 overflow-x-hidden">
+        <Dashboard
+          calendarDays={data?.calendarDays}
+          lastRead={data?.lastRead}
+          onMangaClick={(manga) => onOpenManga(String(manga.id))}
+          onSearch={onSearch}
+          onDateClick={onOpenHistory}
+          onSync={syncLibrary}
+          labels={{
+            allCaughtUp: t("dashboard.all_caught_up"),
+            btnSearch: t("dashboard.search_button"),
+            calendarTitle: t("dashboard.calendar_title"),
+            chapterContinue: (chapter) => t("dashboard.chapter_continue", { chapter }),
+            chaptersUnit: t("dashboard.chapters"),
+            daysAgo: (count) => t("dashboard.days_ago", { count }),
+            fallbackQuote: {
+              text: t("dashboard.subtitle"),
+              author: t("common.app_name"),
+            },
+            hoursAgo: (count) => t("dashboard.hours_ago", { count }),
+            justNow: t("dashboard.just_now"),
+            mangasUnit: t("dashboard.mangas"),
+            minutesAgo: (count) => t("dashboard.minutes_ago", { count }),
+            neverSynced: t("dashboard.never_synced"),
+            newChaptersTitle: t("dashboard.new_chapters_title"),
+            noWeeklyActivity: t("dashboard.no_weekly_activity"),
+            overviewTitle: t("dashboard.overview_title"),
+            statChapters: t("dashboard.stat_chapters"),
+            statDays: t("dashboard.stat_days"),
+            statFollowing: t("dashboard.stat_following"),
+            statRead: t("dashboard.stat_read"),
+            statStreak: t("dashboard.stat_streak"),
+            syncError: t("dashboard.sync_error_short"),
+            syncFailure: t("dashboard.sync_failure"),
+            syncing: t("dashboard.syncing"),
+            trackerTitle: t("dashboard.tracker_title"),
+            unreadCount: (count) => t("dashboard.unread_count", { count }),
+          }}
+          stats={data?.stats}
+          syncState={syncState}
+          unreadMangas={data?.unreadMangas}
+          weeklyActivity={data?.weeklyActivity}
+          malUser={data?.malUser}
+          suggestions={data?.suggestions}
+          malStats={data?.malStats}
+        />
+      </div>
+    </section>
   );
 }

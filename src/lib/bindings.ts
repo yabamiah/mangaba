@@ -21,6 +21,9 @@ export interface MangaResult {
   status: MangaStatus;
   original_language?: string;
   followed: boolean;
+  mal_id?: number | null;
+  mal_score?: number | null;
+  mal_status?: string | null;
 }
 
 export interface Manga extends MangaResult {
@@ -73,4 +76,58 @@ export interface AppSettings {
   theme: ThemeMode;
   reader_mode: ReaderMode;
   api_token?: string | null;
+  mal_client_id?: string | null;
+}
+
+export interface MalAuthStatus {
+  client_id?: string | null;
+  connected: boolean;
+  expires_at?: string | null;
+}
+
+export interface MalOAuthResult {
+  connected: boolean;
+  expires_at?: string | null;
+}
+
+export interface MalUser {
+  name: string;
+  picture: string;
+  joined_at?: string | null;
+}
+
+export interface MalListStatus {
+  status: string;
+  score: number;
+  num_volumes_read: number;
+  num_chapters_read: number;
+}
+
+export interface MalPicture {
+  medium: string;
+  large: string;
+}
+
+export interface MalNode {
+  id: number;
+  title: string;
+  main_picture?: MalPicture | null;
+}
+
+export interface MalListItem {
+  node: MalNode;
+  list_status: MalListStatus;
+}
+
+export interface MalGenre {
+  id: number;
+  name: string;
+}
+
+export interface MalRankingManga {
+  id: number;
+  title: string;
+  main_picture?: MalPicture | null;
+  mean?: number | null;
+  genres?: MalGenre[] | null;
 }

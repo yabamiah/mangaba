@@ -6,8 +6,13 @@ import type {
   Manga,
   MangaFilters,
   MangaResult,
+  MalAuthStatus,
+  MalOAuthResult,
   ReadingProgress,
   SyncStatus,
+  MalUser,
+  MalListItem,
+  MalRankingManga,
 } from "./bindings";
 
 const isTauri = "__TAURI_INTERNALS__" in window;
@@ -82,6 +87,30 @@ export const api = {
   },
   clearCache(olderThanDays?: number) {
     return invoke<void>("clear_cache", { olderThanDays });
+  },
+  getMalAuthStatus() {
+    return invoke<MalAuthStatus>("get_mal_auth_status");
+  },
+  connectMal(clientId?: string) {
+    return invoke<MalOAuthResult>("connect_mal", { clientId });
+  },
+  refreshMalToken() {
+    return invoke<MalOAuthResult>("refresh_mal_token");
+  },
+  disconnectMal() {
+    return invoke<void>("disconnect_mal");
+  },
+  getMalUser() {
+    return invoke<MalUser>("get_mal_user");
+  },
+  getMalUserMangalist() {
+    return invoke<MalListItem[]>("get_mal_user_mangalist");
+  },
+  getMalRanking() {
+    return invoke<MalRankingManga[]>("get_mal_ranking");
+  },
+  updateMalListStatus(mangaId: number, status: string, numChaptersRead: number, score?: number) {
+    return invoke<void>("update_mal_list_status", { mangaId, status, numChaptersRead, score });
   },
 };
 

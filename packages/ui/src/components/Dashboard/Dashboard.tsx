@@ -78,6 +78,12 @@ export interface UnreadManga {
   accentColor: string;
   /** URL da capa já cacheada localmente (opcional) */
   coverUrl?: string;
+  /** Nota global do mangá no MAL */
+  malScore?: number;
+  /** Nota atribuída pelo usuário */
+  myScore?: number;
+  /** Status do mangá na lista do MAL do usuário */
+  malStatus?: "reading" | "completed" | "on_hold" | "dropped" | "plan_to_read" | string;
 }
 
 /** Informações sobre o último mangá/capítulo lido */
@@ -135,9 +141,27 @@ export interface DashboardProps {
   lastRead?: LastRead;
   /** Estado atual da sincronização */
   syncState?: SyncState;
+  /** Informações do usuário do MAL (se conectado) */
+  malUser?: {
+    name: string;
+    avatarUrl: string;
+  };
+  /** Sugestões de mangás do ranking do MAL */
+  suggestions?: Array<{
+    id: number | string;
+    title: string;
+    score?: number;
+    coverUrl?: string;
+    genres?: string[];
+  }>;
+  /** Estatísticas de leitura extraídas do MAL */
+  malStats?: {
+    volumesRead: number;
+    planToRead: number;
+  };
   labels?: DashboardLabels;
-  /** Abre a tela de busca do MangaDex */
-  onSearch?: () => void;
+  /** Abre a tela de busca do MangaDex (opcional prefill) */
+  onSearch?: (prefill?: string) => void;
   /** Navega para a tela de detalhes/leitor do mangá */
   onMangaClick?: (manga: UnreadManga) => void;
   /** Dispara sincronização manual */
@@ -195,6 +219,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
   unreadMangas = [],
   lastRead,
   syncState = { status: "idle" },
+  malUser,
+  suggestions,
+  malStats,
   labels = {},
   onSearch,
   onMangaClick,
@@ -271,8 +298,27 @@ export const Dashboard: React.FC<DashboardProps> = ({
     >
       <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 w-full">
         <div className="relative shadow-paper-float rounded-[2rem] overflow-hidden bg-transparent border-none">
+          {/* Banner */}
+          {lastRead?.coverUrl && (
+            <div className="absolute top-0 left-0 right-0 h-48 opacity-40 mix-blend-overlay dark:opacity-20 pointer-events-none" style={bannerStyle} />
+          )}
+
+          {malUser && (
+            <div className="absolute top-6 right-6 md:top-8 md:right-8 z-30">
+              <a
+                href={`https://myanimelist.net/profile/${malUser.name}`}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-full backdrop-blur-md bg-stone-100/80 dark:bg-stone-900/80 border border-stone-200/50 dark:border-stone-800/50 text-stone-800 dark:text-stone-200 text-xs font-semibold hover:bg-stone-200/80 dark:hover:bg-stone-800/80 transition-all cursor-pointer shadow-sm"
+              >
+                <img src={malUser.avatarUrl} alt={malUser.name} className="w-5 h-5 rounded-full object-cover" />
+                {malUser.name}
+              </a>
+            </div>
+          )}
+
           {/* ── Conteúdo principal ── */}
-          <div className="bg-card graph-paper relative z-20 px-8 py-10 md:px-12 md:py-12 rounded-[2rem]">
+          <div className="bg-card/90 backdrop-blur-xl graph-paper relative z-20 px-6 py-8 md:px-12 md:py-12 rounded-[2rem] mt-16 md:mt-20">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
 
               {/* ── Coluna esquerda ── */}
@@ -280,9 +326,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
                 {/* Stats */}
                 <div>
-                  <div className="flex justify-between items-end mb-6">
-                    <h2 className="text-sm font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
-                      <BookOpenIcon className="w-5 h-5" />
+                  <div className="flex justify-between items-end mb-5 pb-2 border-b border-border/40">
+                    <h2 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                      <BookOpenIcon className="w-4 h-4" />
                       {l.overviewTitle}
                     </h2>
                     {/* Indicador de erro de sync */}
@@ -293,7 +339,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     )}
                   </div>
 
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                  <div className={cn("grid gap-6 mb-10", malStats ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6" : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4")}>
                     {/* 4 cards com dados de leitura */}
                     <StatsCard
                       title={l.statChapters}
@@ -310,20 +356,26 @@ export const Dashboard: React.FC<DashboardProps> = ({
                       value={stats.mangasFollowing}
                       subtext={l.mangasUnit}
                     />
-                    {/*
-                     * Streak destacado visualmente se ≥ 7 dias.
-                     * O subtext muda para reforçar o marco.
-                     */}
                     <StatsCard
                       title={l.statStreak}
                       value={stats.streak}
-                      subtext={
-                        streakHighlighted
-                          ? `${l.statDays} 🔥`
-                          : l.statDays
-                      }
+                      subtext={streakHighlighted ? `${l.statDays} 🔥` : l.statDays}
                       highlighted={streakHighlighted}
                     />
+                    {malStats && (
+                      <>
+                        <StatsCard
+                          title="Volumes MAL"
+                          value={malStats.volumesRead}
+                          subtext="lidos"
+                        />
+                        <StatsCard
+                          title="Fila MAL"
+                          value={malStats.planToRead}
+                          subtext="mangás"
+                        />
+                      </>
+                    )}
                   </div>
                 </div>
 
@@ -386,15 +438,63 @@ export const Dashboard: React.FC<DashboardProps> = ({
                             {manga.title}
                           </span>
 
-                          {/* Badge com contagem de capítulos não lidos */}
-                          <span className="flex-shrink-0 text-xs font-mono bg-destructive/10 text-destructive px-2 py-0.5 rounded-full">
-                            +{manga.unreadCount}
-                          </span>
+                          <div className="flex items-center gap-2 flex-shrink-0">
+                            {manga.malStatus === 'on_hold' && (
+                              <span className="text-[10px] px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 font-mono tracking-tighter">
+                                Pausa
+                              </span>
+                            )}
+                            {manga.malStatus === 'dropped' && (
+                              <span className="text-[10px] px-1.5 py-0.5 rounded bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 font-mono tracking-tighter">
+                                Drop
+                              </span>
+                            )}
+                            {manga.malScore && (
+                              <span className="text-[10px] font-mono text-yellow-600 dark:text-yellow-400">
+                                ★ {manga.malScore.toFixed(1)}
+                              </span>
+                            )}
+                            {/* Badge com contagem de capítulos não lidos */}
+                            <span className="text-xs font-mono bg-destructive/10 text-destructive px-2 py-0.5 rounded-full">
+                              +{manga.unreadCount}
+                            </span>
+                          </div>
                         </button>
                       ))}
                     </div>
                   )}
                 </div>
+
+                {/* Sugestões do MAL */}
+                {suggestions && suggestions.length > 0 && (
+                  <div>
+                    <h2 className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-4">
+                      Para ler a seguir (MyAnimeList)
+                    </h2>
+                    <div className="flex gap-3 overflow-x-auto pb-4 snap-x">
+                      {suggestions.map((s) => (
+                        <div key={s.id} onClick={() => onSearch?.(s.title)} className="flex-shrink-0 w-32 snap-start group cursor-pointer transition-transform hover:scale-105">
+                          <div className="w-32 h-44 rounded-xl overflow-hidden shadow-sm border border-border/50 relative bg-secondary/20">
+                            {s.coverUrl ? (
+                              <img src={s.coverUrl} className="w-full h-full object-cover" />
+                            ) : (
+                              <div className="w-full h-full bg-secondary/50 flex items-center justify-center text-muted-foreground"><BookOpenIcon className="w-6 h-6 opacity-30" /></div>
+                            )}
+                            {s.score && (
+                              <div className="absolute top-1 right-1 backdrop-blur-md bg-black/50 text-yellow-400 text-[10px] font-mono px-1.5 py-0.5 rounded-full shadow">
+                                ★ {s.score.toFixed(1)}
+                              </div>
+                            )}
+                          </div>
+                          <p className="text-xs font-semibold mt-2 truncate group-hover:text-primary transition-colors text-foreground">{s.title}</p>
+                          {s.genres && s.genres.length > 0 && (
+                            <p className="text-[10px] text-muted-foreground truncate">{s.genres.join(', ')}</p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* ── Coluna direita ── */}
@@ -418,7 +518,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
                 {/* CTA — abre a busca do MangaDex */}
                 <button
-                  onClick={onSearch}
+                  onClick={() => onSearch?.()}
                   className="w-full mt-6 py-3 rounded-xl bg-primary text-primary-foreground text-sm font-medium shadow-lg hover:opacity-90 hover:shadow-xl transition-all active:scale-95 flex items-center justify-center gap-2"
                 >
                   <span>{l.btnSearch}</span>

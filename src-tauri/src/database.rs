@@ -26,11 +26,12 @@ impl Database {
     pub fn upsert_manga(&self, manga: &Manga) -> Result<()> {
         let conn = self.conn.lock().unwrap();
         conn.execute(
-            "INSERT INTO manga (id, title, description, author, cover_art_id, cover_filename, cover_url, status, original_language, created_at, updated_at)
-             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)
+            "INSERT INTO manga (id, title, description, author, cover_art_id, cover_filename, cover_url, status, original_language, created_at, updated_at, mal_id, mal_score, mal_status)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14)
              ON CONFLICT(id) DO UPDATE SET title=excluded.title, description=excluded.description, author=excluded.author,
              cover_art_id=excluded.cover_art_id, cover_filename=excluded.cover_filename, cover_url=excluded.cover_url,
-             status=excluded.status, original_language=excluded.original_language, updated_at=excluded.updated_at",
+             status=excluded.status, original_language=excluded.original_language, updated_at=excluded.updated_at,
+             mal_id=excluded.mal_id, mal_score=excluded.mal_score, mal_status=excluded.mal_status",
             params![
                 manga.id,
                 manga.title,
@@ -42,7 +43,10 @@ impl Database {
                 manga.status,
                 manga.original_language,
                 manga.created_at,
-                manga.updated_at
+                manga.updated_at,
+                manga.mal_id,
+                manga.mal_score,
+                manga.mal_status
             ],
         )?;
         Ok(())
@@ -53,7 +57,7 @@ impl Database {
         conn.query_row(
             "SELECT m.id, m.title, m.description, m.author, m.cover_art_id, m.cover_filename, m.cover_url,
              m.status, m.original_language, m.created_at, m.updated_at,
-             EXISTS(SELECT 1 FROM followed_manga f WHERE f.manga_id = m.id)
+             m.mal_id, m.mal_score, m.mal_status, EXISTS(SELECT 1 FROM followed_manga f WHERE f.manga_id = m.id)
              FROM manga m WHERE m.id = ?1",
             [manga_id],
             manga_from_row,
@@ -94,17 +98,17 @@ impl Database {
         conn.query_row(
             "SELECT m.id, m.title, m.description, m.author, m.cover_art_id, m.cover_filename, m.cover_url,
              m.status, m.original_language, m.created_at, m.updated_at,
-             1, f.preferred_language, f.last_checked_at, f.notify_enabled,
+             m.mal_id, m.mal_score, m.mal_status, 1, f.preferred_language, f.last_checked_at, f.notify_enabled,
              (SELECT COUNT(*) FROM chapters c WHERE c.manga_id = m.id AND c.read = 0)
              FROM followed_manga f JOIN manga m ON m.id = f.manga_id WHERE m.id = ?1",
             [manga_id],
             |row| {
                 Ok(FollowedManga {
                     manga: manga_from_row(row)?,
-                    preferred_language: row.get(12)?,
-                    last_checked_at: row.get(13)?,
-                    notify_enabled: row.get::<_, i64>(14)? == 1,
-                    unread_count: row.get(15)?,
+                    preferred_language: row.get(15)?,
+                    last_checked_at: row.get(16)?,
+                    notify_enabled: row.get::<_, i64>(17)? == 1,
+                    unread_count: row.get(18)?,
                 })
             },
         )
@@ -117,17 +121,17 @@ impl Database {
         let mut stmt = conn.prepare(
             "SELECT m.id, m.title, m.description, m.author, m.cover_art_id, m.cover_filename, m.cover_url,
              m.status, m.original_language, m.created_at, m.updated_at,
-             1, f.preferred_language, f.last_checked_at, f.notify_enabled,
+             m.mal_id, m.mal_score, m.mal_status, 1, f.preferred_language, f.last_checked_at, f.notify_enabled,
              (SELECT COUNT(*) FROM chapters c WHERE c.manga_id = m.id AND c.read = 0)
              FROM followed_manga f JOIN manga m ON m.id = f.manga_id ORDER BY m.title ASC",
         )?;
         let rows = stmt.query_map([], |row| {
             Ok(FollowedManga {
                 manga: manga_from_row(row)?,
-                preferred_language: row.get(12)?,
-                last_checked_at: row.get(13)?,
-                notify_enabled: row.get::<_, i64>(14)? == 1,
-                unread_count: row.get(15)?,
+                preferred_language: row.get(15)?,
+                last_checked_at: row.get(16)?,
+                notify_enabled: row.get::<_, i64>(17)? == 1,
+                unread_count: row.get(18)?,
             })
         })?;
         rows.collect::<rusqlite::Result<Vec<_>>>()
@@ -289,12 +293,36 @@ impl Database {
                 .get_setting("reader_mode")?
                 .unwrap_or_else(|| "scroll".to_string()),
             api_token: self.get_setting("api_token")?,
+            mal_client_id: self
+                .get_setting("mal_client_id")?
+                .or_else(|| std::env::var("MAL_CLIENT_ID").ok()),
+            mal_sync_on_read: self
+                .get_setting("mal_sync_on_read")?
+                .map(|v| v == "true")
+                .unwrap_or(true),
+            mal_sync_on_complete: self
+                .get_setting("mal_sync_on_complete")?
+                .map(|v| v == "true")
+                .unwrap_or(true),
+            mal_ask_before_sync: self
+                .get_setting("mal_ask_before_sync")?
+                .map(|v| v == "true")
+                .unwrap_or(false),
+            mal_sync_score: self
+                .get_setting("mal_sync_score")?
+                .map(|v| v == "true")
+                .unwrap_or(false),
         })
     }
 
     pub fn update_settings(&self, settings: serde_json::Value) -> Result<()> {
         if let Some(map) = settings.as_object() {
             for (key, value) in map {
+                if value.is_null() {
+                    self.remove_setting(key)?;
+                    continue;
+                }
+
                 let value = if value.is_string() {
                     value.as_str().unwrap_or_default().to_string()
                 } else {
@@ -317,13 +345,19 @@ impl Database {
         .context("failed to load setting")
     }
 
-    fn set_setting(&self, key: &str, value: &str) -> Result<()> {
+    pub fn set_setting(&self, key: &str, value: &str) -> Result<()> {
         let conn = self.conn.lock().unwrap();
         conn.execute(
             "INSERT INTO app_settings (key, value) VALUES (?1, ?2)
              ON CONFLICT(key) DO UPDATE SET value=excluded.value",
             params![key, value],
         )?;
+        Ok(())
+    }
+
+    pub fn remove_setting(&self, key: &str) -> Result<()> {
+        let conn = self.conn.lock().unwrap();
+        conn.execute("DELETE FROM app_settings WHERE key = ?1", [key])?;
         Ok(())
     }
 
@@ -335,6 +369,10 @@ impl Database {
             ("user_agent", "Mangaba/0.1.0 (+local desktop app)"),
             ("theme", "system"),
             ("reader_mode", "scroll"),
+            ("mal_sync_on_read", "true"),
+            ("mal_sync_on_complete", "true"),
+            ("mal_ask_before_sync", "false"),
+            ("mal_sync_score", "false"),
         ];
         for (key, value) in defaults {
             if self.get_setting(key)?.is_none() {
@@ -411,6 +449,13 @@ fn migrations() -> Migrations<'static> {
             ALTER TABLE manga ADD COLUMN cover_url TEXT;
             "#,
         ),
+        M::up(
+            r#"
+            ALTER TABLE manga ADD COLUMN mal_id INTEGER;
+            ALTER TABLE manga ADD COLUMN mal_score REAL;
+            ALTER TABLE manga ADD COLUMN mal_status TEXT;
+            "#,
+        ),
     ])
 }
 
@@ -427,7 +472,10 @@ fn manga_from_row(row: &rusqlite::Row<'_>) -> rusqlite::Result<Manga> {
         original_language: row.get(8)?,
         created_at: row.get(9)?,
         updated_at: row.get(10)?,
-        followed: row.get::<_, i64>(11)? == 1,
+        mal_id: row.get(11)?,
+        mal_score: row.get(12)?,
+        mal_status: row.get(13)?,
+        followed: row.get::<_, i64>(14)? == 1,
     })
 }
 

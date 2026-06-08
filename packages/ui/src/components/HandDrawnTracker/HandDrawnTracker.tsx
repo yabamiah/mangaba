@@ -4,6 +4,7 @@ import { cn } from '../../utils';
 
 export interface Habit {
   name: string;
+  subtitle?: string;
   important: boolean;
   history: boolean[];
 }
@@ -44,11 +45,18 @@ export const HandDrawnTracker: React.FC<HandDrawnTrackerProps> = ({
         <div key={habitIdx} className="group relative">
           <div className="absolute bottom-1 left-0 right-0 border-b border-border/50 pointer-events-none" />
           <div className="grid grid-cols-[1fr_repeat(7,24px)] gap-2 items-center relative z-10 py-1">
-            <div className="flex items-center gap-2 truncate pr-2">
-              {habit.important && <span className="text-primary font-bold text-lg leading-none mt-1">*</span>}
-              <span className={cn('truncate text-foreground/80 font-serif', habit.important && 'font-semibold')}>
-                {habit.name}
-              </span>
+            <div className="flex flex-col truncate pr-2 justify-center">
+              <div className="flex items-center gap-1 truncate">
+                {habit.important && <span className="text-primary font-bold text-lg leading-none mt-1">*</span>}
+                <span className={cn('truncate text-foreground/80 font-serif', habit.important && 'font-semibold')}>
+                  {habit.name}
+                </span>
+              </div>
+              {habit.subtitle && (
+                <span className="text-[10px] text-muted-foreground/70 truncate ml-1">
+                  {habit.subtitle}
+                </span>
+              )}
             </div>
             {habit.history.map((completed, i) => (
               <div key={i} className="h-6 flex items-center justify-center">

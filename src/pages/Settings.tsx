@@ -12,12 +12,12 @@ import {
   SelectionButton,
   ToggleButton,
 } from "@pequiplan/ui";
-import { Save, Trash2 } from "lucide-react";
+import { Link2, RefreshCw, Save, Trash2, Unplug } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useToast } from "../components/Toast";
 import { api } from "../lib/api";
-import type { AppSettings, ReaderMode, ThemeMode } from "../lib/bindings";
+import type { AppSettings, MalAuthStatus, ReaderMode, ThemeMode } from "../lib/bindings";
 
 const defaultSettings: AppSettings = {
   default_language: "pt-br",
@@ -26,6 +26,7 @@ const defaultSettings: AppSettings = {
   user_agent: "Mangaba/0.1.0 (+local desktop app)",
   theme: "system",
   reader_mode: "scroll",
+  mal_client_id: null,
 };
 
 const uiLanguageOptions = [
@@ -60,6 +61,9 @@ function applyTheme(theme: ThemeMode) {
 
 export function SettingsPage() {
   const [settings, setSettings] = useState<AppSettings>(defaultSettings);
+  const [malStatus, setMalStatus] = useState<MalAuthStatus | null>(null);
+  const [malBusy, setMalBusy] = useState(false);
+  const [malError, setMalError] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const { toast } = useToast();
   const { t, i18n } = useTranslation();
@@ -68,7 +72,13 @@ export function SettingsPage() {
     settings.content_ratings.includes("pornographic");
 
   useEffect(() => {
-    void api.getSettings().then(setSettings).catch(() => {});
+    void api.getSettings().then((nextSettings) => {
+      setSettings(nextSettings);
+      if (nextSettings.mal_client_id) {
+        setMalStatus((current) => current ? { ...current, client_id: nextSettings.mal_client_id } : current);
+      }
+    }).catch(() => {});
+    void reloadMalStatus();
   }, []);
 
   useEffect(() => {
@@ -106,6 +116,71 @@ export function SettingsPage() {
       toast(t("settings.cache_success"), "success");
     } catch {
       toast(t("settings.cache_error"), "error");
+    }
+  }
+
+  async function reloadMalStatus() {
+    try {
+      const status = await api.getMalAuthStatus();
+      setMalStatus(status);
+      setMalError(null);
+      if (status.client_id) {
+        setSettings((current) => ({ ...current, mal_client_id: status.client_id }));
+      }
+    } catch {
+      setMalStatus(null);
+    }
+  }
+
+  async function connectMal() {
+    const clientId = settings.mal_client_id?.trim();
+    if (!clientId) {
+      toast(t("settings.mal_client_id_required"), "warning");
+      return;
+    }
+
+    setMalBusy(true);
+    setMalError(null);
+    try {
+      await api.connectMal(clientId);
+      await reloadMalStatus();
+      toast(t("settings.mal_connect_success"), "success");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      setMalError(message);
+      toast(message, "error");
+    } finally {
+      setMalBusy(false);
+    }
+  }
+
+  async function refreshMal() {
+    setMalBusy(true);
+    setMalError(null);
+    try {
+      await api.refreshMalToken();
+      await reloadMalStatus();
+      toast(t("settings.mal_refresh_success"), "success");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      setMalError(message);
+      toast(message, "error");
+    } finally {
+      setMalBusy(false);
+    }
+  }
+
+  async function disconnectMal() {
+    setMalBusy(true);
+    setMalError(null);
+    try {
+      await api.disconnectMal();
+      await reloadMalStatus();
+      toast(t("settings.mal_disconnect_success"), "success");
+    } catch (err) {
+      toast(err instanceof Error ? err.message : String(err), "error");
+    } finally {
+      setMalBusy(false);
     }
   }
 
@@ -285,7 +360,55 @@ export function SettingsPage() {
         </Card>
       </section>
 
-      <aside className="space-y-3" />
+      <aside className="space-y-3">
+        <Card className="card-paper p-0">
+          <CardHeader>
+            <CardTitle className="font-rounded">{t("settings.mal_title")}</CardTitle>
+            <CardDescription>{t("settings.mal_description")}</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="rounded-lg border border-border bg-secondary/30 p-3 text-sm">
+              <p className="font-medium text-foreground">
+                {malStatus?.connected ? t("settings.mal_connected") : t("settings.mal_disconnected")}
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {malStatus?.expires_at
+                  ? t("settings.mal_expires_at", { date: new Date(malStatus.expires_at).toLocaleString(i18n.language) })
+                  : t("settings.mal_no_token")}
+              </p>
+            </div>
+            {malError && (
+              <p className="rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-xs leading-relaxed text-destructive">
+                {malError}
+              </p>
+            )}
+            <label className="space-y-2 text-sm font-medium">
+              {t("settings.mal_client_id")}
+              <Input
+                onChange={(event) =>
+                  setSettings((current) => ({ ...current, mal_client_id: event.target.value }))
+                }
+                placeholder={t("settings.mal_client_id_placeholder")}
+                value={settings.mal_client_id ?? ""}
+              />
+            </label>
+            <div className="grid gap-2">
+              <Button disabled={malBusy || !settings.mal_client_id?.trim()} onClick={connectMal} size="sm">
+                <Link2 className="h-4 w-4" />
+                {malBusy ? t("settings.mal_waiting") : t("settings.mal_connect")}
+              </Button>
+              <Button disabled={malBusy || !malStatus?.connected} onClick={refreshMal} size="sm" variant="outline">
+                <RefreshCw className="h-4 w-4" />
+                {t("settings.mal_refresh")}
+              </Button>
+              <Button disabled={malBusy || !malStatus?.connected} onClick={disconnectMal} size="sm" variant="outline">
+                <Unplug className="h-4 w-4" />
+                {t("settings.mal_disconnect")}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </aside>
         </div>
       </div>
     </section>

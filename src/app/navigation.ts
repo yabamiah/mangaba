@@ -5,4 +5,5 @@ export interface RouteState {
   mangaId?: string;
   chapterId?: string;
   historyDate?: string;
+  searchQuery?: string;
 }

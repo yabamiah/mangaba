@@ -11,8 +11,11 @@ tauri-build = { version = "2", features = [] }
 [dependencies]
 anyhow = "1"
 chrono = { version = "0.4", features = ["serde"] }
+base64 = "0.22"
+dotenvy = "0.15"
 governor = "0.8"
 nonzero_ext = "0.3"
+rand = "0.8"
 regex = "1"
 reqwest = { version = "0.12", features = ["json", "rustls-tls"] }
 rusqlite = { version = "0.32", features = ["bundled"] }
@@ -24,4 +27,5 @@ tauri = { version = "2", features = [] }
 tauri-plugin-notification = "2"
 tokio = { version = "1", features = ["sync", "time"] }
 ts-rs = { version = "10", features = ["chrono-impl"] }
+urlencoding = "2"
 uuid = { version = "1", features = ["v4"] }

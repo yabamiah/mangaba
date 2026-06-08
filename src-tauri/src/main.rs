@@ -1,6 +1,7 @@
 mod cache;
 mod commands;
 mod database;
+mod mal;
 mod mangadex;
 mod models;
 mod notifications;
@@ -23,6 +24,8 @@ pub struct AppState {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    let _ = dotenvy::dotenv();
+
     tauri::Builder::default()
         .plugin(tauri_plugin_notification::init())
         .setup(|app| {
@@ -70,7 +73,15 @@ pub fn run() {
             commands::cache_manga_cover,
             commands::get_settings,
             commands::update_settings,
-            commands::clear_cache
+            commands::clear_cache,
+            commands::get_mal_auth_status,
+            commands::connect_mal,
+            commands::refresh_mal_token,
+            commands::disconnect_mal,
+            commands::get_mal_user,
+            commands::get_mal_user_mangalist,
+            commands::get_mal_ranking,
+            commands::update_mal_list_status
         ])
         .run(tauri::generate_context!())
         .expect("error while running Mangaba");

@@ -34,7 +34,8 @@ export function MangaPage({ mangaId, onBack, onOpenReader, onTitleLoaded }: Mang
       if (sync) await api.syncMangaChapters(mangaId);
       const settings = await api.getSettings().catch(() => ({ default_language: "pt-br" }));
       setPreferredLanguage(settings.default_language);
-      let [nextManga, nextChapters] = await Promise.all([api.getManga(mangaId), api.getChapters(mangaId, settings.default_language)]);
+      const [nextManga, loadedChapters] = await Promise.all([api.getManga(mangaId), api.getChapters(mangaId, settings.default_language)]);
+      let nextChapters = loadedChapters;
 
       if (!sync && nextChapters.length === 0) {
         await api.syncMangaChapters(mangaId);

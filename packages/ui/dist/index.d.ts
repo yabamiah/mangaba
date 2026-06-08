@@ -67,6 +67,7 @@ declare const MoodIcon: React__default.FC<MoodIconProps>;
 
 interface Habit {
     name: string;
+    subtitle?: string;
     important: boolean;
     history: boolean[];
 }
@@ -179,6 +180,12 @@ interface UnreadManga {
     accentColor: string;
     /** URL da capa já cacheada localmente (opcional) */
     coverUrl?: string;
+    /** Nota global do mangá no MAL */
+    malScore?: number;
+    /** Nota atribuída pelo usuário */
+    myScore?: number;
+    /** Status do mangá na lista do MAL do usuário */
+    malStatus?: "reading" | "completed" | "on_hold" | "dropped" | "plan_to_read" | string;
 }
 /** Informações sobre o último mangá/capítulo lido */
 interface LastRead {
@@ -235,9 +242,27 @@ interface DashboardProps {
     lastRead?: LastRead;
     /** Estado atual da sincronização */
     syncState?: SyncState;
+    /** Informações do usuário do MAL (se conectado) */
+    malUser?: {
+        name: string;
+        avatarUrl: string;
+    };
+    /** Sugestões de mangás do ranking do MAL */
+    suggestions?: Array<{
+        id: number | string;
+        title: string;
+        score?: number;
+        coverUrl?: string;
+        genres?: string[];
+    }>;
+    /** Estatísticas de leitura extraídas do MAL */
+    malStats?: {
+        volumesRead: number;
+        planToRead: number;
+    };
     labels?: DashboardLabels;
-    /** Abre a tela de busca do MangaDex */
-    onSearch?: () => void;
+    /** Abre a tela de busca do MangaDex (opcional prefill) */
+    onSearch?: (prefill?: string) => void;
     /** Navega para a tela de detalhes/leitor do mangá */
     onMangaClick?: (manga: UnreadManga) => void;
     /** Dispara sincronização manual */

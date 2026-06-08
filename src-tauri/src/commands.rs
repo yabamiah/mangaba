@@ -1,8 +1,8 @@
 use crate::models::{
-    AppSettings, Chapter, FollowedManga, Manga, MangaFilters, MangaResult, ReadingProgress,
-    SyncStatus,
+    AppSettings, Chapter, FollowedManga, MalAuthStatus, MalListItem, MalOAuthResult,
+    MalRankingManga, MalUser, Manga, MangaFilters, MangaResult, ReadingProgress, SyncStatus,
 };
-use crate::{notifications, AppState};
+use crate::{mal, notifications, AppState};
 use regex::Regex;
 use tauri::{AppHandle, Manager, State};
 
@@ -47,6 +47,9 @@ pub async fn search_manga(
             followed: result.followed,
             created_at: chrono::Utc::now().to_rfc3339(),
             updated_at: chrono::Utc::now().to_rfc3339(),
+            mal_id: None,
+            mal_score: None,
+            mal_status: None,
         };
         let _ = state.db.upsert_manga(&manga);
     }
@@ -134,7 +137,10 @@ pub fn set_manga_notifications(
 }
 
 #[tauri::command]
-pub fn get_followed_manga(state: State<'_, AppState>, manga_id: String) -> CommandResult<Option<FollowedManga>> {
+pub fn get_followed_manga(
+    state: State<'_, AppState>,
+    manga_id: String,
+) -> CommandResult<Option<FollowedManga>> {
     state.db.get_followed_manga(&manga_id).map_err(to_error)
 }
 
@@ -370,7 +376,10 @@ pub fn update_settings(
     state: State<'_, AppState>,
     settings: serde_json::Value,
 ) -> CommandResult<()> {
-    state.db.update_settings(settings.clone()).map_err(to_error)?;
+    state
+        .db
+        .update_settings(settings.clone())
+        .map_err(to_error)?;
     if let Some(api_token) = settings.get("api_token") {
         if api_token.is_null() || api_token.as_str().unwrap_or("").is_empty() {
             state.client.set_api_token(None);
@@ -378,6 +387,97 @@ pub fn update_settings(
             state.client.set_api_token(Some(token.to_string()));
         }
     }
+    Ok(())
+}
+
+#[tauri::command]
+pub fn get_mal_auth_status(state: State<'_, AppState>) -> CommandResult<MalAuthStatus> {
+    let client_id = state
+        .db
+        .get_setting("mal_client_id")
+        .map_err(to_error)?
+        .or_else(|| std::env::var("MAL_CLIENT_ID").ok());
+    let access_token = state.db.get_setting("mal_access_token").map_err(to_error)?;
+    let expires_at = state
+        .db
+        .get_setting("mal_token_expires_at")
+        .map_err(to_error)?;
+
+    Ok(MalAuthStatus {
+        client_id,
+        connected: access_token
+            .as_deref()
+            .map(|value| !value.is_empty())
+            .unwrap_or(false),
+        expires_at,
+    })
+}
+
+#[tauri::command]
+pub async fn connect_mal(
+    state: State<'_, AppState>,
+    client_id: Option<String>,
+) -> CommandResult<MalOAuthResult> {
+    let client_id = client_id
+        .filter(|value| !value.trim().is_empty())
+        .or_else(|| state.db.get_setting("mal_client_id").ok().flatten())
+        .or_else(|| std::env::var("MAL_CLIENT_ID").ok())
+        .ok_or_else(|| "MyAnimeList Client ID is required".to_string())?;
+
+    let tokens = mal::authenticate(&client_id).await.map_err(to_error)?;
+    save_mal_tokens(&state, &client_id, tokens)?;
+
+    Ok(MalOAuthResult {
+        connected: true,
+        expires_at: state
+            .db
+            .get_setting("mal_token_expires_at")
+            .map_err(to_error)?,
+    })
+}
+
+#[tauri::command]
+pub async fn refresh_mal_token(state: State<'_, AppState>) -> CommandResult<MalOAuthResult> {
+    let client_id = state
+        .db
+        .get_setting("mal_client_id")
+        .map_err(to_error)?
+        .or_else(|| std::env::var("MAL_CLIENT_ID").ok())
+        .ok_or_else(|| "MyAnimeList Client ID is required".to_string())?;
+    let refresh_token = state
+        .db
+        .get_setting("mal_refresh_token")
+        .map_err(to_error)?
+        .ok_or_else(|| "MyAnimeList refresh token is not available".to_string())?;
+
+    let tokens = mal::refresh(&client_id, &refresh_token)
+        .await
+        .map_err(to_error)?;
+    save_mal_tokens(&state, &client_id, tokens)?;
+
+    Ok(MalOAuthResult {
+        connected: true,
+        expires_at: state
+            .db
+            .get_setting("mal_token_expires_at")
+            .map_err(to_error)?,
+    })
+}
+
+#[tauri::command]
+pub fn disconnect_mal(state: State<'_, AppState>) -> CommandResult<()> {
+    state
+        .db
+        .remove_setting("mal_access_token")
+        .map_err(to_error)?;
+    state
+        .db
+        .remove_setting("mal_refresh_token")
+        .map_err(to_error)?;
+    state
+        .db
+        .remove_setting("mal_token_expires_at")
+        .map_err(to_error)?;
     Ok(())
 }
 
@@ -394,4 +494,82 @@ fn is_readable_now(value: &str) -> bool {
 
 fn to_error(error: impl std::fmt::Display) -> String {
     error.to_string()
+}
+
+fn save_mal_tokens(
+    state: &State<'_, AppState>,
+    client_id: &str,
+    tokens: mal::MalTokenSet,
+) -> CommandResult<()> {
+    state
+        .db
+        .set_setting("mal_client_id", client_id)
+        .map_err(to_error)?;
+    state
+        .db
+        .set_setting("mal_access_token", &tokens.access_token)
+        .map_err(to_error)?;
+    if let Some(refresh_token) = tokens.refresh_token {
+        state
+            .db
+            .set_setting("mal_refresh_token", &refresh_token)
+            .map_err(to_error)?;
+    }
+    state
+        .db
+        .set_setting("mal_token_expires_at", &tokens.expires_at)
+        .map_err(to_error)?;
+    Ok(())
+}
+
+#[tauri::command]
+pub async fn get_mal_user(state: State<'_, AppState>) -> CommandResult<MalUser> {
+    let token = state
+        .db
+        .get_setting("mal_access_token")
+        .map_err(to_error)?
+        .ok_or_else(|| "MyAnimeList is not connected".to_string())?;
+
+    mal::get_user(&token).await.map_err(to_error)
+}
+
+#[tauri::command]
+pub async fn get_mal_user_mangalist(state: State<'_, AppState>) -> CommandResult<Vec<MalListItem>> {
+    let token = state
+        .db
+        .get_setting("mal_access_token")
+        .map_err(to_error)?
+        .ok_or_else(|| "MyAnimeList is not connected".to_string())?;
+
+    mal::get_user_mangalist(&token).await.map_err(to_error)
+}
+
+#[tauri::command]
+pub async fn get_mal_ranking(state: State<'_, AppState>) -> CommandResult<Vec<MalRankingManga>> {
+    let token = state
+        .db
+        .get_setting("mal_access_token")
+        .map_err(to_error)?
+        .ok_or_else(|| "MyAnimeList is not connected".to_string())?;
+
+    mal::get_ranking(&token).await.map_err(to_error)
+}
+
+#[tauri::command]
+pub async fn update_mal_list_status(
+    state: State<'_, AppState>,
+    manga_id: i64,
+    status: String,
+    num_chapters_read: i32,
+    score: Option<i32>,
+) -> CommandResult<()> {
+    let token = state
+        .db
+        .get_setting("mal_access_token")
+        .map_err(to_error)?
+        .ok_or_else(|| "MyAnimeList is not connected".to_string())?;
+
+    mal::update_list_status(&token, manga_id, &status, num_chapters_read, score)
+        .await
+        .map_err(to_error)
 }
