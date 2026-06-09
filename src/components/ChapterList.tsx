@@ -61,7 +61,7 @@ export function ChapterList({ chapters, onOpen, onMarkRead, onMarkUnread }: Chap
                     size="sm"
                   >
                     {locked ? <Lock className="h-4 w-4" /> : chapter.external_url ? <ExternalLink className="h-4 w-4" /> : <FileText className="h-4 w-4" />}
-                    {locked ? t("common.unavailable") : chapter.external_url ? t("common.external") : t("common.read")}
+                    {locked ? t("common.unavailable") : chapter.external_url ? t("common.external") : t("common.read_manga")}
                   </Button>
                 </div>
               </div>

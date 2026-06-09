@@ -92,6 +92,8 @@ pub struct AppSettings {
     pub user_agent: String,
     pub theme: String,
     pub reader_mode: String,
+    pub reader_layout: String,
+    pub reader_fit: String,
     pub api_token: Option<String>,
     pub mal_client_id: Option<String>,
     pub mal_sync_on_read: bool,

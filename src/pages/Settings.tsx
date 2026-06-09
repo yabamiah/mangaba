@@ -26,6 +26,8 @@ const defaultSettings: AppSettings = {
   user_agent: "Mangaba/0.1.0 (+local desktop app)",
   theme: "system",
   reader_mode: "scroll",
+  reader_layout: "single",
+  reader_fit: "auto",
   mal_client_id: null,
 };
 
@@ -295,20 +297,6 @@ export function SettingsPage() {
                     label={option.label}
                     name="theme"
                     onChange={(value) => setSettings((current) => ({ ...current, theme: value as ThemeMode }))}
-                    value={option.value}
-                  />
-                ))}
-              </ButtonGroup>
-            </div>
-            <div className="sm:col-span-2">
-              <ButtonGroup label={t("settings.reader_mode")} orientation="horizontal" role="radiogroup">
-                {readerModeOptions.map((option) => (
-                  <RadioButton
-                    checked={settings.reader_mode === option.value}
-                    key={option.value}
-                    label={option.label}
-                    name="reader-mode"
-                    onChange={(value) => setSettings((current) => ({ ...current, reader_mode: value as ReaderMode }))}
                     value={option.value}
                   />
                 ))}

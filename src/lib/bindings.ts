@@ -76,6 +76,8 @@ export interface AppSettings {
   user_agent: string;
   theme: ThemeMode;
   reader_mode: ReaderMode;
+  reader_layout: string;
+  reader_fit: string;
   api_token?: string | null;
   mal_client_id?: string | null;
 }

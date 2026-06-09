@@ -296,6 +296,12 @@ impl Database {
             reader_mode: self
                 .get_setting("reader_mode")?
                 .unwrap_or_else(|| "scroll".to_string()),
+            reader_layout: self
+                .get_setting("reader_layout")?
+                .unwrap_or_else(|| "single".to_string()),
+            reader_fit: self
+                .get_setting("reader_fit")?
+                .unwrap_or_else(|| "auto".to_string()),
             api_token: self.get_setting("api_token")?,
             mal_client_id: self
                 .get_setting("mal_client_id")?
