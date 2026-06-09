@@ -3,7 +3,7 @@
    MeriHari Design System - Hobonichi Paper Aesthetic
    ═══════════════════════════════════════════════════════════════ */
 
-@import url('https://fonts.googleapis.com/css2?family=Arapey:ital@0;1&family=M+PLUS+Rounded+1c&family=Schoolbell&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Merriweather:wght@300;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Arapey:ital@0;1&family=M+PLUS+Rounded+1c&family=Kalam:wght@300;400;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Merriweather:wght@300;400;700&display=swap');
 
 :root {
     /* 🌸 Cozy Planner Theme - Light Mode
@@ -104,7 +104,7 @@
     --shadow-inset: inset 0 1px 2px rgba(255, 255, 255, 0.5), inset 0 1px 3px rgba(0, 0, 0, 0.05);
 
     /* === TYPOGRAPHY - Font families === */
-    --font-handwritten: 'Schoolbell', cursive;
+    --font-handwritten: 'Kalam', cursive;
     --font-rounded: 'Kosugi Maru', 'M PLUS Rounded 1c', sans-serif;
     --font-serif: 'Arapey', serif;
     --font-sans: 'Plus Jakarta Sans', 'Inter', sans-serif;

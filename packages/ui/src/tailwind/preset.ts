@@ -93,7 +93,7 @@ const preset = {
       fontFamily: {
         sans: ['"Plus Jakarta Sans"', "Inter", ...fontFamily.sans],
         serif: ['"Merriweather"', ...fontFamily.serif],
-        handwritten: ['"Schoolbell"', '"Yomogi"', "cursive"],
+        handwritten: ['"Kalam"', '"Yomogi"', "cursive"],
         rounded: ['"M PLUS Rounded 1c"', '"Kosugi Maru"', "sans-serif"],
       },
       boxShadow: {
