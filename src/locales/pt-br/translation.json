@@ -5,7 +5,7 @@
     "retry": "Tentar novamente",
     "loading": "Carregando...",
     "back": "Voltar",
-    "clear": "Limpar",
+    "clear": "Resetar",
     "read": "Lido",
     "read_manga": "Ler",
     "new": "Novo",
@@ -18,7 +18,19 @@
     "theme": "Tema",
     "unread": "Não lido",
     "saved": "Salvo com sucesso!",
-    "saving": "Salvando..."
+    "saving": "Salvando...",
+    "update_success": "Capítulo lido com sucesso."
+  },
+  "languages": {
+    "pt-br": "Português (Brasil)",
+    "en": "Inglês",
+    "zh": "Chinês Simplificado",
+    "zh-hk": "Chinês Tradicional",
+    "es": "Espanhol (Castelhano)",
+    "es-la": "Espanhol (América Latina)",
+    "ja-ro": "Japonês Romanizado",
+    "ko-ro": "Coreano Romanizado",
+    "zh-ro": "Chinês Romanizado"
   },
   "nav": {
     "home": "Início",
@@ -135,7 +147,7 @@
   "history": {
     "title": "Histórico de leitura",
     "subtitle": "Últimos capítulos marcados como lidos no banco local.",
-    "clear": "Limpar",
+    "clear": "Resetar",
     "error_title": "Histórico indisponível",
     "empty_title": "Sem capítulos lidos",
     "empty_description": "Depois de ler capítulos reais pelo MangaDex@Home, eles aparecem aqui.",

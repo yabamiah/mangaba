@@ -246,5 +246,16 @@
     "mal_connect_success": "MyAnimeList connected successfully",
     "mal_refresh_success": "MyAnimeList token refreshed",
     "mal_disconnect_success": "MyAnimeList disconnected"
+  },
+  "languages": {
+    "pt-br": "Brazilian Portuguese",
+    "en": "English",
+    "zh": "Simplified Chinese",
+    "zh-hk": "Traditional Chinese",
+    "es": "Castilian Spanish",
+    "es-la": "Latin American Spanish",
+    "ja-ro": "Romanized Japanese",
+    "ko-ro": "Romanized Korean",
+    "zh-ro": "Romanized Chinese"
   }
 }

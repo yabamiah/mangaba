@@ -36,16 +36,16 @@ const uiLanguageOptions = [
   { value: "en", label: "English" },
 ] as const;
 
-const languageOptions = [
-  { value: "pt-br", label: "Brazilian Portuguese" },
-  { value: "en", label: "English" },
-  { value: "zh", label: "Simplified Chinese" },
-  { value: "zh-hk", label: "Traditional Chinese" },
-  { value: "es", label: "Castilian Spanish" },
-  { value: "es-la", label: "Latin American Spanish" },
-  { value: "ja-ro", label: "Romanized Japanese" },
-  { value: "ko-ro", label: "Romanized Korean" },
-  { value: "zh-ro", label: "Romanized Chinese" },
+const languageKeys = [
+  "pt-br",
+  "en",
+  "zh",
+  "zh-hk",
+  "es",
+  "es-la",
+  "ja-ro",
+  "ko-ro",
+  "zh-ro",
 ] as const;
 
 const contentRatings = ["safe", "suggestive", "erotica", "pornographic"] as const;
@@ -259,7 +259,7 @@ export function SettingsPage() {
             </div>
             <Select
               label={t("settings.default_language")}
-              options={languageOptions as unknown as Array<{ value: string; label: string }>}
+              options={languageKeys.map((lang) => ({ value: lang, label: t(`languages.${lang}`) }))}
               value={settings.default_language}
               onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                 setSettings((current) => ({
