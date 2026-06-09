@@ -1,6 +1,6 @@
 [package]
 name = "mangaba"
-version = "0.1.0"
+version = "0.1.1"
 description = "MangaDex desktop reader for Brazilian Portuguese releases"
 authors = ["Mangaba"]
 edition = "2021"
