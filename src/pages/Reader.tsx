@@ -218,7 +218,7 @@ export function ReaderPage({ chapterId, mangaId, onBack, onOpenChapter }: Reader
                       className="bg-secondary/50 rounded-lg p-2 text-sm border border-border/50 outline-none focus:ring-1 focus:ring-primary" 
                       value={layout} 
                       onChange={(e) => { 
-                        setLayout(e.target.value as any); 
+                        setLayout(e.target.value as "single" | "double" | "scroll"); 
                         updateSetting("reader_layout", e.target.value); 
                       }}
                     >
@@ -234,7 +234,7 @@ export function ReaderPage({ chapterId, mangaId, onBack, onOpenChapter }: Reader
                       className="bg-secondary/50 rounded-lg p-2 text-sm border border-border/50 outline-none focus:ring-1 focus:ring-primary" 
                       value={direction} 
                       onChange={(e) => { 
-                        setDirection(e.target.value as any); 
+                        setDirection(e.target.value as "ltr" | "rtl"); 
                         updateSetting("reader_mode", e.target.value); 
                       }}
                     >
@@ -249,7 +249,7 @@ export function ReaderPage({ chapterId, mangaId, onBack, onOpenChapter }: Reader
                       className="bg-secondary/50 rounded-lg p-2 text-sm border border-border/50 outline-none focus:ring-1 focus:ring-primary" 
                       value={fit} 
                       onChange={(e) => { 
-                        setFit(e.target.value as any); 
+                        setFit(e.target.value as "auto" | "width" | "height"); 
                         updateSetting("reader_fit", e.target.value); 
                       }}
                     >

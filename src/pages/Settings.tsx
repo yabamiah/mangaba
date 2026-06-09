@@ -17,7 +17,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useToast } from "../components/Toast";
 import { api } from "../lib/api";
-import type { AppSettings, MalAuthStatus, ReaderMode, ThemeMode } from "../lib/bindings";
+import type { AppSettings, MalAuthStatus, ThemeMode } from "../lib/bindings";
 
 const defaultSettings: AppSettings = {
   default_language: "pt-br",
@@ -198,11 +198,7 @@ export function SettingsPage() {
     { value: "dark", label: t("settings.theme_dark") },
   ] satisfies Array<{ value: ThemeMode; label: string }>;
 
-  const readerModeOptions = [
-    { value: "scroll", label: t("settings.reader_scroll") },
-    { value: "single", label: t("settings.reader_single") },
-    { value: "rtl", label: t("settings.reader_rtl") },
-  ] satisfies Array<{ value: ReaderMode; label: string }>;
+
 
   function setAdultRatings(enabled: boolean) {
     setSettings((current) => {
