@@ -211,11 +211,11 @@ export function ReaderPage({ chapterId, mangaId, onBack, onOpenChapter }: Reader
           </Button>
           
           {showSettings && (
-             <div className="absolute right-0 top-12 w-64 bg-card border border-border/50 shadow-xl rounded-xl p-4 z-50 flex flex-col gap-5">
+             <div className="absolute right-0 top-12 w-64 bg-card border border-border-light shadow-xl rounded-xl p-4 z-50 flex flex-col gap-5">
                 <div className="flex flex-col gap-2">
                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Layout</span>
                    <select 
-                      className="bg-secondary/50 rounded-lg p-2 text-sm border border-border/50 outline-none focus:ring-1 focus:ring-primary" 
+                      className="bg-secondary/50 rounded-lg p-2 text-sm border border-border-light outline-none focus:ring-1 focus:ring-primary" 
                       value={layout} 
                       onChange={(e) => { 
                         setLayout(e.target.value as "single" | "double" | "scroll"); 
@@ -231,7 +231,7 @@ export function ReaderPage({ chapterId, mangaId, onBack, onOpenChapter }: Reader
                 <div className="flex flex-col gap-2">
                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Direção</span>
                    <select 
-                      className="bg-secondary/50 rounded-lg p-2 text-sm border border-border/50 outline-none focus:ring-1 focus:ring-primary" 
+                      className="bg-secondary/50 rounded-lg p-2 text-sm border border-border-light outline-none focus:ring-1 focus:ring-primary" 
                       value={direction} 
                       onChange={(e) => { 
                         setDirection(e.target.value as "ltr" | "rtl"); 
@@ -246,7 +246,7 @@ export function ReaderPage({ chapterId, mangaId, onBack, onOpenChapter }: Reader
                 <div className="flex flex-col gap-2">
                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Ajuste de Imagem</span>
                    <select 
-                      className="bg-secondary/50 rounded-lg p-2 text-sm border border-border/50 outline-none focus:ring-1 focus:ring-primary" 
+                      className="bg-secondary/50 rounded-lg p-2 text-sm border border-border-light outline-none focus:ring-1 focus:ring-primary" 
                       value={fit} 
                       onChange={(e) => { 
                         setFit(e.target.value as "auto" | "width" | "height"); 

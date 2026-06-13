@@ -361,6 +361,7 @@ export function DashboardPage({ onOpenManga, onSearch, onOpenHistory }: Dashboar
             stat_mal_volumes: t("dashboard.stat_mal_volumes"),
             stat_mal_plan_to_read: t("dashboard.stat_mal_plan_to_read"),
             volumes: t("dashboard.volumes"),
+            suggestionsTitle: t("dashboard.suggestions_title"),
           }}
           stats={data?.stats}
           syncState={syncState}

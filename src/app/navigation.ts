@@ -6,4 +6,5 @@ export interface RouteState {
   chapterId?: string;
   historyDate?: string;
   searchQuery?: string;
+  fromPage?: Page;
 }

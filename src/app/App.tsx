@@ -84,7 +84,7 @@ export function App() {
     setRoute(next);
   };
 
-  const openManga = (mangaId: string) => navigate({ page: "manga", mangaId });
+  const openManga = (mangaId: string) => navigate({ ...route, page: "manga", mangaId, fromPage: route.page });
   const openReader = (chapterId: string) =>
     setRoute((current) => ({ ...current, page: "reader", chapterId }));
 
@@ -109,7 +109,7 @@ export function App() {
         {route.page === "manga" && route.mangaId && (
           <MangaPage
             mangaId={route.mangaId}
-            onBack={() => navigate({ page: "search" })}
+            onBack={() => navigate({ ...route, page: route.fromPage || "search", mangaId: undefined, chapterId: undefined })}
             onOpenReader={openReader}
             onTitleLoaded={setMangaTitle}
           />
@@ -120,8 +120,8 @@ export function App() {
             mangaId={route.mangaId}
             onBack={() =>
               route.mangaId
-                ? navigate({ page: "manga", mangaId: route.mangaId })
-                : navigate({ page: "library" })
+                ? navigate({ ...route, page: "manga", chapterId: undefined })
+                : navigate({ ...route, page: "library", chapterId: undefined })
             }
             onOpenChapter={openReader}
           />

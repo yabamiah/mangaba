@@ -18,7 +18,8 @@
     "theme": "Theme",
     "unread": "Unread",
     "saved": "Saved successfully!",
-    "saving": "Saving..."
+    "saving": "Saving...",
+    "update_success": "Chapter read successfully."
   },
   "nav": {
     "home": "Home",
@@ -63,7 +64,11 @@
     "chapter_continue": "Chapter {{chapter}} · continue reading",
     "no_weekly_activity": "No activity recorded in the last 7 days.",
     "unread_count": "{{count}} unread",
-    "all_caught_up": "All caught up. No new chapters right now."
+    "all_caught_up": "All caught up. No new chapters at the moment.",
+    "suggestions_title": "Up Next (MyAnimeList)",
+    "stat_mal_volumes": "Volumes read",
+    "stat_mal_plan_to_read": "Plan to read",
+    "volumes": "volumes"
   },
   "library": {
     "title": "My library",
@@ -86,9 +91,43 @@
     "unread_count": "{{count}} unread",
     "last_sync": "Last sync: {{date}}",
     "no_sync": "not recorded yet",
-    "notifications_active": "Notifications active for {{count}} manga",
+    "notifications_active": "Notifications active for {{count}} mangas",
     "sync_success": "Library synced successfully",
-    "sync_error": "Could not sync library"
+    "sync_error": "Failed to sync library",
+    "uncategorized": "Uncategorized",
+    "uncategorized_empty": "No uncategorized manga.",
+    "add_manga": "Add manga",
+    "new_category": "New Category",
+    "new_category_desc": "Create a custom category to organize your library.",
+    "all": "All",
+    "categories": "Categories",
+    "new": "New",
+    "create_new_category": "Create new category",
+    "manage_categories_hint": "Drag to reorder. The order here defines the chip order in the library.",
+    "start_template": "Start with a template",
+    "or_customize": "Or customize",
+    "category_name": "Category name",
+    "color": "Color",
+    "icon": "Icon",
+    "template": "template",
+    "manage_categories": "Manage Categories",
+    "no_categories": "No categories created.",
+    "display_rules": "Display Rules",
+    "hide_empty_uncategorized": "Hide \"Uncategorized\" section when empty",
+    "always_active": "always active",
+    "category_created": "Category created successfully",
+    "category_create_error": "Error creating category",
+    "category_deleted": "Category deleted",
+    "category_delete_error": "Error deleting category",
+    "manga_moved": "Manga moved",
+    "manga_move_error": "Error moving manga",
+    "config_save_error": "Error saving configuration",
+    "rule_uncategorized": "Uncategorized manga stay in \"Uncategorized\"",
+    "rule_multiple": "A manga can appear in more than one category",
+    "favorites": "Favorites",
+    "plan_to_read": "Plan to read",
+    "dropped": "Dropped",
+    "category_placeholder": "e.g., Action, Completed, Rereads..."
   },
   "search": {
     "placeholder": "Manga title, URL, or UUID...",
@@ -138,7 +177,8 @@
     "empty_description": "After reading real chapters through MangaDex@Home, they will appear here.",
     "recent": "Recent",
     "chapter": "Ch. {{chapter}}",
-    "pages": "{{count}} pages"
+    "pages": "{{count}} pages",
+    "accessed": "Accessed"
   },
   "manga": {
     "details": "Details",

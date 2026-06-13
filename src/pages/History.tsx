@@ -6,12 +6,10 @@ import { EmptyState } from "../components/EmptyState";
 import { MangaCover } from "../components/MangaCover";
 import { SkeletonCard } from "../components/Skeleton";
 import { api } from "../lib/api";
-import type { Chapter, Manga } from "../lib/bindings";
-
-type HistoryItem = { chapter: Chapter; manga: Manga };
+import type { HistoryEntry } from "../lib/bindings";
 
 export function HistoryPage({ date }: { date?: string }) {
-  const [allRead, setAllRead] = useState<HistoryItem[]>([]);
+  const [allRead, setAllRead] = useState<HistoryEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { t } = useTranslation();
@@ -21,19 +19,8 @@ export function HistoryPage({ date }: { date?: string }) {
       setLoading(true);
       setError(null);
       try {
-        const followed = await api.listFollowedManga();
-        const chapterGroups = await Promise.all(
-          followed.map(async (item) => {
-            const chapters = await api.getChapters(item.manga.id, item.preferred_language);
-            return chapters.map((c) => ({ chapter: c, manga: item.manga }));
-          })
-        );
-        setAllRead(
-          chapterGroups
-            .flat()
-            .filter((item) => item.chapter.read)
-            .sort((a, b) => (b.chapter.readable_at ?? "").localeCompare(a.chapter.readable_at ?? ""))
-        );
+        const history = await api.getHistory();
+        setAllRead(history);
       } catch (err) {
         setError(err instanceof Error ? err.message : String(err));
       } finally {
@@ -53,7 +40,7 @@ export function HistoryPage({ date }: { date?: string }) {
   const read = useMemo(() => {
     if (!activeDate) return allRead;
     return allRead.filter((item) => {
-      const raw = item.chapter.readable_at ?? item.chapter.publish_at;
+      const raw = item.accessed_at;
       if (!raw) return false;
       return new Date(raw).toISOString().slice(0, 10) === activeDate;
     });
@@ -111,23 +98,34 @@ export function HistoryPage({ date }: { date?: string }) {
               {read.map((item) => (
                 <div
                   className="mangaba-result-row px-4"
-                  key={item.chapter.id}
+                  key={item.entry_type === "read" && item.chapter ? `c-${item.chapter.id}` : `m-${item.manga.id}-${item.accessed_at}`}
                 >
                   <span className="mangaba-result-cover">
                     <MangaCover src={item.manga.cover_url} title={item.manga.title} />
                   </span>
                   <div className="mangaba-result-body">
                     <p className="mangaba-result-title">{item.manga.title}</p>
-                    <p className="mangaba-result-meta flex items-center gap-1.5 mt-1">
-                      <Clock3 aria-hidden="true" className="h-3 w-3 text-primary" />
-                      <span>{t("history.chapter", { chapter: item.chapter.chapter })} {item.chapter.title ? `- ${item.chapter.title}` : ""}</span>
-                    </p>
-                    <p className="mangaba-result-meta">{item.chapter.scanlator_group ? `${item.chapter.scanlator_group} · ` : ""}{t("history.pages", { count: item.chapter.pages ?? 0 })}</p>
+                    {item.entry_type === "read" && item.chapter ? (
+                      <>
+                        <p className="mangaba-result-meta flex items-center gap-1.5 mt-1">
+                          <Clock3 aria-hidden="true" className="h-3 w-3 text-primary" />
+                          <span>{t("history.chapter", { chapter: item.chapter.chapter })} {item.chapter.title ? `- ${item.chapter.title}` : ""}</span>
+                        </p>
+                        <p className="mangaba-result-meta">{item.chapter.scanlator_group ? `${item.chapter.scanlator_group} · ` : ""}{t("history.pages", { count: item.chapter.pages ?? 0 })}</p>
+                      </>
+                    ) : (
+                      <p className="mangaba-result-meta flex items-center gap-1.5 mt-1">
+                        <Clock3 aria-hidden="true" className="h-3 w-3 text-muted-foreground" />
+                        <span>{t("history.accessed", "Acessado")}</span>
+                      </p>
+                    )}
                   </div>
-                  <div className="text-xs font-medium text-primary flex items-center gap-1">
-                    <CheckCircle2 className="w-4 h-4" />
-                    {t("common.read")}
-                  </div>
+                  {item.entry_type === "read" && item.chapter && (
+                    <div className="text-xs font-medium text-primary flex items-center gap-1">
+                      <CheckCircle2 className="w-4 h-4" />
+                      {t("common.read")}
+                    </div>
+                  )}
                 </div>
               ))}
           </div>
