@@ -2,6 +2,13 @@ export type ContentRating = "safe" | "suggestive" | "erotica" | "pornographic";
 export type MangaStatus = "ongoing" | "completed" | "hiatus" | "cancelled" | "unknown";
 export type ReaderMode = "scroll" | "single" | "rtl";
 export type ThemeMode = "light" | "dark" | "system";
+export interface Category {
+  id: string;
+  name: string;
+  color: string;
+  icon: string;
+  sort_order: number;
+}
 
 export interface MangaFilters {
   original_language?: string;
@@ -38,6 +45,7 @@ export interface FollowedManga {
   last_checked_at?: string;
   notify_enabled: boolean;
   unread_chapters?: string | null;
+  category_ids: string[];
 }
 
 export interface Chapter {
@@ -80,6 +88,7 @@ export interface AppSettings {
   reader_fit: string;
   api_token?: string | null;
   mal_client_id?: string | null;
+  hide_empty_uncategorized?: boolean;
 }
 
 export interface MalAuthStatus {
@@ -133,4 +142,11 @@ export interface MalRankingManga {
   main_picture?: MalPicture | null;
   mean?: number | null;
   genres?: MalGenre[] | null;
+}
+
+export interface HistoryEntry {
+  manga: Manga;
+  chapter?: Chapter | null;
+  accessed_at: string;
+  entry_type: string;
 }

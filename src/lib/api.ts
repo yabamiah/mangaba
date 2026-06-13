@@ -1,6 +1,7 @@
 import { invoke as tauriInvoke } from "@tauri-apps/api/core";
 import type {
   AppSettings,
+  Category,
   Chapter,
   FollowedManga,
   Manga,
@@ -13,6 +14,7 @@ import type {
   MalUser,
   MalListItem,
   MalRankingManga,
+  HistoryEntry,
 } from "./bindings";
 
 const isTauri = "__TAURI_INTERNALS__" in window;
@@ -111,6 +113,27 @@ export const api = {
   },
   updateMalListStatus(mangaId: number, status: string, numChaptersRead: number, score?: number) {
     return invoke<void>("update_mal_list_status", { mangaId, status, numChaptersRead, score });
+  },
+  getCategories() {
+    return invoke<Category[]>("get_categories");
+  },
+  createCategory(id: string, name: string, color: string, icon: string, sortOrder: number) {
+    return invoke<void>("create_category", { id, name, color, icon, sortOrder });
+  },
+  updateCategory(id: string, name: string, color: string, icon: string, sortOrder: number) {
+    return invoke<void>("update_category", { id, name, color, icon, sortOrder });
+  },
+  deleteCategory(id: string) {
+    return invoke<void>("delete_category", { id });
+  },
+  setMangaCategories(mangaId: string, categoryIds: string[]) {
+    return invoke<void>("set_manga_categories", { mangaId, categoryIds });
+  },
+  getHistory() {
+    return invoke<HistoryEntry[]>("get_history");
+  },
+  addMangaHistory(mangaId: string) {
+    return invoke<void>("add_manga_history", { mangaId });
   },
 };
 
