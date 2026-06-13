@@ -245,37 +245,105 @@ var MoodIcon = ({
   }
 );
 
+// src/components/ColorPicker/ColorPicker.tsx
+import { jsx as jsx8 } from "react/jsx-runtime";
+function ColorPicker({ colors, selectedColor, onSelect, className }) {
+  return /* @__PURE__ */ jsx8("div", { className: cn("flex flex-wrap gap-2", className), children: colors.map((color) => /* @__PURE__ */ jsx8(
+    "button",
+    {
+      type: "button",
+      onClick: () => onSelect(color),
+      style: { backgroundColor: color },
+      className: cn(
+        "h-6 w-6 rounded-full border-2 transition-transform hover:scale-110",
+        selectedColor === color ? "border-primary" : "border-transparent"
+      ),
+      "aria-label": `Selecionar cor ${color}`
+    },
+    color
+  )) });
+}
+
+// src/components/IconPicker/IconPicker.tsx
+import { jsx as jsx9 } from "react/jsx-runtime";
+function IconPicker({ icons, selectedIconId, onSelect, className }) {
+  return /* @__PURE__ */ jsx9("div", { className: cn("flex flex-wrap gap-2", className), children: icons.map(({ id, icon }) => /* @__PURE__ */ jsx9(
+    "button",
+    {
+      type: "button",
+      onClick: () => onSelect(id),
+      className: cn(
+        "flex h-8 w-8 items-center justify-center rounded-md border text-muted-foreground transition-all",
+        selectedIconId === id ? "border-primary bg-secondary text-primary" : "border-transparent hover:border-border hover:bg-secondary"
+      ),
+      "aria-label": `Selecionar \xEDcone ${id}`,
+      children: icon
+    },
+    id
+  )) });
+}
+
+// src/components/Switch/Switch.tsx
+import { jsx as jsx10 } from "react/jsx-runtime";
+function Switch({ checked, onCheckedChange, className, disabled, ...props }) {
+  return /* @__PURE__ */ jsx10(
+    "button",
+    {
+      type: "button",
+      role: "switch",
+      "aria-checked": checked,
+      disabled,
+      onClick: () => onCheckedChange(!checked),
+      className: cn(
+        "peer inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50",
+        checked ? "bg-primary" : "bg-input",
+        className
+      ),
+      ...props,
+      children: /* @__PURE__ */ jsx10(
+        "span",
+        {
+          className: cn(
+            "pointer-events-none block h-4 w-4 rounded-full bg-background shadow-lg ring-0 transition-transform",
+            checked ? "translate-x-4" : "translate-x-0"
+          )
+        }
+      )
+    }
+  );
+}
+
 // src/components/HandDrawnTracker/HandDrawnTracker.tsx
-import { jsx as jsx8, jsxs as jsxs3 } from "react/jsx-runtime";
+import { jsx as jsx11, jsxs as jsxs3 } from "react/jsx-runtime";
 var weekDays = ["M", "T", "W", "T", "F", "S", "S"];
 var HandDrawnTracker = ({
   habits = [],
   weekLabel = "Week 42",
   className
 }) => /* @__PURE__ */ jsxs3("div", { className: cn("w-full font-mono text-sm bg-secondary/30 dark:bg-secondary/20 p-4 rounded-lg border-2 border-dashed border-border relative overflow-hidden", className), children: [
-  /* @__PURE__ */ jsx8("div", { className: "absolute -top-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-yellow-100/50 dark:bg-yellow-900/30 rotate-1 border border-yellow-200/50 dark:border-yellow-700/30 shadow-sm backdrop-blur-[1px]" }),
+  /* @__PURE__ */ jsx11("div", { className: "absolute -top-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-yellow-100/50 dark:bg-yellow-900/30 rotate-1 border border-yellow-200/50 dark:border-yellow-700/30 shadow-sm backdrop-blur-[1px]" }),
   /* @__PURE__ */ jsxs3("div", { className: "flex justify-between items-end mb-4 border-b-2 border-foreground dark:border-foreground/80 pb-1", children: [
-    /* @__PURE__ */ jsx8("span", { className: "font-bold uppercase tracking-widest text-muted-foreground text-xs", children: "Rastreador Semanal" }),
-    /* @__PURE__ */ jsx8("span", { className: "text-[10px] text-muted-foreground/70", children: weekLabel })
+    /* @__PURE__ */ jsx11("span", { className: "font-bold uppercase tracking-widest text-muted-foreground text-xs", children: "Rastreador Semanal" }),
+    /* @__PURE__ */ jsx11("span", { className: "text-[10px] text-muted-foreground/70", children: weekLabel })
   ] }),
   /* @__PURE__ */ jsxs3("div", { className: "grid grid-cols-[1fr_repeat(7,24px)] gap-2 mb-2 items-center", children: [
-    /* @__PURE__ */ jsx8("div", { className: "text-[10px] text-muted-foreground/70 italic text-right pr-2", children: "H\xE1bitos" }),
-    weekDays.map((day, i) => /* @__PURE__ */ jsx8("div", { className: "text-center font-bold text-muted-foreground text-xs", children: day }, i))
+    /* @__PURE__ */ jsx11("div", { className: "text-[10px] text-muted-foreground/70 italic text-right pr-2", children: "H\xE1bitos" }),
+    weekDays.map((day, i) => /* @__PURE__ */ jsx11("div", { className: "text-center font-bold text-muted-foreground text-xs", children: day }, i))
   ] }),
-  /* @__PURE__ */ jsx8("div", { className: "space-y-1", children: habits.map((habit, habitIdx) => /* @__PURE__ */ jsxs3("div", { className: "group relative", children: [
-    /* @__PURE__ */ jsx8("div", { className: "absolute bottom-1 left-0 right-0 border-b border-border/50 pointer-events-none" }),
+  /* @__PURE__ */ jsx11("div", { className: "space-y-1", children: habits.map((habit, habitIdx) => /* @__PURE__ */ jsxs3("div", { className: "group relative", children: [
+    /* @__PURE__ */ jsx11("div", { className: "absolute bottom-1 left-0 right-0 border-b border-border/50 pointer-events-none" }),
     /* @__PURE__ */ jsxs3("div", { className: "grid grid-cols-[1fr_repeat(7,24px)] gap-2 items-center relative z-10 py-1", children: [
       /* @__PURE__ */ jsxs3("div", { className: "flex flex-col truncate pr-2 justify-center", children: [
         /* @__PURE__ */ jsxs3("div", { className: "flex items-center gap-1 truncate", children: [
-          habit.important && /* @__PURE__ */ jsx8("span", { className: "text-primary font-bold text-lg leading-none mt-1", children: "*" }),
-          /* @__PURE__ */ jsx8("span", { className: cn("truncate text-foreground/80 font-serif", habit.important && "font-semibold"), children: habit.name })
+          habit.important && /* @__PURE__ */ jsx11("span", { className: "text-primary font-bold text-lg leading-none mt-1", children: "*" }),
+          /* @__PURE__ */ jsx11("span", { className: cn("truncate text-foreground/80 font-serif", habit.important && "font-semibold"), children: habit.name })
         ] }),
-        habit.subtitle && /* @__PURE__ */ jsx8("span", { className: "text-[10px] text-muted-foreground/70 truncate ml-1", children: habit.subtitle })
+        habit.subtitle && /* @__PURE__ */ jsx11("span", { className: "text-[10px] text-muted-foreground/70 truncate ml-1", children: habit.subtitle })
       ] }),
-      habit.history.map((completed, i) => /* @__PURE__ */ jsx8("div", { className: "h-6 flex items-center justify-center", children: completed ? /* @__PURE__ */ jsx8("svg", { viewBox: "0 0 24 24", className: "w-4 h-4 text-primary dark:text-primary mx-auto", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", children: /* @__PURE__ */ jsx8("path", { d: "M18 6L6 18M6 6l12 12", className: "opacity-80" }) }) : /* @__PURE__ */ jsx8("div", { className: "w-1 h-1 rounded-full bg-muted-foreground/30 group-hover:bg-muted-foreground/50 transition-colors" }) }, i))
+      habit.history.map((completed, i) => /* @__PURE__ */ jsx11("div", { className: "h-6 flex items-center justify-center", children: completed ? /* @__PURE__ */ jsx11("svg", { viewBox: "0 0 24 24", className: "w-4 h-4 text-primary dark:text-primary mx-auto", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", children: /* @__PURE__ */ jsx11("path", { d: "M18 6L6 18M6 6l12 12", className: "opacity-80" }) }) : /* @__PURE__ */ jsx11("div", { className: "w-1 h-1 rounded-full bg-muted-foreground/30 group-hover:bg-muted-foreground/50 transition-colors" }) }, i))
     ] })
   ] }, habitIdx)) }),
-  /* @__PURE__ */ jsx8("div", { className: "mt-4 text-[10px] text-muted-foreground/70 text-right font-serif italic", children: "* atividades priorit\xE1rias" })
+  /* @__PURE__ */ jsx11("div", { className: "mt-4 text-[10px] text-muted-foreground/70 text-right font-serif italic", children: "* atividades priorit\xE1rias" })
 ] });
 
 // src/components/PageNavigator/PageNavigator.tsx
@@ -285,9 +353,9 @@ import { useState } from "react";
 var PageNavigator_default = {};
 
 // src/components/PageNavigator/PageNavigator.tsx
-import { Fragment, jsx as jsx9, jsxs as jsxs4 } from "react/jsx-runtime";
-var ChevronLeft = () => /* @__PURE__ */ jsx9("svg", { width: "24", height: "24", viewBox: "0 0 24 24", fill: "currentColor", children: /* @__PURE__ */ jsx9("path", { d: "M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" }) });
-var ChevronRight = () => /* @__PURE__ */ jsx9("svg", { width: "24", height: "24", viewBox: "0 0 24 24", fill: "currentColor", children: /* @__PURE__ */ jsx9("path", { d: "M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" }) });
+import { Fragment, jsx as jsx12, jsxs as jsxs4 } from "react/jsx-runtime";
+var ChevronLeft = () => /* @__PURE__ */ jsx12("svg", { width: "24", height: "24", viewBox: "0 0 24 24", fill: "currentColor", children: /* @__PURE__ */ jsx12("path", { d: "M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" }) });
+var ChevronRight = () => /* @__PURE__ */ jsx12("svg", { width: "24", height: "24", viewBox: "0 0 24 24", fill: "currentColor", children: /* @__PURE__ */ jsx12("path", { d: "M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" }) });
 var PageNavigator = ({
   currentPage: controlledPage,
   totalPages = 12,
@@ -314,7 +382,7 @@ var PageNavigator = ({
   return /* @__PURE__ */ jsxs4("div", { className: cn("relative flex flex-col items-center gap-2", className), children: [
     showJumpModal && /* @__PURE__ */ jsxs4(Fragment, { children: [
       /* @__PURE__ */ jsxs4("div", { className: "absolute bottom-full mb-2 w-64 bg-[#F9F8F4] dark:bg-[#2C2C2C] rounded-xl shadow-xl border-2 border-stone-200 dark:border-stone-700 p-4 z-50 overflow-hidden", children: [
-        /* @__PURE__ */ jsx9(
+        /* @__PURE__ */ jsx12(
           "div",
           {
             className: "absolute inset-0 opacity-[0.05] pointer-events-none",
@@ -325,10 +393,10 @@ var PageNavigator = ({
           }
         ),
         /* @__PURE__ */ jsxs4("div", { className: "flex items-center justify-between mb-3 px-1 relative z-10", children: [
-          /* @__PURE__ */ jsx9("span", { className: "font-handwritten text-lg text-stone-600 dark:text-stone-300", children: "\xCDndice" }),
-          /* @__PURE__ */ jsx9("span", { className: "text-[10px] uppercase tracking-widest text-stone-400 font-bold", children: "P\xE1ginas" })
+          /* @__PURE__ */ jsx12("span", { className: "font-handwritten text-lg text-stone-600 dark:text-stone-300", children: "\xCDndice" }),
+          /* @__PURE__ */ jsx12("span", { className: "text-[10px] uppercase tracking-widest text-stone-400 font-bold", children: "P\xE1ginas" })
         ] }),
-        /* @__PURE__ */ jsx9(
+        /* @__PURE__ */ jsx12(
           "div",
           {
             className: cn(
@@ -336,7 +404,7 @@ var PageNavigator = ({
               PageNavigator_default.customScrollbar
             ),
             children: Array.from({ length: totalPages }, (_, i) => i + 1).map(
-              (pageNum) => /* @__PURE__ */ jsx9(
+              (pageNum) => /* @__PURE__ */ jsx12(
                 "button",
                 {
                   onClick: () => jumpToPage(pageNum),
@@ -352,7 +420,7 @@ var PageNavigator = ({
           }
         )
       ] }),
-      /* @__PURE__ */ jsx9(
+      /* @__PURE__ */ jsx12(
         "div",
         {
           className: "fixed inset-0 z-0",
@@ -372,14 +440,14 @@ var PageNavigator = ({
           PageNavigator_default.shadowPaperFloat
         ),
         children: [
-          /* @__PURE__ */ jsx9(
+          /* @__PURE__ */ jsx12(
             "button",
             {
               onClick: prevPage,
               disabled: page === 1,
               className: "w-11 h-11 flex items-center justify-center rounded-xl text-stone-500 hover:bg-stone-100 hover:text-stone-800 disabled:opacity-30 disabled:hover:bg-transparent transition-colors dark:text-stone-400 dark:hover:bg-stone-800",
               "aria-label": "P\xE1gina anterior",
-              children: /* @__PURE__ */ jsx9(ChevronLeft, {})
+              children: /* @__PURE__ */ jsx12(ChevronLeft, {})
             }
           ),
           /* @__PURE__ */ jsxs4(
@@ -388,9 +456,9 @@ var PageNavigator = ({
               onClick: () => setShowJumpModal(!showJumpModal),
               className: "flex h-11 flex-col items-center justify-center rounded-xl border border-transparent px-4 transition-colors hover:border-orange-100 hover:bg-orange-50 dark:hover:border-orange-900/30 dark:hover:bg-orange-900/10 group",
               children: [
-                /* @__PURE__ */ jsx9("span", { className: "text-[10px] uppercase tracking-widest text-stone-400 font-bold group-hover:text-orange-400 transition-colors", children: "P\xE1gina" }),
+                /* @__PURE__ */ jsx12("span", { className: "text-[10px] uppercase tracking-widest text-stone-400 font-bold group-hover:text-orange-400 transition-colors", children: "P\xE1gina" }),
                 /* @__PURE__ */ jsxs4("div", { className: "flex items-baseline gap-1 leading-none", children: [
-                  /* @__PURE__ */ jsx9("span", { className: "font-handwritten text-xl font-bold text-stone-700 dark:text-stone-200 group-hover:text-orange-600 transition-colors", children: page }),
+                  /* @__PURE__ */ jsx12("span", { className: "font-handwritten text-xl font-bold text-stone-700 dark:text-stone-200 group-hover:text-orange-600 transition-colors", children: page }),
                   /* @__PURE__ */ jsxs4("span", { className: "text-[10px] text-stone-400", children: [
                     "/ ",
                     totalPages
@@ -399,14 +467,14 @@ var PageNavigator = ({
               ]
             }
           ),
-          /* @__PURE__ */ jsx9(
+          /* @__PURE__ */ jsx12(
             "button",
             {
               onClick: nextPage,
               disabled: page === totalPages,
               className: "w-11 h-11 flex items-center justify-center rounded-xl text-stone-500 hover:bg-stone-100 hover:text-stone-800 disabled:opacity-30 disabled:hover:bg-transparent transition-colors dark:text-stone-400 dark:hover:bg-stone-800",
               "aria-label": "Pr\xF3xima p\xE1gina",
-              children: /* @__PURE__ */ jsx9(ChevronRight, {})
+              children: /* @__PURE__ */ jsx12(ChevronRight, {})
             }
           )
         ]
@@ -423,7 +491,7 @@ import {
   useMemo,
   useCallback
 } from "react";
-import { jsx as jsx10 } from "react/jsx-runtime";
+import { jsx as jsx13 } from "react/jsx-runtime";
 var themes = {
   kawaii: {
     colors: [
@@ -557,12 +625,12 @@ var FloatingBackground = ({
     return () => cancelAnimationFrame(animationRef.current);
   }, [enabled, config, createShape]);
   if (!enabled) return null;
-  return /* @__PURE__ */ jsx10(
+  return /* @__PURE__ */ jsx13(
     "div",
     {
       className: "fixed inset-0 pointer-events-none z-0 overflow-hidden",
       "aria-hidden": "true",
-      children: shapes.map((shape) => /* @__PURE__ */ jsx10(
+      children: shapes.map((shape) => /* @__PURE__ */ jsx13(
         "svg",
         {
           className: "absolute select-none transition-opacity duration-300",
@@ -577,7 +645,7 @@ var FloatingBackground = ({
           },
           viewBox: "0 0 24 24",
           fill: shape.color,
-          children: /* @__PURE__ */ jsx10("path", { d: shapePaths[shape.type] })
+          children: /* @__PURE__ */ jsx13("path", { d: shapePaths[shape.type] })
         },
         shape.id
       ))
@@ -592,10 +660,10 @@ import { useState as useState3, useEffect as useEffect2, useMemo as useMemo2 } f
 var DateBadge_default = {};
 
 // src/components/DateBadge/DateBadge.tsx
-import { jsx as jsx11, jsxs as jsxs5 } from "react/jsx-runtime";
-var Sun = ({ className }) => /* @__PURE__ */ jsx11("svg", { className, width: "24", height: "24", viewBox: "0 0 24 24", fill: "currentColor", children: /* @__PURE__ */ jsx11("path", { d: "M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zM2 13h2a1 1 0 0 0 0-2H2a1 1 0 0 0 0 2zm18 0h2a1 1 0 0 0 0-2h-2a1 1 0 0 0 0 2zM11 2v2a1 1 0 0 0 2 0V2a1 1 0 0 0-2 0zm0 18v2a1 1 0 0 0 2 0v-2a1 1 0 0 0-2 0zM5.99 4.58a1 1 0 1 0-1.41 1.41l1.06 1.06a1 1 0 0 0 1.41-1.41L5.99 4.58zm12.37 12.37a1 1 0 0 0-1.41 1.41l1.06 1.06a1 1 0 0 0 1.41-1.41l-1.06-1.06zM19.42 5.99a1 1 0 0 0-1.41-1.41l-1.06 1.06a1 1 0 0 0 1.41 1.41l1.06-1.06zM7.05 18.36a1 1 0 0 0-1.41-1.41l-1.06 1.06a1 1 0 0 0 1.41 1.41l1.06-1.06z" }) });
-var CloudRain = ({ className }) => /* @__PURE__ */ jsx11("svg", { className, width: "24", height: "24", viewBox: "0 0 24 24", fill: "currentColor", children: /* @__PURE__ */ jsx11("path", { d: "M16 11h-1.55A5.02 5.02 0 0 0 10 7a5.02 5.02 0 0 0-4.45 4H4a4 4 0 0 0 0 8h1.5l1.65-4.4a1 1 0 0 1 1.88.7l-1.42 3.8a.98.98 0 0 1-.93.6H4a6 6 0 0 1 0-12h.42A7.02 7.02 0 0 1 10 5a7.02 7.02 0 0 1 5.58 2.72A6.02 6.02 0 0 1 20 13a6 6 0 0 1-5.32 5.96.99.99 0 0 1-.2-1.98A4 4 0 0 0 20 13a4 4 0 0 0-4-4zm-5 5.5a1 1 0 0 0-1.88.68l-1.5 4a1 1 0 0 0 1.88.68l1.5-4a1 1 0 0 0-.38-1.36zm6 0a1 1 0 0 0-1.88.68l-1.5 4a1 1 0 0 0 1.88.68l1.5-4a1 1 0 0 0-.38-1.36z" }) });
-var Clouds = ({ className }) => /* @__PURE__ */ jsx11("svg", { className, width: "24", height: "24", viewBox: "0 0 24 24", fill: "currentColor", children: /* @__PURE__ */ jsx11("path", { d: "M16 10h-1.55A5.02 5.02 0 0 0 10 6a5.02 5.02 0 0 0-4.45 4H4a4 4 0 0 0 0 8h12a4 4 0 0 0 0-8zm0 6H4a2 2 0 0 1 0-4h1.42A4.98 4.98 0 0 0 10 8a4.98 4.98 0 0 0 4.58 4H16a2 2 0 0 1 0 4z" }) });
+import { jsx as jsx14, jsxs as jsxs5 } from "react/jsx-runtime";
+var Sun = ({ className }) => /* @__PURE__ */ jsx14("svg", { className, width: "24", height: "24", viewBox: "0 0 24 24", fill: "currentColor", children: /* @__PURE__ */ jsx14("path", { d: "M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zM2 13h2a1 1 0 0 0 0-2H2a1 1 0 0 0 0 2zm18 0h2a1 1 0 0 0 0-2h-2a1 1 0 0 0 0 2zM11 2v2a1 1 0 0 0 2 0V2a1 1 0 0 0-2 0zm0 18v2a1 1 0 0 0 2 0v-2a1 1 0 0 0-2 0zM5.99 4.58a1 1 0 1 0-1.41 1.41l1.06 1.06a1 1 0 0 0 1.41-1.41L5.99 4.58zm12.37 12.37a1 1 0 0 0-1.41 1.41l1.06 1.06a1 1 0 0 0 1.41-1.41l-1.06-1.06zM19.42 5.99a1 1 0 0 0-1.41-1.41l-1.06 1.06a1 1 0 0 0 1.41 1.41l1.06-1.06zM7.05 18.36a1 1 0 0 0-1.41-1.41l-1.06 1.06a1 1 0 0 0 1.41 1.41l1.06-1.06z" }) });
+var CloudRain = ({ className }) => /* @__PURE__ */ jsx14("svg", { className, width: "24", height: "24", viewBox: "0 0 24 24", fill: "currentColor", children: /* @__PURE__ */ jsx14("path", { d: "M16 11h-1.55A5.02 5.02 0 0 0 10 7a5.02 5.02 0 0 0-4.45 4H4a4 4 0 0 0 0 8h1.5l1.65-4.4a1 1 0 0 1 1.88.7l-1.42 3.8a.98.98 0 0 1-.93.6H4a6 6 0 0 1 0-12h.42A7.02 7.02 0 0 1 10 5a7.02 7.02 0 0 1 5.58 2.72A6.02 6.02 0 0 1 20 13a6 6 0 0 1-5.32 5.96.99.99 0 0 1-.2-1.98A4 4 0 0 0 20 13a4 4 0 0 0-4-4zm-5 5.5a1 1 0 0 0-1.88.68l-1.5 4a1 1 0 0 0 1.88.68l1.5-4a1 1 0 0 0-.38-1.36zm6 0a1 1 0 0 0-1.88.68l-1.5 4a1 1 0 0 0 1.88.68l1.5-4a1 1 0 0 0-.38-1.36z" }) });
+var Clouds = ({ className }) => /* @__PURE__ */ jsx14("svg", { className, width: "24", height: "24", viewBox: "0 0 24 24", fill: "currentColor", children: /* @__PURE__ */ jsx14("path", { d: "M16 10h-1.55A5.02 5.02 0 0 0 10 6a5.02 5.02 0 0 0-4.45 4H4a4 4 0 0 0 0 8h12a4 4 0 0 0 0-8zm0 6H4a2 2 0 0 1 0-4h1.42A4.98 4.98 0 0 0 10 8a4.98 4.98 0 0 0 4.58 4H16a2 2 0 0 1 0 4z" }) });
 var DateBadge = ({
   date = /* @__PURE__ */ new Date(),
   onDateSelect,
@@ -710,7 +778,7 @@ var DateBadge = ({
         className: cn(DateBadge_default.dateBadge, isCalendarOpen && DateBadge_default.open),
         onClick: toggleCalendar,
         children: [
-          /* @__PURE__ */ jsx11("div", { className: DateBadge_default.dayNumber, children: dayNumber }),
+          /* @__PURE__ */ jsx14("div", { className: DateBadge_default.dayNumber, children: dayNumber }),
           /* @__PURE__ */ jsxs5("div", { className: DateBadge_default.dateInfo, children: [
             /* @__PURE__ */ jsxs5("div", { className: DateBadge_default.dateText, children: [
               monthName,
@@ -725,16 +793,16 @@ var DateBadge = ({
             ] }),
             /* @__PURE__ */ jsxs5("div", { className: DateBadge_default.iconsRow, children: [
               /* @__PURE__ */ jsxs5("div", { className: DateBadge_default.iconItem, title: "Clima", children: [
-                /* @__PURE__ */ jsx11("span", { className: DateBadge_default.label, children: "Clima:" }),
-                /* @__PURE__ */ jsx11(WeatherIcon, { className: "w-4 h-4" }),
+                /* @__PURE__ */ jsx14("span", { className: DateBadge_default.label, children: "Clima:" }),
+                /* @__PURE__ */ jsx14(WeatherIcon, { className: "w-4 h-4" }),
                 temperature !== null && /* @__PURE__ */ jsxs5("span", { className: "font-rounded text-[10px] ml-1", children: [
                   temperature,
                   "\xB0"
                 ] })
               ] }),
               /* @__PURE__ */ jsxs5("div", { className: DateBadge_default.iconItem, title: "Lua", children: [
-                /* @__PURE__ */ jsx11("span", { className: DateBadge_default.label, children: "Lua:" }),
-                /* @__PURE__ */ jsx11("span", { className: DateBadge_default.moonIcon, children: moonIcon })
+                /* @__PURE__ */ jsx14("span", { className: DateBadge_default.label, children: "Lua:" }),
+                /* @__PURE__ */ jsx14("span", { className: DateBadge_default.moonIcon, children: moonIcon })
               ] })
             ] })
           ] })
@@ -743,12 +811,12 @@ var DateBadge = ({
     ),
     isCalendarOpen && /* @__PURE__ */ jsxs5("div", { className: DateBadge_default.calendarPopup, children: [
       /* @__PURE__ */ jsxs5("div", { className: DateBadge_default.calendarHeader, children: [
-        /* @__PURE__ */ jsx11("button", { className: DateBadge_default.navBtn, onClick: previousMonth, title: "M\xEAs anterior", children: "\u2039" }),
-        /* @__PURE__ */ jsx11("div", { className: DateBadge_default.calendarTitle, children: currentMonth.toLocaleString(locale, { month: "long", year: "numeric" }) }),
-        /* @__PURE__ */ jsx11("button", { className: DateBadge_default.navBtn, onClick: nextMonth, title: "Pr\xF3ximo m\xEAs", children: "\u203A" })
+        /* @__PURE__ */ jsx14("button", { className: DateBadge_default.navBtn, onClick: previousMonth, title: "M\xEAs anterior", children: "\u2039" }),
+        /* @__PURE__ */ jsx14("div", { className: DateBadge_default.calendarTitle, children: currentMonth.toLocaleString(locale, { month: "long", year: "numeric" }) }),
+        /* @__PURE__ */ jsx14("button", { className: DateBadge_default.navBtn, onClick: nextMonth, title: "Pr\xF3ximo m\xEAs", children: "\u203A" })
       ] }),
-      /* @__PURE__ */ jsx11("div", { className: DateBadge_default.weekdayLabels, children: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "S\xE1b"].map((day) => /* @__PURE__ */ jsx11("div", { className: DateBadge_default.weekdayLabel, children: day }, day)) }),
-      /* @__PURE__ */ jsx11("div", { className: DateBadge_default.calendarGrid, children: calendarDays.map((day, i) => /* @__PURE__ */ jsx11(
+      /* @__PURE__ */ jsx14("div", { className: DateBadge_default.weekdayLabels, children: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "S\xE1b"].map((day) => /* @__PURE__ */ jsx14("div", { className: DateBadge_default.weekdayLabel, children: day }, day)) }),
+      /* @__PURE__ */ jsx14("div", { className: DateBadge_default.calendarGrid, children: calendarDays.map((day, i) => /* @__PURE__ */ jsx14(
         "button",
         {
           className: cn(
@@ -765,7 +833,7 @@ var DateBadge = ({
         },
         i
       )) }),
-      /* @__PURE__ */ jsx11("div", { className: DateBadge_default.calendarFooter, children: /* @__PURE__ */ jsx11(
+      /* @__PURE__ */ jsx14("div", { className: DateBadge_default.calendarFooter, children: /* @__PURE__ */ jsx14(
         "button",
         {
           className: DateBadge_default.quickAction,
@@ -785,7 +853,7 @@ var DateBadge = ({
 };
 
 // src/components/MiniCalendar/MiniCalendar.tsx
-import { jsx as jsx12, jsxs as jsxs6 } from "react/jsx-runtime";
+import { jsx as jsx15, jsxs as jsxs6 } from "react/jsx-runtime";
 var weekDays2 = ["D", "S", "T", "Q", "Q", "S", "S"];
 var MiniCalendar = ({
   days = [],
@@ -794,14 +862,14 @@ var MiniCalendar = ({
   onDayClick
 }) => /* @__PURE__ */ jsxs6("div", { className: cn("w-full", className), children: [
   /* @__PURE__ */ jsxs6("div", { className: "flex justify-between items-center mb-4", children: [
-    /* @__PURE__ */ jsx12("h3", { className: "text-sm font-semibold text-muted-foreground font-serif", children: title }),
-    /* @__PURE__ */ jsx12("button", { className: "text-muted-foreground/60 hover:text-muted-foreground", children: /* @__PURE__ */ jsxs6("svg", { width: "16", height: "16", viewBox: "0 0 24 24", fill: "currentColor", children: [
-      /* @__PURE__ */ jsx12("circle", { cx: "5", cy: "12", r: "2" }),
-      /* @__PURE__ */ jsx12("circle", { cx: "12", cy: "12", r: "2" }),
-      /* @__PURE__ */ jsx12("circle", { cx: "19", cy: "12", r: "2" })
+    /* @__PURE__ */ jsx15("h3", { className: "text-sm font-semibold text-muted-foreground font-serif", children: title }),
+    /* @__PURE__ */ jsx15("button", { className: "text-muted-foreground/60 hover:text-muted-foreground", children: /* @__PURE__ */ jsxs6("svg", { width: "16", height: "16", viewBox: "0 0 24 24", fill: "currentColor", children: [
+      /* @__PURE__ */ jsx15("circle", { cx: "5", cy: "12", r: "2" }),
+      /* @__PURE__ */ jsx15("circle", { cx: "12", cy: "12", r: "2" }),
+      /* @__PURE__ */ jsx15("circle", { cx: "19", cy: "12", r: "2" })
     ] }) })
   ] }),
-  /* @__PURE__ */ jsx12("div", { className: "grid grid-cols-7 gap-1 mb-2 text-center", children: weekDays2.map((day, i) => /* @__PURE__ */ jsx12(
+  /* @__PURE__ */ jsx15("div", { className: "grid grid-cols-7 gap-1 mb-2 text-center", children: weekDays2.map((day, i) => /* @__PURE__ */ jsx15(
     "span",
     {
       className: cn(
@@ -812,7 +880,7 @@ var MiniCalendar = ({
     },
     i
   )) }),
-  /* @__PURE__ */ jsx12("div", { className: "grid grid-cols-7 gap-1", children: days.map((day, idx) => /* @__PURE__ */ jsxs6(
+  /* @__PURE__ */ jsx15("div", { className: "grid grid-cols-7 gap-1", children: days.map((day, idx) => /* @__PURE__ */ jsxs6(
     "button",
     {
       onClick: () => day.hasEvent && onDayClick?.(day),
@@ -825,7 +893,7 @@ var MiniCalendar = ({
       ),
       children: [
         day.day,
-        day.hasEvent && !day.active && /* @__PURE__ */ jsx12("div", { className: "absolute bottom-1 w-1 h-1 rounded-full bg-primary" }),
+        day.hasEvent && !day.active && /* @__PURE__ */ jsx15("div", { className: "absolute bottom-1 w-1 h-1 rounded-full bg-primary" }),
         day.completionRate && day.completionRate > 0 && /* @__PURE__ */ jsxs6("div", { className: "absolute bottom-full mb-2 hidden group-hover:block bg-popover text-popover-foreground text-[10px] px-2 py-1 rounded whitespace-nowrap z-50 shadow-md border border-border", children: [
           day.completionRate,
           "% Conclu\xEDdo"
@@ -836,16 +904,16 @@ var MiniCalendar = ({
   )) }),
   /* @__PURE__ */ jsxs6("div", { className: "flex items-center justify-center gap-3 mt-4 pt-3 border-t border-dashed border-border/60", children: [
     /* @__PURE__ */ jsxs6("div", { className: "flex items-center gap-1.5", children: [
-      /* @__PURE__ */ jsx12("div", { className: "w-2.5 h-2.5 rounded-[2px] bg-foreground shadow-sm" }),
-      /* @__PURE__ */ jsx12("span", { className: "text-[9px] uppercase tracking-wide text-muted-foreground font-mono", children: "Trabalhado" })
+      /* @__PURE__ */ jsx15("div", { className: "w-2.5 h-2.5 rounded-[2px] bg-foreground shadow-sm" }),
+      /* @__PURE__ */ jsx15("span", { className: "text-[9px] uppercase tracking-wide text-muted-foreground font-mono", children: "Trabalhado" })
     ] }),
     /* @__PURE__ */ jsxs6("div", { className: "flex items-center gap-1.5", children: [
-      /* @__PURE__ */ jsx12("div", { className: "w-2.5 h-2.5 rounded-[2px] border border-border bg-card flex items-center justify-center", children: /* @__PURE__ */ jsx12("div", { className: "w-1 h-1 rounded-full bg-primary" }) }),
-      /* @__PURE__ */ jsx12("span", { className: "text-[9px] uppercase tracking-wide text-muted-foreground font-mono", children: "Descanso" })
+      /* @__PURE__ */ jsx15("div", { className: "w-2.5 h-2.5 rounded-[2px] border border-border bg-card flex items-center justify-center", children: /* @__PURE__ */ jsx15("div", { className: "w-1 h-1 rounded-full bg-primary" }) }),
+      /* @__PURE__ */ jsx15("span", { className: "text-[9px] uppercase tracking-wide text-muted-foreground font-mono", children: "Descanso" })
     ] }),
     /* @__PURE__ */ jsxs6("div", { className: "flex items-center gap-1.5", children: [
-      /* @__PURE__ */ jsx12("div", { className: "w-2.5 h-2.5 rounded-[2px] border border-border bg-secondary/50" }),
-      /* @__PURE__ */ jsx12("span", { className: "text-[9px] uppercase tracking-wide text-muted-foreground/70 font-mono", children: "Inativo" })
+      /* @__PURE__ */ jsx15("div", { className: "w-2.5 h-2.5 rounded-[2px] border border-border bg-secondary/50" }),
+      /* @__PURE__ */ jsx15("span", { className: "text-[9px] uppercase tracking-wide text-muted-foreground/70 font-mono", children: "Inativo" })
     ] })
   ] })
 ] });
@@ -857,7 +925,7 @@ import { useState as useState4, useMemo as useMemo3 } from "react";
 var CalendarWidget_default = {};
 
 // src/components/CalendarWidget/CalendarWidget.tsx
-import { jsx as jsx13, jsxs as jsxs7 } from "react/jsx-runtime";
+import { jsx as jsx16, jsxs as jsxs7 } from "react/jsx-runtime";
 var months = [
   "Janeiro",
   "Fevereiro",
@@ -873,8 +941,8 @@ var months = [
   "Dezembro"
 ];
 var dayLabels = ["D", "S", "T", "Q", "Q", "S", "S"];
-var ArrowLeft = () => /* @__PURE__ */ jsx13("svg", { width: "16", height: "16", viewBox: "0 0 24 24", fill: "currentColor", children: /* @__PURE__ */ jsx13("path", { d: "M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" }) });
-var ArrowRight = () => /* @__PURE__ */ jsx13("svg", { width: "16", height: "16", viewBox: "0 0 24 24", fill: "currentColor", children: /* @__PURE__ */ jsx13("path", { d: "M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" }) });
+var ArrowLeft = () => /* @__PURE__ */ jsx16("svg", { width: "16", height: "16", viewBox: "0 0 24 24", fill: "currentColor", children: /* @__PURE__ */ jsx16("path", { d: "M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" }) });
+var ArrowRight = () => /* @__PURE__ */ jsx16("svg", { width: "16", height: "16", viewBox: "0 0 24 24", fill: "currentColor", children: /* @__PURE__ */ jsx16("path", { d: "M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" }) });
 var CalendarWidget = ({
   isOpen = false,
   selectedDate: initialDate = /* @__PURE__ */ new Date(),
@@ -931,7 +999,7 @@ var CalendarWidget = ({
   if (!isOpen) return null;
   return /* @__PURE__ */ jsxs7("div", { className: cn(CalendarWidget_default.miniCalendar, className), children: [
     /* @__PURE__ */ jsxs7("div", { className: CalendarWidget_default.calendarHeader, children: [
-      /* @__PURE__ */ jsx13(
+      /* @__PURE__ */ jsx16(
         "button",
         {
           className: CalendarWidget_default.calendarNavBtn,
@@ -939,11 +1007,11 @@ var CalendarWidget = ({
             e.stopPropagation();
             changeMonth(-1);
           },
-          children: /* @__PURE__ */ jsx13(ArrowLeft, {})
+          children: /* @__PURE__ */ jsx16(ArrowLeft, {})
         }
       ),
-      /* @__PURE__ */ jsx13("div", { className: CalendarWidget_default.calendarTitle, children: monthLabel }),
-      /* @__PURE__ */ jsx13(
+      /* @__PURE__ */ jsx16("div", { className: CalendarWidget_default.calendarTitle, children: monthLabel }),
+      /* @__PURE__ */ jsx16(
         "button",
         {
           className: CalendarWidget_default.calendarNavBtn,
@@ -951,13 +1019,13 @@ var CalendarWidget = ({
             e.stopPropagation();
             changeMonth(1);
           },
-          children: /* @__PURE__ */ jsx13(ArrowRight, {})
+          children: /* @__PURE__ */ jsx16(ArrowRight, {})
         }
       )
     ] }),
-    /* @__PURE__ */ jsx13("div", { className: CalendarWidget_default.calendarWashi }),
-    /* @__PURE__ */ jsx13("div", { className: CalendarWidget_default.calendarDaysHeader, children: dayLabels.map((day, i) => /* @__PURE__ */ jsx13("div", { className: CalendarWidget_default.calendarDayLabel, children: day }, i)) }),
-    /* @__PURE__ */ jsx13("div", { className: CalendarWidget_default.calendarGrid, children: calendarGrid.map((cell, i) => /* @__PURE__ */ jsx13(
+    /* @__PURE__ */ jsx16("div", { className: CalendarWidget_default.calendarWashi }),
+    /* @__PURE__ */ jsx16("div", { className: CalendarWidget_default.calendarDaysHeader, children: dayLabels.map((day, i) => /* @__PURE__ */ jsx16("div", { className: CalendarWidget_default.calendarDayLabel, children: day }, i)) }),
+    /* @__PURE__ */ jsx16("div", { className: CalendarWidget_default.calendarGrid, children: calendarGrid.map((cell, i) => /* @__PURE__ */ jsx16(
       "button",
       {
         className: cn(
@@ -974,16 +1042,16 @@ var CalendarWidget = ({
       },
       i
     )) }),
-    /* @__PURE__ */ jsx13("div", { className: CalendarWidget_default.calendarFooter, children: "Clique na data para selecionar" })
+    /* @__PURE__ */ jsx16("div", { className: CalendarWidget_default.calendarFooter, children: "Clique na data para selecionar" })
   ] });
 };
 
 // src/components/AppTopbar/AppTopbar.tsx
-import { Fragment as Fragment2, jsx as jsx14, jsxs as jsxs8 } from "react/jsx-runtime";
-var SidebarIcon = () => /* @__PURE__ */ jsx14("svg", { width: "20", height: "20", viewBox: "0 0 24 24", fill: "currentColor", children: /* @__PURE__ */ jsx14("path", { d: "M3 4h18v16H3V4zm2 2v12h4V6H5zm6 0v12h8V6h-8z" }) });
-var ChevronRightIcon = () => /* @__PURE__ */ jsx14("svg", { width: "16", height: "16", viewBox: "0 0 24 24", fill: "currentColor", children: /* @__PURE__ */ jsx14("path", { d: "M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" }) });
-var SinglePageIcon = () => /* @__PURE__ */ jsx14("svg", { width: "16", height: "16", viewBox: "0 0 24 24", fill: "currentColor", children: /* @__PURE__ */ jsx14("path", { d: "M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z" }) });
-var DoublePageIcon = () => /* @__PURE__ */ jsx14("svg", { width: "16", height: "16", viewBox: "0 0 24 24", fill: "currentColor", children: /* @__PURE__ */ jsx14("path", { d: "M3 18h9v-2H3v2zm0-5h12v-2H3v2zm0-7v2h18V6H3zm14 9.18V12l4 3.5-4 3.5v-3.32H15v-2.5h2z" }) });
+import { Fragment as Fragment2, jsx as jsx17, jsxs as jsxs8 } from "react/jsx-runtime";
+var SidebarIcon = () => /* @__PURE__ */ jsx17("svg", { width: "20", height: "20", viewBox: "0 0 24 24", fill: "currentColor", children: /* @__PURE__ */ jsx17("path", { d: "M3 4h18v16H3V4zm2 2v12h4V6H5zm6 0v12h8V6h-8z" }) });
+var ChevronRightIcon = () => /* @__PURE__ */ jsx17("svg", { width: "16", height: "16", viewBox: "0 0 24 24", fill: "currentColor", children: /* @__PURE__ */ jsx17("path", { d: "M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" }) });
+var SinglePageIcon = () => /* @__PURE__ */ jsx17("svg", { width: "16", height: "16", viewBox: "0 0 24 24", fill: "currentColor", children: /* @__PURE__ */ jsx17("path", { d: "M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z" }) });
+var DoublePageIcon = () => /* @__PURE__ */ jsx17("svg", { width: "16", height: "16", viewBox: "0 0 24 24", fill: "currentColor", children: /* @__PURE__ */ jsx17("path", { d: "M3 18h9v-2H3v2zm0-5h12v-2H3v2zm0-7v2h18V6H3zm14 9.18V12l4 3.5-4 3.5v-3.32H15v-2.5h2z" }) });
 var AppTopbar = ({
   sidebarOpen = true,
   activeContext = "home",
@@ -1003,18 +1071,18 @@ var AppTopbar = ({
     ),
     children: [
       /* @__PURE__ */ jsxs8("div", { className: "flex items-center gap-4 overflow-hidden", children: [
-        !sidebarOpen && /* @__PURE__ */ jsx14(
+        !sidebarOpen && /* @__PURE__ */ jsx17(
           "button",
           {
             onClick: onToggleSidebar,
             className: "flex h-11 w-11 items-center justify-center rounded-xl hover:bg-secondary text-muted-foreground transition-colors",
             "aria-label": "Abrir sidebar",
             title: "Abrir sidebar",
-            children: /* @__PURE__ */ jsx14(SidebarIcon, {})
+            children: /* @__PURE__ */ jsx17(SidebarIcon, {})
           }
         ),
         /* @__PURE__ */ jsxs8("nav", { className: "flex items-center text-sm text-muted-foreground whitespace-nowrap overflow-hidden", children: [
-          /* @__PURE__ */ jsx14(
+          /* @__PURE__ */ jsx17(
             "button",
             {
               className: "hover:underline cursor-pointer hover:text-foreground transition-colors font-medium",
@@ -1023,19 +1091,19 @@ var AppTopbar = ({
             }
           ),
           activeContext === "page" && /* @__PURE__ */ jsxs8(Fragment2, { children: [
-            /* @__PURE__ */ jsx14("span", { className: "mx-2 text-border", children: /* @__PURE__ */ jsx14(ChevronRightIcon, {}) }),
-            /* @__PURE__ */ jsx14("span", { className: "font-semibold text-foreground", children: pageTitle })
+            /* @__PURE__ */ jsx17("span", { className: "mx-2 text-border", children: /* @__PURE__ */ jsx17(ChevronRightIcon, {}) }),
+            /* @__PURE__ */ jsx17("span", { className: "font-semibold text-foreground", children: pageTitle })
           ] })
         ] })
       ] }),
-      /* @__PURE__ */ jsx14("div", { className: "flex items-center gap-4", children: activeContext === "page" && /* @__PURE__ */ jsxs8(
+      /* @__PURE__ */ jsx17("div", { className: "flex items-center gap-4", children: activeContext === "page" && /* @__PURE__ */ jsxs8(
         "div",
         {
           className: "flex items-center bg-secondary/50 p-1 rounded-2xl border-2 border-border/50",
           role: "tablist",
           "aria-label": "Modo de visualiza\xE7\xE3o",
           children: [
-            /* @__PURE__ */ jsx14(
+            /* @__PURE__ */ jsx17(
               "button",
               {
                 onClick: () => onViewModeChange?.("single"),
@@ -1047,10 +1115,10 @@ var AppTopbar = ({
                 "aria-selected": viewMode === "single",
                 "aria-label": "P\xE1gina simples",
                 title: "P\xE1gina simples",
-                children: /* @__PURE__ */ jsx14(SinglePageIcon, {})
+                children: /* @__PURE__ */ jsx17(SinglePageIcon, {})
               }
             ),
-            /* @__PURE__ */ jsx14(
+            /* @__PURE__ */ jsx17(
               "button",
               {
                 onClick: () => onViewModeChange?.("double"),
@@ -1062,7 +1130,7 @@ var AppTopbar = ({
                 "aria-selected": viewMode === "double",
                 "aria-label": "P\xE1gina dupla",
                 title: "P\xE1gina dupla",
-                children: /* @__PURE__ */ jsx14(DoublePageIcon, {})
+                children: /* @__PURE__ */ jsx17(DoublePageIcon, {})
               }
             )
           ]
@@ -1074,30 +1142,30 @@ var AppTopbar = ({
 
 // src/components/Dashboard/Dashboard.tsx
 import { useMemo as useMemo4 } from "react";
-import { Fragment as Fragment3, jsx as jsx15, jsxs as jsxs9 } from "react/jsx-runtime";
+import { Fragment as Fragment3, jsx as jsx18, jsxs as jsxs9 } from "react/jsx-runtime";
 var BookOpenIcon = ({ className }) => /* @__PURE__ */ jsxs9("svg", { className, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", children: [
-  /* @__PURE__ */ jsx15("path", { d: "M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" }),
-  /* @__PURE__ */ jsx15("path", { d: "M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" })
+  /* @__PURE__ */ jsx18("path", { d: "M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" }),
+  /* @__PURE__ */ jsx18("path", { d: "M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" })
 ] });
-var FlameIcon = ({ className }) => /* @__PURE__ */ jsx15("svg", { className, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", children: /* @__PURE__ */ jsx15("path", { d: "M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" }) });
+var FlameIcon = ({ className }) => /* @__PURE__ */ jsx18("svg", { className, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", children: /* @__PURE__ */ jsx18("path", { d: "M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" }) });
 var CheckCircleIcon = ({ className }) => /* @__PURE__ */ jsxs9("svg", { className, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", children: [
-  /* @__PURE__ */ jsx15("path", { d: "M22 11.08V12a10 10 0 1 1-5.93-9.14" }),
-  /* @__PURE__ */ jsx15("polyline", { points: "22 4 12 14.01 9 11.01" })
+  /* @__PURE__ */ jsx18("path", { d: "M22 11.08V12a10 10 0 1 1-5.93-9.14" }),
+  /* @__PURE__ */ jsx18("polyline", { points: "22 4 12 14.01 9 11.01" })
 ] });
 var CalendarIcon = ({ className }) => /* @__PURE__ */ jsxs9("svg", { className, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", children: [
-  /* @__PURE__ */ jsx15("rect", { x: "3", y: "4", width: "18", height: "18", rx: "2", ry: "2" }),
-  /* @__PURE__ */ jsx15("line", { x1: "16", y1: "2", x2: "16", y2: "6" }),
-  /* @__PURE__ */ jsx15("line", { x1: "8", y1: "2", x2: "8", y2: "6" }),
-  /* @__PURE__ */ jsx15("line", { x1: "3", y1: "10", x2: "21", y2: "10" })
+  /* @__PURE__ */ jsx18("rect", { x: "3", y: "4", width: "18", height: "18", rx: "2", ry: "2" }),
+  /* @__PURE__ */ jsx18("line", { x1: "16", y1: "2", x2: "16", y2: "6" }),
+  /* @__PURE__ */ jsx18("line", { x1: "8", y1: "2", x2: "8", y2: "6" }),
+  /* @__PURE__ */ jsx18("line", { x1: "3", y1: "10", x2: "21", y2: "10" })
 ] });
 var BellIcon = ({ className }) => /* @__PURE__ */ jsxs9("svg", { className, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", children: [
-  /* @__PURE__ */ jsx15("path", { d: "M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" }),
-  /* @__PURE__ */ jsx15("path", { d: "M10.3 21a1.94 1.94 0 0 0 3.4 0" })
+  /* @__PURE__ */ jsx18("path", { d: "M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" }),
+  /* @__PURE__ */ jsx18("path", { d: "M10.3 21a1.94 1.94 0 0 0 3.4 0" })
 ] });
 var RefreshIcon = ({ className }) => /* @__PURE__ */ jsxs9("svg", { className, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", children: [
-  /* @__PURE__ */ jsx15("polyline", { points: "23 4 23 10 17 10" }),
-  /* @__PURE__ */ jsx15("polyline", { points: "1 20 1 14 7 14" }),
-  /* @__PURE__ */ jsx15("path", { d: "M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" })
+  /* @__PURE__ */ jsx18("polyline", { points: "23 4 23 10 17 10" }),
+  /* @__PURE__ */ jsx18("polyline", { points: "1 20 1 14 7 14" }),
+  /* @__PURE__ */ jsx18("path", { d: "M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" })
 ] });
 function formatSyncTime(date, labels) {
   if (!date) return labels.neverSynced;
@@ -1154,6 +1222,7 @@ var Dashboard = ({
     stat_mal_volumes: "Volumes lidos",
     stat_mal_plan_to_read: "Na fila",
     volumes: "volumes",
+    suggestionsTitle: "Para ler a seguir (MyAnimeList)",
     ...labels
   };
   const streakHighlighted = stats.streak >= 7;
@@ -1164,7 +1233,7 @@ var Dashboard = ({
   }, [syncState, l]);
   const bannerStyle = lastRead?.coverUrl ? { backgroundImage: `url(${lastRead.coverUrl})` } : {};
   const hasCover = !!lastRead?.coverUrl;
-  return /* @__PURE__ */ jsx15(
+  return /* @__PURE__ */ jsx18(
     "div",
     {
       className: cn(
@@ -1174,7 +1243,7 @@ var Dashboard = ({
       ),
       children: /* @__PURE__ */ jsxs9("div", { className: "animate-in fade-in slide-in-from-bottom-4 duration-700 w-full", children: [
         /* @__PURE__ */ jsxs9("div", { className: "relative shadow-paper-float rounded-[2rem] overflow-hidden border border-border/50 bg-secondary/30 h-36 md:h-44 flex flex-col justify-between p-4 pb-10 md:p-6 md:pb-12 transition-all group", children: [
-          /* @__PURE__ */ jsx15(
+          /* @__PURE__ */ jsx18(
             "div",
             {
               className: cn(
@@ -1184,38 +1253,38 @@ var Dashboard = ({
               style: lastRead?.coverUrl ? { backgroundImage: `url(${lastRead.coverUrl})` } : void 0
             }
           ),
-          lastRead?.coverUrl && /* @__PURE__ */ jsx15("div", { className: "absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none" }),
+          lastRead?.coverUrl && /* @__PURE__ */ jsx18("div", { className: "absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none" }),
           /* @__PURE__ */ jsxs9(
             "button",
             {
               onClick: onSync,
               className: "absolute top-4 right-4 z-20 flex items-center gap-1.5 rounded-full border border-white/25 bg-black/65 px-3 py-1.5 text-xs font-semibold text-white shadow-lg backdrop-blur-md transition-all hover:bg-black/75",
               children: [
-                /* @__PURE__ */ jsx15(RefreshIcon, { className: cn("w-3.5 h-3.5", syncState.status === "syncing" && "animate-spin") }),
-                /* @__PURE__ */ jsx15("span", { className: "drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)]", children: syncLabel })
+                /* @__PURE__ */ jsx18(RefreshIcon, { className: cn("w-3.5 h-3.5", syncState.status === "syncing" && "animate-spin") }),
+                /* @__PURE__ */ jsx18("span", { className: "drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)]", children: syncLabel })
               ]
             }
           ),
           malUser && /* @__PURE__ */ jsxs9("div", { className: "absolute bottom-4 left-4 md:bottom-6 md:left-6 z-20 flex items-center gap-2 rounded-full border border-white/25 bg-black/65 px-2.5 py-2 shadow-lg backdrop-blur-md", children: [
-            /* @__PURE__ */ jsx15("img", { src: malUser.avatarUrl, alt: malUser.name, className: "w-8 h-8 rounded-full border border-white/50 object-cover bg-black/50" }),
+            /* @__PURE__ */ jsx18("img", { src: malUser.avatarUrl, alt: malUser.name, className: "w-8 h-8 rounded-full border border-white/50 object-cover bg-black/50" }),
             /* @__PURE__ */ jsxs9("div", { children: [
-              /* @__PURE__ */ jsx15("p", { className: "text-sm font-semibold text-white leading-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)]", children: malUser.name }),
-              /* @__PURE__ */ jsx15("p", { className: "text-[10px] text-white/85 mt-0.5 drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)]", children: "MAL conectado" })
+              /* @__PURE__ */ jsx18("p", { className: "text-sm font-semibold text-white leading-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)]", children: malUser.name }),
+              /* @__PURE__ */ jsx18("p", { className: "text-[10px] text-white/85 mt-0.5 drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)]", children: "MAL conectado" })
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx15("div", { className: "relative mt-3 bg-card/95 backdrop-blur-xl border border-border/60 shadow-paper-float rounded-3xl p-6 md:p-8 z-20", children: /* @__PURE__ */ jsxs9("div", { className: "grid grid-cols-1 lg:grid-cols-12 gap-12", children: [
+        /* @__PURE__ */ jsx18("div", { className: "relative mt-3 bg-card/95 backdrop-blur-xl border border-border/60 shadow-paper-float rounded-3xl p-6 md:p-8 z-20", children: /* @__PURE__ */ jsxs9("div", { className: "grid grid-cols-1 lg:grid-cols-12 gap-12", children: [
           /* @__PURE__ */ jsxs9("div", { className: "lg:col-span-8 flex flex-col gap-10", children: [
             /* @__PURE__ */ jsxs9("div", { children: [
               /* @__PURE__ */ jsxs9("div", { className: "flex items-center justify-between gap-4 mb-5 pb-2 border-b border-border/40", children: [
                 /* @__PURE__ */ jsxs9("h2", { className: "text-xs font-medium uppercase tracking-wider text-muted-foreground/70 flex items-center gap-2", children: [
-                  /* @__PURE__ */ jsx15(BookOpenIcon, { className: "w-4 h-4" }),
+                  /* @__PURE__ */ jsx18(BookOpenIcon, { className: "w-4 h-4" }),
                   l.overviewTitle
                 ] }),
-                syncState.status === "error" && /* @__PURE__ */ jsx15("span", { className: "text-xs font-mono text-destructive bg-destructive/10 px-2 py-1 rounded", children: l.syncFailure })
+                syncState.status === "error" && /* @__PURE__ */ jsx18("span", { className: "text-xs font-mono text-destructive bg-destructive/10 px-2 py-1 rounded", children: l.syncFailure })
               ] }),
               /* @__PURE__ */ jsxs9("div", { className: cn("grid gap-4 mb-8", malStats ? "grid-cols-2 md:grid-cols-3 xl:grid-cols-6" : "grid-cols-2 md:grid-cols-3 xl:grid-cols-4"), children: [
-                /* @__PURE__ */ jsx15(
+                /* @__PURE__ */ jsx18(
                   StatsCard,
                   {
                     title: l.statChapters,
@@ -1223,7 +1292,7 @@ var Dashboard = ({
                     subtext: l.chaptersUnit
                   }
                 ),
-                /* @__PURE__ */ jsx15(
+                /* @__PURE__ */ jsx18(
                   StatsCard,
                   {
                     title: l.statRead,
@@ -1232,7 +1301,7 @@ var Dashboard = ({
                     highlighted: stats.chaptersRead > 0
                   }
                 ),
-                /* @__PURE__ */ jsx15(
+                /* @__PURE__ */ jsx18(
                   StatsCard,
                   {
                     title: l.statFollowing,
@@ -1240,7 +1309,7 @@ var Dashboard = ({
                     subtext: l.mangasUnit
                   }
                 ),
-                /* @__PURE__ */ jsx15(
+                /* @__PURE__ */ jsx18(
                   StatsCard,
                   {
                     title: l.statStreak,
@@ -1250,7 +1319,7 @@ var Dashboard = ({
                   }
                 ),
                 malStats && /* @__PURE__ */ jsxs9(Fragment3, { children: [
-                  /* @__PURE__ */ jsx15(
+                  /* @__PURE__ */ jsx18(
                     StatsCard,
                     {
                       title: l.stat_mal_volumes,
@@ -1259,7 +1328,7 @@ var Dashboard = ({
                       badge: "MAL"
                     }
                   ),
-                  /* @__PURE__ */ jsx15(
+                  /* @__PURE__ */ jsx18(
                     StatsCard,
                     {
                       title: l.stat_mal_plan_to_read,
@@ -1273,26 +1342,26 @@ var Dashboard = ({
             ] }),
             /* @__PURE__ */ jsxs9("div", { children: [
               /* @__PURE__ */ jsxs9("h2", { className: "text-[11px] font-medium uppercase tracking-widest text-muted-foreground mb-4 flex items-center gap-2", children: [
-                /* @__PURE__ */ jsx15(FlameIcon, { className: "w-[18px] h-[18px]" }),
+                /* @__PURE__ */ jsx18(FlameIcon, { className: "w-[18px] h-[18px]" }),
                 l.trackerTitle
               ] }),
-              weeklyActivity.length > 0 ? /* @__PURE__ */ jsx15(HandDrawnTracker, { habits: weeklyActivity }) : /* @__PURE__ */ jsx15("p", { className: "text-sm text-muted-foreground font-serif italic py-4", children: l.noWeeklyActivity })
+              weeklyActivity.length > 0 ? /* @__PURE__ */ jsx18(HandDrawnTracker, { habits: weeklyActivity }) : /* @__PURE__ */ jsx18("p", { className: "text-sm text-muted-foreground font-serif italic py-4", children: l.noWeeklyActivity })
             ] }),
             /* @__PURE__ */ jsxs9("div", { children: [
               /* @__PURE__ */ jsxs9("h2", { className: "text-[11px] font-medium uppercase tracking-widest text-muted-foreground mb-4 flex items-center gap-2", children: [
-                /* @__PURE__ */ jsx15(BellIcon, { className: "w-[18px] h-[18px]" }),
+                /* @__PURE__ */ jsx18(BellIcon, { className: "w-[18px] h-[18px]" }),
                 l.newChaptersTitle
               ] }),
-              unreadMangas.length === 0 ? /* @__PURE__ */ jsx15("p", { className: "text-sm text-muted-foreground font-serif italic py-2", children: l.allCaughtUp }) : /* @__PURE__ */ jsx15("div", { className: "grid gap-2", children: unreadMangas.map((manga) => /* @__PURE__ */ jsxs9(
+              unreadMangas.length === 0 ? /* @__PURE__ */ jsx18("p", { className: "text-sm text-muted-foreground font-serif italic py-2", children: l.allCaughtUp }) : /* @__PURE__ */ jsx18("div", { className: "grid gap-2", children: unreadMangas.map((manga) => /* @__PURE__ */ jsxs9(
                 "button",
                 {
                   className: "w-full flex items-center gap-3 p-2.5 rounded-xl border border-border/40 bg-card hover:bg-secondary/40 transition-colors text-left group",
                   onClick: () => onMangaClick?.(manga),
                   children: [
-                    /* @__PURE__ */ jsx15("div", { className: "w-8 h-12 rounded-md bg-secondary flex-shrink-0 overflow-hidden border border-border/50", children: manga.coverUrl && /* @__PURE__ */ jsx15("img", { src: manga.coverUrl, className: "w-full h-full object-cover" }) }),
+                    /* @__PURE__ */ jsx18("div", { className: "w-8 h-12 rounded-md bg-secondary flex-shrink-0 overflow-hidden border border-border/50", children: manga.coverUrl && /* @__PURE__ */ jsx18("img", { src: manga.coverUrl, className: "w-full h-full object-cover" }) }),
                     /* @__PURE__ */ jsxs9("div", { className: "flex-1 min-w-0", children: [
                       /* @__PURE__ */ jsxs9("div", { className: "flex items-center gap-2", children: [
-                        /* @__PURE__ */ jsx15("span", { className: "text-sm font-medium text-foreground truncate", children: manga.title }),
+                        /* @__PURE__ */ jsx18("span", { className: "text-sm font-medium text-foreground truncate", children: manga.title }),
                         manga.malScore && /* @__PURE__ */ jsxs9("span", { className: "text-[10px] text-stone-500 flex-shrink-0", children: [
                           "\u2605 ",
                           manga.malScore.toFixed(1)
@@ -1301,7 +1370,7 @@ var Dashboard = ({
                       manga.chapterNumbers ? /* @__PURE__ */ jsxs9("p", { className: "text-[10px] text-stone-500 mt-0.5 truncate", children: [
                         "Cap. ",
                         manga.chapterNumbers
-                      ] }) : /* @__PURE__ */ jsx15("p", { className: "text-[10px] text-stone-500 mt-0.5", children: l.unreadCount(manga.unreadCount) })
+                      ] }) : /* @__PURE__ */ jsx18("p", { className: "text-[10px] text-stone-500 mt-0.5", children: l.unreadCount(manga.unreadCount) })
                     ] }),
                     /* @__PURE__ */ jsxs9("div", { className: "flex-shrink-0 flex items-center justify-center px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-[10px] font-bold", children: [
                       "+",
@@ -1313,28 +1382,28 @@ var Dashboard = ({
               )) })
             ] }),
             suggestions && suggestions.length > 0 && /* @__PURE__ */ jsxs9("div", { children: [
-              /* @__PURE__ */ jsx15("h2", { className: "text-sm font-bold uppercase tracking-widest text-muted-foreground mb-4", children: "Para ler a seguir (MyAnimeList)" }),
-              /* @__PURE__ */ jsx15("div", { className: "flex gap-3 overflow-x-auto pb-4 snap-x", children: suggestions.map((s) => /* @__PURE__ */ jsxs9("div", { onClick: () => onSearch?.(s.title), className: "flex-shrink-0 w-32 snap-start group cursor-pointer transition-transform hover:scale-105", children: [
+              /* @__PURE__ */ jsx18("h2", { className: "text-sm font-bold uppercase tracking-widest text-muted-foreground mb-4", children: labels.suggestionsTitle || "Para ler a seguir (MyAnimeList)" }),
+              /* @__PURE__ */ jsx18("div", { className: "flex gap-3 overflow-x-auto pb-4 snap-x", children: suggestions.map((s) => /* @__PURE__ */ jsxs9("div", { onClick: () => onSearch?.(s.title), className: "flex-shrink-0 w-32 snap-start group cursor-pointer transition-transform hover:scale-105", children: [
                 /* @__PURE__ */ jsxs9("div", { className: "w-32 h-44 rounded-xl overflow-hidden shadow-sm border border-border/50 relative bg-secondary/20", children: [
-                  s.coverUrl ? /* @__PURE__ */ jsx15("img", { src: s.coverUrl, className: "w-full h-full object-cover" }) : /* @__PURE__ */ jsx15("div", { className: "w-full h-full bg-secondary/50 flex items-center justify-center text-muted-foreground", children: /* @__PURE__ */ jsx15(BookOpenIcon, { className: "w-6 h-6 opacity-30" }) }),
+                  s.coverUrl ? /* @__PURE__ */ jsx18("img", { src: s.coverUrl, className: "w-full h-full object-cover" }) : /* @__PURE__ */ jsx18("div", { className: "w-full h-full bg-secondary/50 flex items-center justify-center text-muted-foreground", children: /* @__PURE__ */ jsx18(BookOpenIcon, { className: "w-6 h-6 opacity-30" }) }),
                   s.score && /* @__PURE__ */ jsxs9("div", { className: "absolute top-1 right-1 backdrop-blur-md bg-black/50 text-yellow-400 text-[10px] font-mono px-1.5 py-0.5 rounded-full shadow", children: [
                     "\u2605 ",
                     s.score.toFixed(1)
                   ] })
                 ] }),
-                /* @__PURE__ */ jsx15("p", { className: "text-xs font-semibold mt-2 truncate group-hover:text-primary transition-colors text-foreground", children: s.title }),
-                s.genres && s.genres.length > 0 && /* @__PURE__ */ jsx15("p", { className: "text-[10px] text-muted-foreground truncate", children: s.genres.join(", ") })
+                /* @__PURE__ */ jsx18("p", { className: "text-xs font-semibold mt-2 truncate group-hover:text-primary transition-colors text-foreground", children: s.title }),
+                s.genres && s.genres.length > 0 && /* @__PURE__ */ jsx18("p", { className: "text-[10px] text-muted-foreground truncate", children: s.genres.join(", ") })
               ] }, s.id)) })
             ] })
           ] }),
           /* @__PURE__ */ jsxs9("div", { className: "lg:col-span-4 relative", children: [
-            /* @__PURE__ */ jsx15("div", { className: "hidden lg:block absolute left-[-24px] top-0 bottom-0 w-px border-l border-dashed border-border" }),
+            /* @__PURE__ */ jsx18("div", { className: "hidden lg:block absolute left-[-24px] top-0 bottom-0 w-px border-l border-dashed border-border" }),
             /* @__PURE__ */ jsxs9("div", { className: "bg-secondary/30 dark:bg-secondary/20 p-6 rounded-2xl border border-border/50", children: [
               /* @__PURE__ */ jsxs9("div", { className: "flex items-center gap-2 mb-6 text-primary", children: [
-                /* @__PURE__ */ jsx15(CalendarIcon, { className: "w-5 h-5" }),
-                /* @__PURE__ */ jsx15("span", { className: "text-xs font-bold uppercase tracking-widest", children: l.calendarTitle })
+                /* @__PURE__ */ jsx18(CalendarIcon, { className: "w-5 h-5" }),
+                /* @__PURE__ */ jsx18("span", { className: "text-xs font-bold uppercase tracking-widest", children: l.calendarTitle })
               ] }),
-              /* @__PURE__ */ jsx15(MiniCalendar, { days: calendarDays, onDayClick: (day) => day.date && onDateClick?.(day.date) })
+              /* @__PURE__ */ jsx18(MiniCalendar, { days: calendarDays, onDayClick: (day) => day.date && onDateClick?.(day.date) })
             ] }),
             /* @__PURE__ */ jsxs9(
               "button",
@@ -1342,13 +1411,13 @@ var Dashboard = ({
                 onClick: () => onSearch?.(),
                 className: "w-full mt-6 py-3 rounded-xl bg-primary text-primary-foreground text-sm font-medium shadow-lg hover:opacity-90 hover:shadow-xl transition-all active:scale-95 flex items-center justify-center gap-2",
                 children: [
-                  /* @__PURE__ */ jsx15("span", { children: l.btnSearch }),
-                  /* @__PURE__ */ jsx15("div", { className: "w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-[10px]", children: "+" })
+                  /* @__PURE__ */ jsx18("span", { children: l.btnSearch }),
+                  /* @__PURE__ */ jsx18("div", { className: "w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-[10px]", children: "+" })
                 ]
               }
             ),
             /* @__PURE__ */ jsxs9("div", { className: "mt-4 flex items-center justify-center gap-1.5", children: [
-              /* @__PURE__ */ jsx15(
+              /* @__PURE__ */ jsx18(
                 CheckCircleIcon,
                 {
                   className: cn(
@@ -1357,7 +1426,7 @@ var Dashboard = ({
                   )
                 }
               ),
-              /* @__PURE__ */ jsx15("span", { className: "text-xs text-muted-foreground font-mono", children: syncLabel })
+              /* @__PURE__ */ jsx18("span", { className: "text-xs text-muted-foreground font-mono", children: syncLabel })
             ] })
           ] })
         ] }) })
@@ -1376,12 +1445,14 @@ export {
   CardFooter,
   CardHeader,
   CardTitle,
+  ColorPicker,
   Dashboard,
   DateBadge,
   Divider,
   FloatingBackground,
   HandDrawnTracker,
   IconButton,
+  IconPicker,
   Input,
   MiniCalendar,
   MoodIcon,
@@ -1391,6 +1462,7 @@ export {
   Select,
   SelectionButton,
   StatsCard,
+  Switch,
   ToggleButton,
   buttonVariants,
   cn,

@@ -30,38 +30,82 @@ declare const preset: {
         };
         extend: {
             colors: {
-                border: string;
-                input: string;
-                ring: string;
-                background: string;
-                foreground: string;
+                border: {
+                    DEFAULT: ({ opacityValue }: {
+                        opacityValue?: string | number;
+                    }) => string;
+                    faint: string;
+                    light: string;
+                    medium: string;
+                    strong: string;
+                };
+                input: ({ opacityValue }: {
+                    opacityValue?: string | number;
+                }) => string;
+                ring: ({ opacityValue }: {
+                    opacityValue?: string | number;
+                }) => string;
+                background: ({ opacityValue }: {
+                    opacityValue?: string | number;
+                }) => string;
+                foreground: ({ opacityValue }: {
+                    opacityValue?: string | number;
+                }) => string;
                 primary: {
-                    DEFAULT: string;
-                    foreground: string;
+                    DEFAULT: ({ opacityValue }: {
+                        opacityValue?: string | number;
+                    }) => string;
+                    foreground: ({ opacityValue }: {
+                        opacityValue?: string | number;
+                    }) => string;
                 };
                 secondary: {
-                    DEFAULT: string;
-                    foreground: string;
+                    DEFAULT: ({ opacityValue }: {
+                        opacityValue?: string | number;
+                    }) => string;
+                    foreground: ({ opacityValue }: {
+                        opacityValue?: string | number;
+                    }) => string;
                 };
                 destructive: {
-                    DEFAULT: string;
-                    foreground: string;
+                    DEFAULT: ({ opacityValue }: {
+                        opacityValue?: string | number;
+                    }) => string;
+                    foreground: ({ opacityValue }: {
+                        opacityValue?: string | number;
+                    }) => string;
                 };
                 muted: {
-                    DEFAULT: string;
-                    foreground: string;
+                    DEFAULT: ({ opacityValue }: {
+                        opacityValue?: string | number;
+                    }) => string;
+                    foreground: ({ opacityValue }: {
+                        opacityValue?: string | number;
+                    }) => string;
                 };
                 accent: {
-                    DEFAULT: string;
-                    foreground: string;
+                    DEFAULT: ({ opacityValue }: {
+                        opacityValue?: string | number;
+                    }) => string;
+                    foreground: ({ opacityValue }: {
+                        opacityValue?: string | number;
+                    }) => string;
                 };
                 popover: {
-                    DEFAULT: string;
-                    foreground: string;
+                    DEFAULT: ({ opacityValue }: {
+                        opacityValue?: string | number;
+                    }) => string;
+                    foreground: ({ opacityValue }: {
+                        opacityValue?: string | number;
+                    }) => string;
                 };
                 card: {
-                    DEFAULT: string;
-                    foreground: string;
+                    DEFAULT: ({ opacityValue }: {
+                        opacityValue?: string | number;
+                    }) => string;
+                    foreground: ({ opacityValue }: {
+                        opacityValue?: string | number;
+                    }) => string;
                 };
                 chart: {
                     "1": string;
@@ -71,16 +115,28 @@ declare const preset: {
                     "5": string;
                 };
                 success: {
-                    DEFAULT: string;
-                    foreground: string;
+                    DEFAULT: ({ opacityValue }: {
+                        opacityValue?: string | number;
+                    }) => string;
+                    foreground: ({ opacityValue }: {
+                        opacityValue?: string | number;
+                    }) => string;
                 };
                 warning: {
-                    DEFAULT: string;
-                    foreground: string;
+                    DEFAULT: ({ opacityValue }: {
+                        opacityValue?: string | number;
+                    }) => string;
+                    foreground: ({ opacityValue }: {
+                        opacityValue?: string | number;
+                    }) => string;
                 };
                 info: {
-                    DEFAULT: string;
-                    foreground: string;
+                    DEFAULT: ({ opacityValue }: {
+                        opacityValue?: string | number;
+                    }) => string;
+                    foreground: ({ opacityValue }: {
+                        opacityValue?: string | number;
+                    }) => string;
                 };
             };
             borderRadius: {

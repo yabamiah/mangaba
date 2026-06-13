@@ -66,6 +66,31 @@ interface MoodIconProps {
 }
 declare const MoodIcon: React__default.FC<MoodIconProps>;
 
+interface ColorPickerProps {
+    colors: string[];
+    selectedColor?: string;
+    onSelect: (color: string) => void;
+    className?: string;
+}
+declare function ColorPicker({ colors, selectedColor, onSelect, className }: ColorPickerProps): React__default.JSX.Element;
+
+interface IconPickerProps {
+    icons: {
+        id: string;
+        icon: React__default.ReactNode;
+    }[];
+    selectedIconId?: string;
+    onSelect: (id: string) => void;
+    className?: string;
+}
+declare function IconPicker({ icons, selectedIconId, onSelect, className }: IconPickerProps): React__default.JSX.Element;
+
+interface SwitchProps extends React__default.InputHTMLAttributes<HTMLInputElement> {
+    checked: boolean;
+    onCheckedChange: (checked: boolean) => void;
+}
+declare function Switch({ checked, onCheckedChange, className, disabled, ...props }: SwitchProps): React__default.JSX.Element;
+
 interface Habit {
     name: string;
     subtitle?: string;
@@ -235,6 +260,7 @@ interface DashboardLabels {
         text: string;
         author: string;
     };
+    suggestionsTitle?: string;
 }
 interface DashboardProps {
     stats?: ReadingStats;
@@ -289,4 +315,4 @@ declare function cn(...inputs: ClassValue[]): string;
  */
 declare function getMoonPhase(date: Date): "new" | "waxing" | "full" | "waning";
 
-export { AppTopbar, type AppTopbarProps, type CalendarDay, CalendarWidget, type CalendarWidgetProps, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, type CardTitleProps, Dashboard, type DashboardLabels, type DashboardProps, DateBadge, type DateBadgeProps, Divider, type DividerProps, type DividerSize, type DividerType, FloatingBackground, type FloatingBackgroundProps, type Habit, HandDrawnTracker, type HandDrawnTrackerProps, Input, type InputProps, type LastRead, MiniCalendar, type MiniCalendarProps, MoodIcon, type MoodIconProps, PageNavigator, type PageNavigatorProps, Progress, type ProgressProps, type ReadingStats, Select, type SelectOption, type SelectProps, type ShapeTheme, StatsCard, type StatsCardProps, type SyncState, type UnreadManga, cn, getMoonPhase };
+export { AppTopbar, type AppTopbarProps, type CalendarDay, CalendarWidget, type CalendarWidgetProps, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, type CardTitleProps, ColorPicker, type ColorPickerProps, Dashboard, type DashboardLabels, type DashboardProps, DateBadge, type DateBadgeProps, Divider, type DividerProps, type DividerSize, type DividerType, FloatingBackground, type FloatingBackgroundProps, type Habit, HandDrawnTracker, type HandDrawnTrackerProps, IconPicker, type IconPickerProps, Input, type InputProps, type LastRead, MiniCalendar, type MiniCalendarProps, MoodIcon, type MoodIconProps, PageNavigator, type PageNavigatorProps, Progress, type ProgressProps, type ReadingStats, Select, type SelectOption, type SelectProps, type ShapeTheme, StatsCard, type StatsCardProps, Switch, type SwitchProps, type SyncState, type UnreadManga, cn, getMoonPhase };

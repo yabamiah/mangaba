@@ -1,5 +1,11 @@
 // src/tailwind/preset.ts
 import { fontFamily } from "tailwindcss/defaultTheme";
+function withOpacity(varName) {
+  return ({ opacityValue }) => {
+    if (opacityValue === void 0) return `var(${varName})`;
+    return `color-mix(in srgb, var(${varName}) calc(${opacityValue} * 100%), transparent)`;
+  };
+}
 var preset = {
   darkMode: ["class"],
   theme: {
@@ -12,38 +18,44 @@ var preset = {
     },
     extend: {
       colors: {
-        border: "var(--border)",
-        input: "var(--input)",
-        ring: "var(--ring)",
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        border: {
+          DEFAULT: withOpacity("--border"),
+          faint: "var(--border-faint)",
+          light: "var(--border-light)",
+          medium: "var(--border-medium)",
+          strong: "var(--border-strong)"
+        },
+        input: withOpacity("--input"),
+        ring: withOpacity("--ring"),
+        background: withOpacity("--background"),
+        foreground: withOpacity("--foreground"),
         primary: {
-          DEFAULT: "var(--primary)",
-          foreground: "var(--primary-foreground)"
+          DEFAULT: withOpacity("--primary"),
+          foreground: withOpacity("--primary-foreground")
         },
         secondary: {
-          DEFAULT: "var(--secondary)",
-          foreground: "var(--secondary-foreground)"
+          DEFAULT: withOpacity("--secondary"),
+          foreground: withOpacity("--secondary-foreground")
         },
         destructive: {
-          DEFAULT: "var(--destructive)",
-          foreground: "var(--destructive-foreground)"
+          DEFAULT: withOpacity("--destructive"),
+          foreground: withOpacity("--destructive-foreground")
         },
         muted: {
-          DEFAULT: "var(--muted)",
-          foreground: "var(--muted-foreground)"
+          DEFAULT: withOpacity("--muted"),
+          foreground: withOpacity("--muted-foreground")
         },
         accent: {
-          DEFAULT: "var(--accent)",
-          foreground: "var(--accent-foreground)"
+          DEFAULT: withOpacity("--accent"),
+          foreground: withOpacity("--accent-foreground")
         },
         popover: {
-          DEFAULT: "var(--popover)",
-          foreground: "var(--popover-foreground)"
+          DEFAULT: withOpacity("--popover"),
+          foreground: withOpacity("--popover-foreground")
         },
         card: {
-          DEFAULT: "var(--card)",
-          foreground: "var(--card-foreground)"
+          DEFAULT: withOpacity("--card"),
+          foreground: withOpacity("--card-foreground")
         },
         chart: {
           "1": "var(--chart-1)",
@@ -53,16 +65,16 @@ var preset = {
           "5": "var(--chart-5)"
         },
         success: {
-          DEFAULT: "var(--success)",
-          foreground: "var(--success-foreground)"
+          DEFAULT: withOpacity("--success"),
+          foreground: withOpacity("--success-foreground")
         },
         warning: {
-          DEFAULT: "var(--warning)",
-          foreground: "var(--warning-foreground)"
+          DEFAULT: withOpacity("--warning"),
+          foreground: withOpacity("--warning-foreground")
         },
         info: {
-          DEFAULT: "var(--info)",
-          foreground: "var(--info-foreground)"
+          DEFAULT: withOpacity("--info"),
+          foreground: withOpacity("--info-foreground")
         }
       },
       borderRadius: {
