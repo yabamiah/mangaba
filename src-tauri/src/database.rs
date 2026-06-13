@@ -1,4 +1,6 @@
-use crate::models::{AppSettings, Chapter, FollowedManga, Manga, ReadingProgress};
+use crate::models::{
+    AppSettings, Category, Chapter, FollowedManga, HistoryEntry, Manga, ReadingProgress,
+};
 use anyhow::{Context, Result};
 use chrono::Utc;
 use rusqlite::{params, Connection, OptionalExtension};
@@ -21,6 +23,103 @@ impl Database {
         };
         db.seed_settings()?;
         Ok(db)
+    }
+
+    pub fn add_manga_history(&self, manga_id: &str) -> Result<()> {
+        let now = Utc::now().to_rfc3339();
+        let conn = self.conn.lock().unwrap();
+        conn.execute(
+            "INSERT INTO manga_history (manga_id, accessed_at) VALUES (?1, ?2)
+             ON CONFLICT(manga_id) DO UPDATE SET accessed_at=excluded.accessed_at",
+            params![manga_id, now],
+        )?;
+        Ok(())
+    }
+
+    pub fn get_history(&self) -> Result<Vec<HistoryEntry>> {
+        let conn = self.conn.lock().unwrap();
+
+        let mut stmt_accessed = conn.prepare(
+            "SELECT m.id, m.title, m.description, m.author, m.cover_art_id, m.cover_filename, m.cover_url,
+             m.status, m.original_language, m.created_at, m.updated_at,
+             m.mal_id, m.mal_score, m.mal_status, EXISTS(SELECT 1 FROM followed_manga f WHERE f.manga_id = m.id), mh.accessed_at
+             FROM manga_history mh
+             JOIN manga m ON m.id = mh.manga_id
+             ORDER BY mh.accessed_at DESC LIMIT 100"
+        )?;
+
+        let accessed_iter = stmt_accessed.query_map([], |row| {
+            Ok(HistoryEntry {
+                manga: manga_from_row(row)?,
+                chapter: None,
+                accessed_at: row.get(15)?,
+                entry_type: "accessed".to_string(),
+            })
+        })?;
+        let mut history: Vec<HistoryEntry> = accessed_iter.collect::<rusqlite::Result<_>>()?;
+
+        let mut stmt_read = conn.prepare(
+            "SELECT m.id, m.title, m.description, m.author, m.cover_art_id, m.cover_filename, m.cover_url,
+             m.status, m.original_language, m.created_at, m.updated_at,
+             m.mal_id, m.mal_score, m.mal_status, EXISTS(SELECT 1 FROM followed_manga f WHERE f.manga_id = m.id),
+             c.id, c.manga_id, c.volume, c.chapter, c.title, c.translated_language, c.scanlator_group, c.external_url,
+             c.publish_at, c.readable_at, c.pages, c.read, 0, rp.updated_at
+             FROM reading_progress rp
+             JOIN chapters c ON c.id = rp.chapter_id
+             JOIN manga m ON m.id = c.manga_id
+             WHERE rp.completed = 1
+             ORDER BY rp.updated_at DESC LIMIT 200"
+        )?;
+
+        let read_iter = stmt_read.query_map([], |row| {
+            let manga = Manga {
+                id: row.get(0)?,
+                title: row.get(1)?,
+                description: row.get(2)?,
+                author: row.get(3)?,
+                cover_art_id: row.get(4)?,
+                cover_filename: row.get(5)?,
+                cover_url: row.get(6)?,
+                status: row.get(7)?,
+                original_language: row.get(8)?,
+                created_at: row.get(9)?,
+                updated_at: row.get(10)?,
+                mal_id: row.get(11)?,
+                mal_score: row.get(12)?,
+                mal_status: row.get(13)?,
+                followed: row.get::<_, i64>(14)? == 1,
+            };
+
+            let chapter = Chapter {
+                id: row.get(15)?,
+                manga_id: row.get(16)?,
+                volume: row.get(17)?,
+                chapter: row.get(18)?,
+                title: row.get(19)?,
+                translated_language: row.get(20)?,
+                scanlator_group: row.get(21)?,
+                external_url: row.get(22)?,
+                publish_at: row.get(23)?,
+                readable_at: row.get(24)?,
+                pages: row.get(25)?,
+                read: row.get::<_, i64>(26)? == 1,
+                is_new: row.get::<_, i64>(27)? == 1,
+            };
+
+            Ok(HistoryEntry {
+                manga,
+                chapter: Some(chapter),
+                accessed_at: row.get(28)?,
+                entry_type: "read".to_string(),
+            })
+        })?;
+
+        let read_history: Vec<HistoryEntry> = read_iter.collect::<rusqlite::Result<_>>()?;
+        history.extend(read_history);
+
+        history.sort_by(|a, b| b.accessed_at.cmp(&a.accessed_at));
+
+        Ok(history)
     }
 
     pub fn upsert_manga(&self, manga: &Manga) -> Result<()> {
@@ -100,7 +199,8 @@ impl Database {
              m.status, m.original_language, m.created_at, m.updated_at,
              m.mal_id, m.mal_score, m.mal_status, 1, f.preferred_language, f.last_checked_at, f.notify_enabled,
              (SELECT COUNT(*) FROM chapters c WHERE c.manga_id = m.id AND c.read = 0),
-             (SELECT GROUP_CONCAT(chapter, ', ') FROM (SELECT chapter FROM chapters WHERE manga_id = m.id AND read = 0 ORDER BY CAST(chapter AS REAL) DESC LIMIT 3))
+             (SELECT GROUP_CONCAT(chapter, ', ') FROM (SELECT chapter FROM chapters WHERE manga_id = m.id AND read = 0 ORDER BY CAST(chapter AS REAL) DESC LIMIT 3)),
+             (SELECT GROUP_CONCAT(category_id, ',') FROM manga_categories mc WHERE mc.manga_id = m.id)
              FROM followed_manga f JOIN manga m ON m.id = f.manga_id WHERE m.id = ?1",
             [manga_id],
             |row| {
@@ -111,6 +211,10 @@ impl Database {
                     notify_enabled: row.get::<_, i64>(17)? == 1,
                     unread_count: row.get(18)?,
                     unread_chapters: row.get(19)?,
+                    category_ids: row
+                        .get::<_, Option<String>>(20)?
+                        .map(|s| s.split(',').map(String::from).collect())
+                        .unwrap_or_default(),
                 })
             },
         )
@@ -125,7 +229,8 @@ impl Database {
              m.status, m.original_language, m.created_at, m.updated_at,
              m.mal_id, m.mal_score, m.mal_status, 1, f.preferred_language, f.last_checked_at, f.notify_enabled,
              (SELECT COUNT(*) FROM chapters c WHERE c.manga_id = m.id AND c.read = 0),
-             (SELECT GROUP_CONCAT(chapter, ', ') FROM (SELECT chapter FROM chapters WHERE manga_id = m.id AND read = 0 ORDER BY CAST(chapter AS REAL) DESC LIMIT 3))
+             (SELECT GROUP_CONCAT(chapter, ', ') FROM (SELECT chapter FROM chapters WHERE manga_id = m.id AND read = 0 ORDER BY CAST(chapter AS REAL) DESC LIMIT 3)),
+             (SELECT GROUP_CONCAT(category_id, ',') FROM manga_categories mc WHERE mc.manga_id = m.id)
              FROM followed_manga f JOIN manga m ON m.id = f.manga_id ORDER BY m.title ASC",
         )?;
         let rows = stmt.query_map([], |row| {
@@ -136,6 +241,10 @@ impl Database {
                 notify_enabled: row.get::<_, i64>(17)? == 1,
                 unread_count: row.get(18)?,
                 unread_chapters: row.get(19)?,
+                category_ids: row
+                    .get::<_, Option<String>>(20)?
+                    .map(|s| s.split(',').map(String::from).collect())
+                    .unwrap_or_default(),
             })
         })?;
         rows.collect::<rusqlite::Result<Vec<_>>>()
@@ -306,6 +415,10 @@ impl Database {
             mal_client_id: self
                 .get_setting("mal_client_id")?
                 .or_else(|| std::env::var("MAL_CLIENT_ID").ok()),
+            hide_empty_uncategorized: self
+                .get_setting("hide_empty_uncategorized")?
+                .map(|v| v == "true")
+                .unwrap_or(false),
             mal_sync_on_read: self
                 .get_setting("mal_sync_on_read")?
                 .map(|v| v == "true")
@@ -368,6 +481,68 @@ impl Database {
     pub fn remove_setting(&self, key: &str) -> Result<()> {
         let conn = self.conn.lock().unwrap();
         conn.execute("DELETE FROM app_settings WHERE key = ?1", [key])?;
+        Ok(())
+    }
+
+    pub fn get_categories(&self) -> Result<Vec<Category>> {
+        let conn = self.conn.lock().unwrap();
+        let mut stmt = conn.prepare(
+            "SELECT id, name, color, icon, sort_order FROM categories ORDER BY sort_order ASC",
+        )?;
+        let rows = stmt.query_map([], |row| {
+            Ok(Category {
+                id: row.get(0)?,
+                name: row.get(1)?,
+                color: row.get(2)?,
+                icon: row.get(3)?,
+                sort_order: row.get(4)?,
+            })
+        })?;
+        rows.collect::<rusqlite::Result<Vec<_>>>()
+            .context("failed to load categories")
+    }
+
+    pub fn upsert_category(&self, category: &Category) -> Result<()> {
+        let now = Utc::now().to_rfc3339();
+        let conn = self.conn.lock().unwrap();
+        conn.execute(
+            "INSERT INTO categories (id, name, color, icon, sort_order, created_at, updated_at)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)
+             ON CONFLICT(id) DO UPDATE SET name=excluded.name, color=excluded.color, icon=excluded.icon,
+             sort_order=excluded.sort_order, updated_at=excluded.updated_at",
+            params![
+                category.id,
+                category.name,
+                category.color,
+                category.icon,
+                category.sort_order,
+                now,
+                now,
+            ],
+        )?;
+        Ok(())
+    }
+
+    pub fn delete_category(&self, id: &str) -> Result<()> {
+        let conn = self.conn.lock().unwrap();
+        conn.execute("DELETE FROM categories WHERE id = ?1", [id])?;
+        Ok(())
+    }
+
+    pub fn set_manga_categories(&self, manga_id: &str, category_ids: &[String]) -> Result<()> {
+        let mut conn = self.conn.lock().unwrap();
+        let tx = conn.transaction()?;
+        tx.execute(
+            "DELETE FROM manga_categories WHERE manga_id = ?1",
+            [manga_id],
+        )?;
+        for category_id in category_ids {
+            tx.execute(
+                "INSERT INTO manga_categories (manga_id, category_id) VALUES (?1, ?2)",
+                params![manga_id, category_id],
+            )?;
+        }
+        tx.commit()?;
         Ok(())
     }
 
@@ -464,6 +639,35 @@ fn migrations() -> Migrations<'static> {
             ALTER TABLE manga ADD COLUMN mal_id INTEGER;
             ALTER TABLE manga ADD COLUMN mal_score REAL;
             ALTER TABLE manga ADD COLUMN mal_status TEXT;
+            "#,
+        ),
+        M::up(
+            r#"
+            CREATE TABLE categories (
+              id TEXT PRIMARY KEY,
+              name TEXT NOT NULL,
+              color TEXT NOT NULL,
+              icon TEXT NOT NULL,
+              sort_order INTEGER NOT NULL,
+              created_at TEXT NOT NULL,
+              updated_at TEXT NOT NULL
+            );
+            CREATE TABLE manga_categories (
+              manga_id TEXT NOT NULL,
+              category_id TEXT NOT NULL,
+              PRIMARY KEY (manga_id, category_id),
+              FOREIGN KEY (manga_id) REFERENCES manga(id) ON DELETE CASCADE,
+              FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
+            );
+            "#,
+        ),
+        M::up(
+            r#"
+            CREATE TABLE manga_history (
+              manga_id TEXT PRIMARY KEY,
+              accessed_at TEXT NOT NULL,
+              FOREIGN KEY (manga_id) REFERENCES manga(id) ON DELETE CASCADE
+            );
             "#,
         ),
     ])

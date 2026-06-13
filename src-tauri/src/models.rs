@@ -3,6 +3,15 @@ use ts_rs::TS;
 
 #[derive(Debug, Clone, Serialize, Deserialize, TS)]
 #[ts(export, export_to = "../../src/lib/bindings/")]
+pub struct HistoryEntry {
+    pub manga: Manga,
+    pub chapter: Option<Chapter>,
+    pub accessed_at: String,
+    pub entry_type: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[ts(export, export_to = "../../src/lib/bindings/")]
 pub struct MangaFilters {
     pub original_language: Option<String>,
     pub status: Option<String>,
@@ -47,6 +56,16 @@ pub struct Manga {
 
 #[derive(Debug, Clone, Serialize, Deserialize, TS)]
 #[ts(export, export_to = "../../src/lib/bindings/")]
+pub struct Category {
+    pub id: String,
+    pub name: String,
+    pub color: String,
+    pub icon: String,
+    pub sort_order: i32,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[ts(export, export_to = "../../src/lib/bindings/")]
 pub struct FollowedManga {
     pub manga: Manga,
     pub preferred_language: String,
@@ -54,6 +73,7 @@ pub struct FollowedManga {
     pub last_checked_at: Option<String>,
     pub notify_enabled: bool,
     pub unread_chapters: Option<String>,
+    pub category_ids: Vec<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, TS)]
@@ -96,6 +116,7 @@ pub struct AppSettings {
     pub reader_fit: String,
     pub api_token: Option<String>,
     pub mal_client_id: Option<String>,
+    pub hide_empty_uncategorized: bool,
     pub mal_sync_on_read: bool,
     pub mal_sync_on_complete: bool,
     pub mal_ask_before_sync: bool,

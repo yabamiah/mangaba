@@ -1,6 +1,7 @@
 use crate::models::{
-    AppSettings, Chapter, FollowedManga, MalAuthStatus, MalListItem, MalOAuthResult,
-    MalRankingManga, MalUser, Manga, MangaFilters, MangaResult, ReadingProgress, SyncStatus,
+    AppSettings, Category, Chapter, FollowedManga, HistoryEntry, MalAuthStatus, MalListItem,
+    MalOAuthResult, MalRankingManga, MalUser, Manga, MangaFilters, MangaResult, ReadingProgress,
+    SyncStatus,
 };
 use crate::{mal, notifications, AppState};
 use regex::Regex;
@@ -572,4 +573,74 @@ pub async fn update_mal_list_status(
     mal::update_list_status(&token, manga_id, &status, num_chapters_read, score)
         .await
         .map_err(to_error)
+}
+
+#[tauri::command]
+pub fn get_categories(state: State<'_, AppState>) -> CommandResult<Vec<Category>> {
+    state.db.get_categories().map_err(to_error)
+}
+
+#[tauri::command]
+pub fn create_category(
+    state: State<'_, AppState>,
+    id: String,
+    name: String,
+    color: String,
+    icon: String,
+    sort_order: i32,
+) -> CommandResult<()> {
+    let category = Category {
+        id,
+        name,
+        color,
+        icon,
+        sort_order,
+    };
+    state.db.upsert_category(&category).map_err(to_error)
+}
+
+#[tauri::command]
+pub fn update_category(
+    state: State<'_, AppState>,
+    id: String,
+    name: String,
+    color: String,
+    icon: String,
+    sort_order: i32,
+) -> CommandResult<()> {
+    let category = Category {
+        id,
+        name,
+        color,
+        icon,
+        sort_order,
+    };
+    state.db.upsert_category(&category).map_err(to_error)
+}
+
+#[tauri::command]
+pub fn delete_category(state: State<'_, AppState>, id: String) -> CommandResult<()> {
+    state.db.delete_category(&id).map_err(to_error)
+}
+
+#[tauri::command]
+pub fn set_manga_categories(
+    state: State<'_, AppState>,
+    manga_id: String,
+    category_ids: Vec<String>,
+) -> CommandResult<()> {
+    state
+        .db
+        .set_manga_categories(&manga_id, &category_ids)
+        .map_err(to_error)
+}
+
+#[tauri::command]
+pub fn add_manga_history(state: State<'_, AppState>, manga_id: String) -> CommandResult<()> {
+    state.db.add_manga_history(&manga_id).map_err(to_error)
+}
+
+#[tauri::command]
+pub fn get_history(state: State<'_, AppState>) -> CommandResult<Vec<HistoryEntry>> {
+    state.db.get_history().map_err(to_error)
 }

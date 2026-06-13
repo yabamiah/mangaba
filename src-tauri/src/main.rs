@@ -81,7 +81,14 @@ pub fn run() {
             commands::get_mal_user,
             commands::get_mal_user_mangalist,
             commands::get_mal_ranking,
-            commands::update_mal_list_status
+            commands::update_mal_list_status,
+            commands::get_categories,
+            commands::create_category,
+            commands::update_category,
+            commands::delete_category,
+            commands::set_manga_categories,
+            commands::add_manga_history,
+            commands::get_history
         ])
         .run(tauri::generate_context!())
         .expect("error while running Mangaba");
