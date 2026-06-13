@@ -132,6 +132,7 @@ export interface DashboardLabels {
   unreadCount?: (count: number) => string;
   allCaughtUp?: string;
   fallbackQuote?: { text: string; author: string };
+  suggestionsTitle?: string;
 }
 
 export interface DashboardProps {
@@ -261,6 +262,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
     stat_mal_volumes: "Volumes lidos",
     stat_mal_plan_to_read: "Na fila",
     volumes: "volumes",
+    suggestionsTitle: "Para ler a seguir (MyAnimeList)",
     ...labels,
   } satisfies ResolvedDashboardLabels;
 
@@ -457,7 +459,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 {suggestions && suggestions.length > 0 && (
                   <div>
                     <h2 className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-4">
-                      Para ler a seguir (MyAnimeList)
+                      {labels.suggestionsTitle || "Para ler a seguir (MyAnimeList)"}
                     </h2>
                     <div className="flex gap-3 overflow-x-auto pb-4 snap-x">
                       {suggestions.map((s) => (

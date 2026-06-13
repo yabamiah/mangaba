@@ -58,6 +58,15 @@ export type { StatsCardProps } from "./components/StatsCard";
 export { MoodIcon } from "./components/MoodIcon";
 export type { MoodIconProps } from "./components/MoodIcon";
 
+export { ColorPicker } from "./components/ColorPicker";
+export type { ColorPickerProps } from "./components/ColorPicker";
+
+export { IconPicker } from "./components/IconPicker";
+export type { IconPickerProps } from "./components/IconPicker";
+
+export { Switch } from "./components/Switch";
+export type { SwitchProps } from "./components/Switch";
+
 export { HandDrawnTracker } from "./components/HandDrawnTracker";
 export type { HandDrawnTrackerProps, Habit } from "./components/HandDrawnTracker";
 
